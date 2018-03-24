@@ -6,7 +6,7 @@ import com.raizlabs.android.dbflow.annotation.Table
 import com.raizlabs.android.dbflow.annotation.Unique
 
 @Table(database = AppDatabase::class, allFields = true)
-public class User(
+class User(
         @PrimaryKey @Unique @NotNull var id: Int? = null,
         @Unique @NotNull var apiToken: String? = null
 )

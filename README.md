@@ -1,1 +1,0 @@
-First meet-up with Kotlin

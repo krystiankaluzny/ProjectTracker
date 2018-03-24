@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="app.obywatel.togglnative.activity.UserActivity">
+    tools:context="app.obywatel.togglnative.ui.user.UserActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -28,16 +28,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="app.obywatel.togglnative.activity.UserActivity"
+        tools:context="app.obywatel.togglnative.ui.user.UserActivity"
         tools:showIn="@layout/user_app_bar">
 
-        <!--content here-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycleView"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </android.support.constraint.ConstraintLayout>
 
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/addUserButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

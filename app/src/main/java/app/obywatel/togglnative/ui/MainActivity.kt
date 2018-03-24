@@ -1,9 +1,10 @@
-package app.obywatel.togglnative.activity
+package app.obywatel.togglnative.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import app.obywatel.togglnative.R
 import app.obywatel.togglnative.repository.AppDatabase
+import app.obywatel.togglnative.ui.user.UserActivity
 import com.raizlabs.android.dbflow.config.DatabaseConfig
 import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager
