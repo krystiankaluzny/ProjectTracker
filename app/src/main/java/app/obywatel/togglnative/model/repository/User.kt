@@ -1,4 +1,4 @@
-package app.obywatel.togglnative.repository
+package app.obywatel.togglnative.model.repository
 
 import com.raizlabs.android.dbflow.annotation.NotNull
 import com.raizlabs.android.dbflow.annotation.PrimaryKey

@@ -1,5 +1,7 @@
-package app.obywatel.togglnative.ui.user
+package app.obywatel.togglnative.view.user
 
+import android.app.Dialog
+import android.app.FragmentManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,9 +10,9 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.MenuItem
 import app.obywatel.togglnative.R
+import app.obywatel.togglnative.viewmodel.user.UsersViewModel
 import kotlinx.android.synthetic.main.user_activity.*
 import kotlinx.android.synthetic.main.user_app_bar.*
 import java.util.*
@@ -18,7 +20,7 @@ import java.util.*
 class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val random = Random()
-    private lateinit var userViews: MutableList<UserView>
+    internal val usersViewModel: UsersViewModel = UsersViewModel()
 
     companion object {
         fun newIntent(context: Context): Intent {
@@ -31,7 +33,7 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.user_activity)
         setSupportActionBar(toolbar)
 
-        addUserButton.setOnClickListener { addUser() }
+        addUserButton.setOnClickListener { showAddUserDialog() }
 
         initHamburgerButton()
         initUserList()
@@ -82,20 +84,15 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initUserList() {
 
-        val userView1 = UserView(1, "Dupa")
-        val userView2 = UserView(24, "Blada")
-
-        userViews = mutableListOf(userView1, userView2)
+        val userAdapter = UserAdapter(usersViewModel)
 
         recycleView.layoutManager = LinearLayoutManager(this)
-        recycleView.adapter = UserAdapter(userViews)
-
-        Log.d("DUPA", "after init user list")
+        recycleView.adapter = userAdapter
     }
 
-    private fun addUser() {
-        val userView = UserView(random.nextInt(100), "Sraka maka")
-        userViews.add(userView)
-        recycleView.adapter.notifyItemInserted(userViews.size)
+    private fun showAddUserDialog() {
+        val addUserDialog = AddUserDialog()
+
+        addUserDialog.show(fragmentManager, "Add User")
     }
 }
