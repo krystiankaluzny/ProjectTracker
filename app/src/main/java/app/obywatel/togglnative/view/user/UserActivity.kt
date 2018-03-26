@@ -1,7 +1,5 @@
 package app.obywatel.togglnative.view.user
 
-import android.app.Dialog
-import android.app.FragmentManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,15 +10,16 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import app.obywatel.togglnative.R
-import app.obywatel.togglnative.viewmodel.user.UsersViewModel
+import app.obywatel.togglnative.TogglNativeApp
+import app.obywatel.togglnative.di.UserViewModelModule
+import app.obywatel.togglnative.viewmodel.user.UserViewModel
 import kotlinx.android.synthetic.main.user_activity.*
 import kotlinx.android.synthetic.main.user_app_bar.*
-import java.util.*
+import javax.inject.Inject
 
 class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private val random = Random()
-    internal val usersViewModel: UsersViewModel = UsersViewModel()
+    @Inject internal lateinit var userViewModel: UserViewModel
 
     companion object {
         fun newIntent(context: Context): Intent {
@@ -32,6 +31,10 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.user_activity)
         setSupportActionBar(toolbar)
+
+        TogglNativeApp.component(this)
+                .plus(UserViewModelModule())
+                .inject(this)
 
         addUserButton.setOnClickListener { showAddUserDialog() }
 
@@ -84,7 +87,7 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initUserList() {
 
-        val userAdapter = UserAdapter(usersViewModel)
+        val userAdapter = UserAdapter(userViewModel)
 
         recycleView.layoutManager = LinearLayoutManager(this)
         recycleView.adapter = userAdapter
