@@ -1,9 +1,9 @@
 package app.obywatel.togglnative.viewmodel.user
 
-import app.obywatel.togglnative.model.repository.UserItem
+import app.obywatel.togglnative.model.repository.User
 
-class SingleUserViewModel internal constructor(userItem: UserItem) {
+class SingleUserViewModel internal constructor(user: User) {
 
-    val userId: String = userItem.id.toString()
-    val userName: String = userItem.name
+    val userId: String = user.id.toString()
+    val userName: String = user.apiToken!!
 }

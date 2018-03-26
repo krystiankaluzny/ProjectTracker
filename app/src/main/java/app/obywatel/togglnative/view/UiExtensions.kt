@@ -12,9 +12,5 @@ fun ViewGroup.inflate(layoutRes: Int): View {
 
 fun <T : ViewDataBinding> ViewGroup.bind(layoutRes: Int): T {
 
-    return DataBindingUtil.inflate(
-            LayoutInflater.from(context),
-            layoutRes,
-            this,
-            false)
+    return DataBindingUtil.inflate(LayoutInflater.from(context), layoutRes, this, false)
 }

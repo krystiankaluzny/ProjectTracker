@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import android.widget.Toast
 import app.obywatel.togglnative.R
 import app.obywatel.togglnative.TogglNativeApp
 import app.obywatel.togglnative.di.UserViewModelModule
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.user_activity.*
 import kotlinx.android.synthetic.main.user_app_bar.*
 import javax.inject.Inject
 
-class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, UserViewModel.Listener {
 
     @Inject internal lateinit var userViewModel: UserViewModel
 
@@ -36,6 +37,7 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .plus(UserViewModelModule())
                 .inject(this)
 
+        userViewModel.addListener(this)
         addUserButton.setOnClickListener { showAddUserDialog() }
 
         initHamburgerButton()
@@ -77,6 +79,14 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun usersUpdated() {
+
+    }
+
+    override fun error(message: String?) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     private fun initHamburgerButton() {
