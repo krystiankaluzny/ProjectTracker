@@ -1,13 +1,12 @@
 package app.obywatel.togglnative.viewmodel.user
 
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
-import app.obywatel.togglnative.model.repository.User
+import app.obywatel.togglnative.model.entity.User
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.select
 import java.util.*
 
-class UserViewModel {
+class UsersViewModel {
 
     private val listeners: MutableList<Listener> = mutableListOf()
     private val random: Random = Random()
@@ -26,7 +25,7 @@ class UserViewModel {
 
     fun addUserByApiToken(apiToken: String) {
 
-        val newUser = User(random.nextInt(1000), apiToken)
+        val newUser = User(random.nextLong(), apiToken)
 
         try {
             if (newUser.save()) {

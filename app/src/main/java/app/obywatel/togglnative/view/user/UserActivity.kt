@@ -12,15 +12,15 @@ import android.view.MenuItem
 import android.widget.Toast
 import app.obywatel.togglnative.R
 import app.obywatel.togglnative.TogglNativeApp
-import app.obywatel.togglnative.di.UserViewModelModule
-import app.obywatel.togglnative.viewmodel.user.UserViewModel
+import app.obywatel.togglnative.di.UsersViewModelModule
+import app.obywatel.togglnative.viewmodel.user.UsersViewModel
 import kotlinx.android.synthetic.main.user_activity.*
 import kotlinx.android.synthetic.main.user_app_bar.*
 import javax.inject.Inject
 
-class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, UserViewModel.Listener {
+class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, UsersViewModel.Listener {
 
-    @Inject internal lateinit var userViewModel: UserViewModel
+    @Inject internal lateinit var usersViewModel: UsersViewModel
 
     companion object {
         fun newIntent(context: Context): Intent {
@@ -34,10 +34,10 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         TogglNativeApp.component(this)
-                .plus(UserViewModelModule())
+                .plus(UsersViewModelModule())
                 .inject(this)
 
-        userViewModel.addListener(this)
+        usersViewModel.addListener(this)
         addUserButton.setOnClickListener { showAddUserDialog() }
 
         initHamburgerButton()
@@ -97,7 +97,7 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initUserList() {
 
-        val userAdapter = UserAdapter(userViewModel)
+        val userAdapter = UserAdapter(usersViewModel)
 
         recycleView.layoutManager = LinearLayoutManager(this)
         recycleView.adapter = userAdapter

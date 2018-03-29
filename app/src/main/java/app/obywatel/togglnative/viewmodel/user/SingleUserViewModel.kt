@@ -1,6 +1,6 @@
 package app.obywatel.togglnative.viewmodel.user
 
-import app.obywatel.togglnative.model.repository.User
+import app.obywatel.togglnative.model.entity.User
 
 class SingleUserViewModel internal constructor(user: User) {
 

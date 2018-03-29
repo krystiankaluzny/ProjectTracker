@@ -13,7 +13,7 @@ class AddUserDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val usersViewModel = (activity as UserActivity).userViewModel
+        val usersViewModel = (activity as UserActivity).usersViewModel
 
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
         val addUserContentView: View = activity.layoutInflater.inflate(R.layout.user_add_by_api_token, null)

@@ -1,23 +1,22 @@
 package app.obywatel.togglnative.di
 
-import app.obywatel.togglnative.di.scope.ActivityScope
 import app.obywatel.togglnative.view.user.UserActivity
-import app.obywatel.togglnative.viewmodel.user.UserViewModel
+import app.obywatel.togglnative.viewmodel.user.UsersViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
 
 @Module
-class UserViewModelModule {
+class UsersViewModelModule {
 
     @Provides
-    @ActivityScope
-    fun providesUsersViewModel(): UserViewModel = UserViewModel()
+    @ViewScope
+    fun providesUsersViewModel(): UsersViewModel = UsersViewModel()
 }
 
-@ActivityScope
-@Subcomponent(modules = arrayOf(UserViewModelModule::class))
-interface UserViewModelComponent {
+@ViewScope
+@Subcomponent(modules = [(UsersViewModelModule::class)])
+interface UsersViewModelComponent {
 
     fun inject(userActivity: UserActivity)
 }
