@@ -7,6 +7,9 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url  "https://dl.bintray.com/konikvranik/jtoggl"
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$android_plugin_version"

@@ -51,4 +51,6 @@ dependencies {
 
     implementation "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+
+    compile 'ch.simas.jtoggl:jtoggl:8.0.0'
 }
