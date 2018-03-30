@@ -12,6 +12,7 @@ class UserModule(private val user: User) {
     @UserScope
     @Provides
     fun provideJToggl(jTogglFactory: JTogglFactory) = jTogglFactory.jToggl(user.apiToken)
+
 }
 
 @UserScope

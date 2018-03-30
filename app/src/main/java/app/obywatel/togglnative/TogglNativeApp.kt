@@ -2,6 +2,7 @@ package app.obywatel.togglnative
 
 import android.app.Application
 import android.content.Context
+import android.support.multidex.MultiDexApplication
 import app.obywatel.togglnative.di.ApplicationComponent
 import app.obywatel.togglnative.di.ApplicationModule
 import app.obywatel.togglnative.di.DaggerApplicationComponent
@@ -11,7 +12,7 @@ import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager
 
 
-class TogglNativeApp : Application() {
+class TogglNativeApp : MultiDexApplication() {
 
     lateinit var applicationComponent: ApplicationComponent
 

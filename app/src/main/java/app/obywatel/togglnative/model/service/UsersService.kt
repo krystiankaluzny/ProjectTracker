@@ -1,10 +1,10 @@
 package app.obywatel.togglnative.model.service
 
 import app.obywatel.togglnative.model.entity.User
-import app.obywatel.togglnative.model.repository.User_Table
+import app.obywatel.togglnative.model.entity.User_Table
 import com.raizlabs.android.dbflow.kotlinextensions.*
 
-class UserService(private val jTogglFactory: JTogglFactory) {
+class UsersService(private val jTogglFactory: JTogglFactory) {
 
     fun addUserByApiToken(apiToken: String): User? {
 
