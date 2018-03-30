@@ -4,6 +4,10 @@ import android.util.Log
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.service.UsersService
 import com.raizlabs.android.dbflow.kotlinextensions.select
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import java.util.*
 
 class UsersViewModel(private val usersService: UsersService) {
@@ -25,13 +29,17 @@ class UsersViewModel(private val usersService: UsersService) {
 
     fun addUserByApiToken(apiToken: String) {
 
-        val user: User? = usersService.addUserByApiToken("sdf")
+        launch(UI) {
+            val user: User? = async(CommonPool) {
+                usersService.addUserByApiToken(apiToken)
+            }.await()
 
-        if (user == null) {
-            Log.w("UsersViewModel","Null user")
-        }
-        else {
-            userList.add(user)
+            if (user == null) {
+                Log.w("UsersViewModel", "Null user")
+            } else {
+                userList.add(user)
+                listeners.forEach { it.usersUpdated() }
+            }
         }
     }
 
