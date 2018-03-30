@@ -1,5 +1,6 @@
 package app.obywatel.togglnative.viewmodel.user
 
+import android.databinding.ObservableBoolean
 import android.util.Log
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.service.UsersService
@@ -16,6 +17,8 @@ class UsersViewModel(private val usersService: UsersService) {
     private val random: Random = Random()
     private val userList: MutableList<User> = select.from(User::class.java).queryList()
 
+    var searchingUserInProgress = ObservableBoolean(false)
+
     fun addListener(listener: Listener) {
         listeners.add(listener)
     }
@@ -30,9 +33,9 @@ class UsersViewModel(private val usersService: UsersService) {
     fun addUserByApiToken(apiToken: String) {
 
         launch(UI) {
-            val user: User? = async(CommonPool) {
-                usersService.addUserByApiToken(apiToken)
-            }.await()
+            searchingUserInProgress.set(true)
+
+            val user: User? = async(CommonPool) { usersService.addUserByApiToken(apiToken) }.await()
 
             if (user == null) {
                 Log.w("UsersViewModel", "Null user")
@@ -40,6 +43,8 @@ class UsersViewModel(private val usersService: UsersService) {
                 userList.add(user)
                 listeners.forEach { it.usersUpdated() }
             }
+
+            searchingUserInProgress.set(false)
         }
     }
 

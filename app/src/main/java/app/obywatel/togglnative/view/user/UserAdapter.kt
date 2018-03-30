@@ -23,7 +23,7 @@ class UserAdapter(private val usersViewModel: UsersViewModel) : RecyclerView.Ada
     }
 
     override fun usersUpdated() {
-        notifyDataSetChanged()
+        notifyItemInserted(usersViewModel.userCount() - 1)
     }
 
     override fun error(message: String?) {}

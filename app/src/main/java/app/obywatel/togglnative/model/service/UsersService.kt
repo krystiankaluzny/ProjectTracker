@@ -4,6 +4,7 @@ import android.util.Log
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.entity.User_Table
 import com.raizlabs.android.dbflow.kotlinextensions.*
+import java.util.*
 
 class UsersService(private val jTogglFactory: JTogglFactory) {
 
@@ -11,13 +12,15 @@ class UsersService(private val jTogglFactory: JTogglFactory) {
 
         val jToggl = jTogglFactory.jToggl(apiToken)
 
-        val userEntity: User? = try {
+        var userEntity: User? = try {
             jToggl.currentUser?.toEntity()
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             Log.e("UsersService", "Current user error", e)
             null
         }
 
+        userEntity = User(Random().nextInt().toLong(), apiToken)
         val savedUserEntity: User? = (select from User::class where (User_Table.apiToken eq apiToken)).result
 
         if (savedUserEntity != null) {
@@ -28,4 +31,5 @@ class UsersService(private val jTogglFactory: JTogglFactory) {
 
         return userEntity
     }
+
 }

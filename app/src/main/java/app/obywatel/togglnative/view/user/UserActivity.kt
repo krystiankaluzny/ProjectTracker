@@ -2,6 +2,7 @@ package app.obywatel.togglnative.view.user
 
 import android.content.Context
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -12,6 +13,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import app.obywatel.togglnative.R
 import app.obywatel.togglnative.TogglNativeApp
+import app.obywatel.togglnative.databinding.UserActivityBinding
 import app.obywatel.togglnative.di.UsersViewModelModule
 import app.obywatel.togglnative.viewmodel.user.UsersViewModel
 import kotlinx.android.synthetic.main.user_activity.*
@@ -20,7 +22,8 @@ import javax.inject.Inject
 
 class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, UsersViewModel.Listener {
 
-    @Inject internal lateinit var usersViewModel: UsersViewModel
+    @Inject
+    internal lateinit var usersViewModel: UsersViewModel
 
     companion object {
         fun newIntent(context: Context): Intent {
@@ -30,12 +33,15 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.user_activity)
-        setSupportActionBar(toolbar)
 
         TogglNativeApp.component(this)
                 .plus(UsersViewModelModule())
                 .inject(this)
+
+        val binding: UserActivityBinding = DataBindingUtil.setContentView(this, R.layout.user_activity)
+        binding.viewModel = usersViewModel
+
+        setSupportActionBar(toolbar)
 
         usersViewModel.addListener(this)
         addUserButton.setOnClickListener { showAddUserDialog() }
