@@ -19,9 +19,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="app.obywatel.togglnative.view.user.UserActivity"
+            android:name=".view.user.UserActivity"
             android:label="@string/title_activity_user"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".view.timer.TimerActivity">
         </activity>
     </application>
 

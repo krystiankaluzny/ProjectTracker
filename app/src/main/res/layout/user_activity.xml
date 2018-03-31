@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="app.obywatel.togglnative.viewmodel.user.UsersViewModel" />
+            type="app.obywatel.togglnative.viewmodel.user.UserViewModel" />
     </data>
 
     <android.support.v4.widget.DrawerLayout

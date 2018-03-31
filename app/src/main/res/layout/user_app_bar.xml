@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="app.obywatel.togglnative.viewmodel.user.UsersViewModel" />
+            type="app.obywatel.togglnative.viewmodel.user.UserViewModel" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -50,7 +50,7 @@
                 android:text="@{viewModel.errorMessage}"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
-                android:onClick="@{viewModel::onClickErrorMessage}"
+                android:onClick="@{() -> viewModel.onClickErrorMessage()}"
                 android:visibility="@{viewModel.errorMessageVisible ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toTopOf="@+id/recycleView"
                 app:layout_constraintLeft_toLeftOf="parent"

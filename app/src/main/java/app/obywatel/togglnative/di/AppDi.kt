@@ -27,5 +27,5 @@ interface ApplicationComponent {
 
     fun appContext(): Context
 
-    fun plus(usersViewModelModule: UsersViewModelModule): UsersViewModelComponent
+    fun plus(userViewModelModule: UserViewModelModule): UserViewModelComponent
 }

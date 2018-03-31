@@ -5,28 +5,26 @@ import android.view.ViewGroup
 import app.obywatel.togglnative.R
 import app.obywatel.togglnative.databinding.UserRowBinding
 import app.obywatel.togglnative.view.bind
-import app.obywatel.togglnative.viewmodel.user.UsersViewModel
+import app.obywatel.togglnative.viewmodel.user.UserViewModel
 
 
-class UserAdapter(private val usersViewModel: UsersViewModel) : RecyclerView.Adapter<UserAdapter.ViewHolder>(), UsersViewModel.Listener {
+class UserAdapter(private val userViewModel: UserViewModel) : RecyclerView.Adapter<UserAdapter.ViewHolder>(), UserViewModel.Listener {
 
     init {
-        usersViewModel.addListener(this)
+        userViewModel.addListener(this)
     }
 
-    override fun getItemCount() = usersViewModel.userCount()
+    override fun getItemCount() = userViewModel.userCount()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.bind(R.layout.user_row))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.binding.viewModel = usersViewModel.singleUserViewModel(position)
+        holder.binding.viewModel = userViewModel.singleUserViewModel(position)
     }
 
     override fun usersUpdated() {
-        notifyItemInserted(usersViewModel.userCount() - 1)
+        notifyItemInserted(userViewModel.userCount() - 1)
     }
-
-    override fun error(message: String?) {}
 
     class ViewHolder(val binding: UserRowBinding) : RecyclerView.ViewHolder(binding.content)
 }

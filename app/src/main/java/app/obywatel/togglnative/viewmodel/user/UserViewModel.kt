@@ -5,7 +5,7 @@ import android.databinding.ObservableField
 import android.util.Log
 import android.view.View
 import app.obywatel.togglnative.model.entity.User
-import app.obywatel.togglnative.model.service.UsersService
+import app.obywatel.togglnative.model.service.UserService
 import com.raizlabs.android.dbflow.kotlinextensions.select
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -14,9 +14,9 @@ import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import java.util.*
 
-class UsersViewModel(private val usersService: UsersService) {
+class UserViewModel(private val userService: UserService) {
     companion object {
-        private const val TAG = "UsersViewModel"
+        private const val TAG = "UserViewModel"
         private const val ERROR_MESSAGE_SHOW_TIME = 10_000L
     }
 
@@ -25,8 +25,8 @@ class UsersViewModel(private val usersService: UsersService) {
     private val userList: MutableList<User> = select.from(User::class.java).queryList()
 
     var searchingUserInProgress = ObservableBoolean(false)
-    var errorMessageVisible = ObservableBoolean(true)
-    var errorMessage = ObservableField<String>("abc")
+    var errorMessageVisible = ObservableBoolean(false)
+    var errorMessage = ObservableField<String>("")
 
     fun addListener(listener: Listener) {
         listeners.add(listener)
@@ -38,17 +38,17 @@ class UsersViewModel(private val usersService: UsersService) {
 
     fun userCount() = userList.size
     fun singleUserViewModel(position: Int) = SingleUserViewModel(userList[position])
-    fun onClickErrorMessage(view: View) = hideErrorMessage()
+    fun onClickErrorMessage() = hideErrorMessage()
 
     fun addUserByApiToken(apiToken: String) = launch(UI) {
 
         try {
             searchingUserInProgress.set(true)
 
-            val user: User? = async(CommonPool) { usersService.addUserByApiToken(apiToken) }.await()
+            val user: User? = async(CommonPool) { userService.addUserByApiToken(apiToken) }.await()
 
             if (user == null) {
-                Log.w("UsersViewModel", "Null user")
+                Log.w("UserViewModel", "Null user")
             } else {
                 userList.add(user)
                 listeners.forEach { it.usersUpdated() }
@@ -78,6 +78,5 @@ class UsersViewModel(private val usersService: UsersService) {
 
     interface Listener {
         fun usersUpdated()
-        fun error(message: String?)
     }
 }

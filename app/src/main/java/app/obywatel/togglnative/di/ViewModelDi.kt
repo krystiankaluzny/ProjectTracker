@@ -1,28 +1,28 @@
 package app.obywatel.togglnative.di
 
 import app.obywatel.togglnative.model.service.JTogglFactory
-import app.obywatel.togglnative.model.service.UsersService
+import app.obywatel.togglnative.model.service.UserService
 import app.obywatel.togglnative.view.user.UserActivity
-import app.obywatel.togglnative.viewmodel.user.UsersViewModel
+import app.obywatel.togglnative.viewmodel.user.UserViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
 
 @Module
-class UsersViewModelModule {
+class UserViewModelModule {
 
     @Provides
     @ViewScope
-    fun provideUsersService(jTogglFactory: JTogglFactory) = UsersService(jTogglFactory)
+    fun provideUsersService(jTogglFactory: JTogglFactory) = UserService(jTogglFactory)
 
     @Provides
     @ViewScope
-    fun providesUsersViewModel(usersService: UsersService): UsersViewModel = UsersViewModel(usersService)
+    fun providesUsersViewModel(userService: UserService): UserViewModel = UserViewModel(userService)
 }
 
 @ViewScope
-@Subcomponent(modules = [(UsersViewModelModule::class)])
-interface UsersViewModelComponent {
+@Subcomponent(modules = [(UserViewModelModule::class)])
+interface UserViewModelComponent {
 
     fun inject(userActivity: UserActivity)
 }

@@ -10,20 +10,19 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import android.widget.Toast
 import app.obywatel.togglnative.R
 import app.obywatel.togglnative.TogglNativeApp
 import app.obywatel.togglnative.databinding.UserActivityBinding
-import app.obywatel.togglnative.di.UsersViewModelModule
-import app.obywatel.togglnative.viewmodel.user.UsersViewModel
+import app.obywatel.togglnative.di.UserViewModelModule
+import app.obywatel.togglnative.viewmodel.user.UserViewModel
 import kotlinx.android.synthetic.main.user_activity.*
 import kotlinx.android.synthetic.main.user_app_bar.*
 import javax.inject.Inject
 
-class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, UsersViewModel.Listener {
+class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     @Inject
-    internal lateinit var usersViewModel: UsersViewModel
+    internal lateinit var userViewModel: UserViewModel
 
     companion object {
         fun newIntent(context: Context): Intent {
@@ -35,15 +34,14 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
 
         TogglNativeApp.component(this)
-                .plus(UsersViewModelModule())
+                .plus(UserViewModelModule())
                 .inject(this)
 
         val binding: UserActivityBinding = DataBindingUtil.setContentView(this, R.layout.user_activity)
-        binding.viewModel = usersViewModel
+        binding.viewModel = userViewModel
 
         setSupportActionBar(toolbar)
 
-        usersViewModel.addListener(this)
         addUserButton.setOnClickListener { showAddUserDialog() }
 
         initHamburgerButton()
@@ -87,14 +85,6 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun usersUpdated() {
-
-    }
-
-    override fun error(message: String?) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
     private fun initHamburgerButton() {
         val hamburgerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, 0, 0)
         drawerLayout.addDrawerListener(hamburgerToggle)
@@ -103,7 +93,7 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initUserList() {
 
-        val userAdapter = UserAdapter(usersViewModel)
+        val userAdapter = UserAdapter(userViewModel)
 
         recycleView.layoutManager = LinearLayoutManager(this)
         recycleView.adapter = userAdapter
