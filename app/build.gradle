@@ -31,6 +31,12 @@ android {
 
 }
 
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
 def dbFlowVersion = "4.2.4"
 def daggerVersion = "2.15"
 def androidSupportVersion = "26.1.0"

@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">TogglNative</string>
-    <string name="title_activity_user">UserActivity</string>
+    <string name="user_activity_title">Users</string>
+    <string name="timer_activity_title">Timer</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_main2">Main2Activity</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="api_token">API Token</string>

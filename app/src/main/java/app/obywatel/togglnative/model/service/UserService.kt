@@ -7,6 +7,8 @@ import com.raizlabs.android.dbflow.kotlinextensions.*
 
 class UserService(private val jTogglFactory: JTogglFactory) {
 
+    fun getAllUsers(): MutableList<User> = (select from User::class).list
+
     fun addUserByApiToken(apiToken: String): User? {
 
         val jToggl: JToggl = jTogglFactory.jToggl(apiToken)
@@ -24,4 +26,11 @@ class UserService(private val jTogglFactory: JTogglFactory) {
         return userEntity
     }
 
+    fun selectUser(user: User) {
+
+    }
+
+    fun getSelectedUser(): User? {
+        return null;
+    }
 }

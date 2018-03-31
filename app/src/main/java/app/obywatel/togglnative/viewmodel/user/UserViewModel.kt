@@ -3,41 +3,35 @@ package app.obywatel.togglnative.viewmodel.user
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import android.util.Log
-import android.view.View
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.service.UserService
-import com.raizlabs.android.dbflow.kotlinextensions.select
+import app.obywatel.togglnative.model.util.ListenerGroup
+import app.obywatel.togglnative.model.util.ListenerGroupConsumer
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
-import java.util.*
 
 class UserViewModel(private val userService: UserService) {
+
     companion object {
         private const val TAG = "UserViewModel"
         private const val ERROR_MESSAGE_SHOW_TIME = 10_000L
     }
 
-    private val listeners: MutableList<Listener> = mutableListOf()
-    private val random: Random = Random()
-    private val userList: MutableList<User> = select.from(User::class.java).queryList()
+    private val addUserListenerConsumer = ListenerGroupConsumer<AddUserListener>()
+    private val selectUserListenerConsumer = ListenerGroupConsumer<SelectUserListener>()
+    private val userList: MutableList<User> = userService.getAllUsers()
 
-    var searchingUserInProgress = ObservableBoolean(false)
-    var errorMessageVisible = ObservableBoolean(false)
-    var errorMessage = ObservableField<String>("")
-
-    fun addListener(listener: Listener) {
-        listeners.add(listener)
-    }
-
-    fun removeListener(listener: Listener) {
-        listeners.remove(listener)
-    }
+    val searchingUserInProgress = ObservableBoolean(false)
+    val errorMessageVisible = ObservableBoolean(false)
+    val errorMessage = ObservableField<String>("")
+    val addUserListeners: ListenerGroup<AddUserListener> = addUserListenerConsumer
+    val selectUserListeners: ListenerGroup<SelectUserListener> = selectUserListenerConsumer
 
     fun userCount() = userList.size
-    fun singleUserViewModel(position: Int) = SingleUserViewModel(userList[position])
+    fun singleUserViewModel(position: Int) = SingleUserViewModel(userList[position], this)
     fun onClickErrorMessage() = hideErrorMessage()
 
     fun addUserByApiToken(apiToken: String) = launch(UI) {
@@ -51,7 +45,8 @@ class UserViewModel(private val userService: UserService) {
                 Log.w("UserViewModel", "Null user")
             } else {
                 userList.add(user)
-                listeners.forEach { it.usersUpdated() }
+                val position = userList.size - 1
+                addUserListenerConsumer.accept { it.onAddUser(position) }
             }
         }
         catch (e: Exception) {
@@ -66,6 +61,12 @@ class UserViewModel(private val userService: UserService) {
         }
     }
 
+    internal fun selectUser(user: User) = launch(UI) {
+                async(CommonPool) { userService.selectUser(user) }.await()
+                selectUserListenerConsumer.accept { it.onUserSelected() }
+            }
+
+
     private fun showErrorMessage(msg: String?) {
         errorMessage.set(msg)
         errorMessageVisible.set(true)
@@ -76,7 +77,4 @@ class UserViewModel(private val userService: UserService) {
         errorMessage.set("")
     }
 
-    interface Listener {
-        fun usersUpdated()
-    }
 }

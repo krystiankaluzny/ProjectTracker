@@ -20,10 +20,12 @@
         </activity>
         <activity
             android:name=".view.user.UserActivity"
-            android:label="@string/title_activity_user"
+            android:label="@string/user_activity_title"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".view.timer.TimerActivity">
+        <activity
+            android:name=".view.timer.TimerActivity"
+            android:label="@string/timer_activity_title">
         </activity>
     </application>
 
