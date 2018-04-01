@@ -4,7 +4,8 @@ import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import android.util.Log
 import app.obywatel.togglnative.model.entity.User
-import app.obywatel.togglnative.model.service.UserService
+import app.obywatel.togglnative.model.service.AddingUserService
+import app.obywatel.togglnative.model.service.UserSelectionService
 import app.obywatel.togglnative.model.util.ListenerGroup
 import app.obywatel.togglnative.model.util.ListenerGroupConsumer
 import kotlinx.coroutines.experimental.CommonPool
@@ -13,7 +14,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 
-class UserViewModel(private val userService: UserService) {
+class UserViewModel(private val userSelectionService: UserSelectionService, private val addingUserService: AddingUserService) {
 
     companion object {
         private const val TAG = "UserViewModel"
@@ -22,7 +23,7 @@ class UserViewModel(private val userService: UserService) {
 
     private val addUserListenerConsumer = ListenerGroupConsumer<AddUserListener>()
     private val selectUserListenerConsumer = ListenerGroupConsumer<SelectUserListener>()
-    private val userList: MutableList<User> = userService.getAllUsers()
+    private val userList: MutableList<User> = userSelectionService.getAllUsers()
 
     val searchingUserInProgress = ObservableBoolean(false)
     val errorMessageVisible = ObservableBoolean(false)
@@ -39,10 +40,10 @@ class UserViewModel(private val userService: UserService) {
         try {
             searchingUserInProgress.set(true)
 
-            val user: User? = async(CommonPool) { userService.addUserByApiToken(apiToken) }.await()
+            val user: User? = async(CommonPool) { addingUserService.addUserByApiToken(apiToken) }.await()
 
             if (user == null) {
-                Log.w("UserViewModel", "Null user")
+                Log.w(TAG, "Null user")
             } else {
                 userList.add(user)
                 val position = userList.size - 1
@@ -61,11 +62,10 @@ class UserViewModel(private val userService: UserService) {
         }
     }
 
-    internal fun selectUser(user: User) = launch(UI) {
-                async(CommonPool) { userService.selectUser(user) }.await()
-                selectUserListenerConsumer.accept { it.onUserSelected() }
-            }
-
+    fun selectUser(user: User) = launch(UI) {
+        async(CommonPool) { userSelectionService.selectUser(user) }.await()
+        selectUserListenerConsumer.accept { it.onUserSelected() }
+    }
 
     private fun showErrorMessage(msg: String?) {
         errorMessage.set(msg)

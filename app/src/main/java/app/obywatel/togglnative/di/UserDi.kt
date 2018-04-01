@@ -1,6 +1,8 @@
 package app.obywatel.togglnative.di
 
 import app.obywatel.togglnative.model.service.JTogglFactory
+import app.obywatel.togglnative.model.service.TimerService
+import ch.simas.jtoggl.JToggl
 import ch.simas.jtoggl.domain.User
 import dagger.Module
 import dagger.Provides
@@ -13,6 +15,9 @@ class UserModule(private val user: User) {
     @Provides
     fun provideJToggl(jTogglFactory: JTogglFactory) = jTogglFactory.jToggl(user.apiToken)
 
+    @UserScope
+    @Provides
+    fun provideTimerService(jToggl: JToggl) = TimerService(jToggl)
 }
 
 @UserScope

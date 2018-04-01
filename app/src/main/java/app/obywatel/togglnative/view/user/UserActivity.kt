@@ -14,6 +14,7 @@ import app.obywatel.togglnative.R
 import app.obywatel.togglnative.TogglNativeApp
 import app.obywatel.togglnative.databinding.UserActivityBinding
 import app.obywatel.togglnative.di.UserViewModelModule
+import app.obywatel.togglnative.model.service.UserSelectionService
 import app.obywatel.togglnative.view.timer.TimerActivity
 import app.obywatel.togglnative.viewmodel.user.SelectUserListener
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
@@ -29,16 +30,17 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    @Inject
-    internal lateinit var userViewModel: UserViewModel
+    @Inject lateinit var userViewModel: UserViewModel
+    @Inject lateinit var userSelectionService: UserSelectionService
+
     private lateinit var userAdapter: UserAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         TogglNativeApp.component(this)
-                .plus(UserViewModelModule())
-                .inject(this)
+            .plus(UserViewModelModule())
+            .inject(this)
 
         val binding: UserActivityBinding = DataBindingUtil.setContentView(this, R.layout.user_activity)
         binding.viewModel = userViewModel
@@ -55,9 +57,12 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        userViewModel.addUserListeners += userAdapter
-        userViewModel.selectUserListeners += this
-
+        if (userSelectionService.getSelectedUser() != null) {
+            startActivity(TimerActivity.newIntent(this))
+        } else {
+            userViewModel.addUserListeners += userAdapter
+            userViewModel.selectUserListeners += this
+        }
     }
 
     override fun onPause() {

@@ -4,10 +4,9 @@ import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.entity.User_Table
 import ch.simas.jtoggl.JToggl
 import com.raizlabs.android.dbflow.kotlinextensions.*
+import com.raizlabs.android.dbflow.sql.language.SQLite
 
-class UserService(private val jTogglFactory: JTogglFactory) {
-
-    fun getAllUsers(): MutableList<User> = (select from User::class).list
+class AddingUserService(private val jTogglFactory: JTogglFactory) {
 
     fun addUserByApiToken(apiToken: String): User? {
 
@@ -15,7 +14,7 @@ class UserService(private val jTogglFactory: JTogglFactory) {
 
         val userEntity: User? = jToggl.currentUser?.toEntity()
 
-        val savedUserEntity: User? = (select from User::class where (User_Table.apiToken eq apiToken)).result
+        val savedUserEntity: User? = SQLite.select().from(User::class).where(User_Table.apiToken eq apiToken).result
 
         if (savedUserEntity != null) {
             userEntity?.update()
@@ -24,13 +23,5 @@ class UserService(private val jTogglFactory: JTogglFactory) {
         }
 
         return userEntity
-    }
-
-    fun selectUser(user: User) {
-
-    }
-
-    fun getSelectedUser(): User? {
-        return null;
     }
 }

@@ -1,7 +1,8 @@
 package app.obywatel.togglnative.di
 
+import app.obywatel.togglnative.model.service.AddingUserService
 import app.obywatel.togglnative.model.service.JTogglFactory
-import app.obywatel.togglnative.model.service.UserService
+import app.obywatel.togglnative.model.service.UserSelectionService
 import app.obywatel.togglnative.view.user.UserActivity
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
 import dagger.Module
@@ -11,13 +12,15 @@ import dagger.Subcomponent
 @Module
 class UserViewModelModule {
 
-    @Provides
     @ViewScope
-    fun provideUsersService(jTogglFactory: JTogglFactory) = UserService(jTogglFactory)
+    @Provides
+    fun provideAddingUsersService(jTogglFactory: JTogglFactory) = AddingUserService(jTogglFactory)
 
-    @Provides
     @ViewScope
-    fun providesUsersViewModel(userService: UserService): UserViewModel = UserViewModel(userService)
+    @Provides
+    fun providesUsersViewModel(userSelectionService: UserSelectionService, addingUserService: AddingUserService): UserViewModel {
+        return UserViewModel(userSelectionService, addingUserService)
+    }
 }
 
 @ViewScope

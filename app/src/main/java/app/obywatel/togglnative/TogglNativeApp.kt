@@ -1,6 +1,5 @@
 package app.obywatel.togglnative
 
-import android.app.Application
 import android.content.Context
 import android.support.multidex.MultiDexApplication
 import app.obywatel.togglnative.di.ApplicationComponent
@@ -10,7 +9,6 @@ import app.obywatel.togglnative.model.repository.AppDatabase
 import com.raizlabs.android.dbflow.config.DatabaseConfig
 import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager
-
 
 class TogglNativeApp : MultiDexApplication() {
 

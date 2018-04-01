@@ -2,6 +2,7 @@ package app.obywatel.togglnative.di
 
 import android.content.Context
 import app.obywatel.togglnative.model.service.JTogglFactory
+import app.obywatel.togglnative.model.service.UserSelectionService
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -19,13 +20,17 @@ class ApplicationModule(context: Context) {
     @ApplicationScope
     @Provides
     fun provideJTogglFactory() = jTogglFactory
+
+    @ApplicationScope
+    @Provides
+    fun provideUserSelectionService() = UserSelectionService()
 }
 
 @ApplicationScope
 @Component(modules = [(ApplicationModule::class)])
 interface ApplicationComponent {
 
-    fun appContext(): Context
-
     fun plus(userViewModelModule: UserViewModelModule): UserViewModelComponent
+
+    fun plus(userModule: UserModule): UserComponent
 }
