@@ -14,7 +14,8 @@ import app.obywatel.togglnative.R
 import app.obywatel.togglnative.TogglNativeApp
 import app.obywatel.togglnative.databinding.UserActivityBinding
 import app.obywatel.togglnative.di.UserViewModelModule
-import app.obywatel.togglnative.model.service.UserSelectionService
+import app.obywatel.togglnative.model.entity.User
+import app.obywatel.togglnative.model.service.user.UserSelectionService
 import app.obywatel.togglnative.view.timer.TimerActivity
 import app.obywatel.togglnative.viewmodel.user.SelectUserListener
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
@@ -38,7 +39,7 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        TogglNativeApp.component(this)
+        TogglNativeApp.getAppComponent(this)
             .plus(UserViewModelModule())
             .inject(this)
 
@@ -84,7 +85,10 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onUserSelected() {
+    override fun onUserSelected(user: User) {
+
+        TogglNativeApp.createUserComponent(this, user)
+
         startActivity(TimerActivity.newIntent(this))
     }
 

@@ -1,4 +1,4 @@
-package app.obywatel.togglnative.model.service
+package app.obywatel.togglnative.model.service.user
 
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.entity.User_Table

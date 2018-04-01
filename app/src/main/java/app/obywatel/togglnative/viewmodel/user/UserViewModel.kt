@@ -4,8 +4,8 @@ import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import android.util.Log
 import app.obywatel.togglnative.model.entity.User
-import app.obywatel.togglnative.model.service.AddingUserService
-import app.obywatel.togglnative.model.service.UserSelectionService
+import app.obywatel.togglnative.model.service.user.AddingUserService
+import app.obywatel.togglnative.model.service.user.UserSelectionService
 import app.obywatel.togglnative.model.util.ListenerGroup
 import app.obywatel.togglnative.model.util.ListenerGroupConsumer
 import kotlinx.coroutines.experimental.CommonPool
@@ -64,7 +64,7 @@ class UserViewModel(private val userSelectionService: UserSelectionService, priv
 
     fun selectUser(user: User) = launch(UI) {
         async(CommonPool) { userSelectionService.selectUser(user) }.await()
-        selectUserListenerConsumer.accept { it.onUserSelected() }
+        selectUserListenerConsumer.accept { it.onUserSelected(user) }
     }
 
     private fun showErrorMessage(msg: String?) {

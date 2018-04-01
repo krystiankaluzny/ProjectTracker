@@ -1,9 +1,9 @@
 package app.obywatel.togglnative.di
 
+import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.service.JTogglFactory
-import app.obywatel.togglnative.model.service.TimerService
+import app.obywatel.togglnative.model.service.timer.TimerService
 import ch.simas.jtoggl.JToggl
-import ch.simas.jtoggl.domain.User
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
@@ -24,4 +24,5 @@ class UserModule(private val user: User) {
 @Subcomponent(modules = [(UserModule::class)])
 interface UserComponent {
 
+    fun plus(timerViewModelModule: TimerViewModelModule): TimerViewModelComponent
 }

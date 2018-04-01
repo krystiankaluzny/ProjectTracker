@@ -2,7 +2,7 @@ package app.obywatel.togglnative.di
 
 import android.content.Context
 import app.obywatel.togglnative.model.service.JTogglFactory
-import app.obywatel.togglnative.model.service.UserSelectionService
+import app.obywatel.togglnative.model.service.user.UserSelectionService
 import dagger.Component
 import dagger.Module
 import dagger.Provides
