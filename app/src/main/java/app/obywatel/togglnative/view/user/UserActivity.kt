@@ -8,6 +8,7 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import app.obywatel.togglnative.R
@@ -102,7 +103,11 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         userAdapter = UserAdapter(userViewModel)
 
-        recycleView.layoutManager = LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this)
+        val dividerItemDecoration = DividerItemDecoration(this, linearLayoutManager.orientation)
+
+        recycleView.layoutManager = linearLayoutManager
+        recycleView.addItemDecoration(dividerItemDecoration)
         recycleView.adapter = userAdapter
     }
 
@@ -110,6 +115,7 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         TogglNativeApp.createUserComponent(this, user)
         startActivity(TimerActivity.newIntent(this))
     }
+
     private fun showAddUserDialog() {
         val addUserDialog = AddUserDialog()
 
