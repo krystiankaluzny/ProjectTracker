@@ -4,7 +4,7 @@ import android.content.Context
 import android.support.multidex.MultiDexApplication
 import app.obywatel.togglnative.di.*
 import app.obywatel.togglnative.model.entity.User
-import app.obywatel.togglnative.model.repository.AppDatabase
+import app.obywatel.togglnative.model.db.AppDatabase
 import com.raizlabs.android.dbflow.config.DatabaseConfig
 import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager

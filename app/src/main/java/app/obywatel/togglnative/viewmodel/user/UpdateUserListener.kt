@@ -1,5 +1,7 @@
 package app.obywatel.togglnative.viewmodel.user
 
-interface AddUserListener {
+interface UpdateUserListener {
     fun onAddUser(position: Int)
+
+    fun onUpdateUser(position: Int)
 }

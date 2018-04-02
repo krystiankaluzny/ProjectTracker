@@ -5,7 +5,7 @@ import app.obywatel.togglnative.model.entity.User
 class SingleUserViewModel internal constructor(private val user: User, private val userViewModel: UserViewModel) {
 
     val userId: String = user.id.toString()
-    val userName: String = user.apiToken
+    val userName: String = user.fullName
 
     fun selectUser() = userViewModel.selectUser(user)
 }

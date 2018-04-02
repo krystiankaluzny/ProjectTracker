@@ -58,17 +58,19 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        if (userSelectionService.getSelectedUser() != null) {
-            startActivity(TimerActivity.newIntent(this))
+        TogglNativeApp.releaseUserComponent(this)
+        val selectedUser = userSelectionService.getSelectedUser()
+        if (selectedUser != null) {
+            startTimerActivity(selectedUser)
         } else {
-            userViewModel.addUserListeners += userAdapter
+            userViewModel.updateUserListeners += userAdapter
             userViewModel.selectUserListeners += this
         }
     }
 
     override fun onPause() {
         super.onPause()
-        userViewModel.addUserListeners -= userAdapter
+        userViewModel.updateUserListeners -= userAdapter
         userViewModel.selectUserListeners -= this
     }
 
@@ -87,9 +89,7 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onUserSelected(user: User) {
 
-        TogglNativeApp.createUserComponent(this, user)
-
-        startActivity(TimerActivity.newIntent(this))
+        startTimerActivity(user)
     }
 
     private fun initHamburgerButton() {
@@ -106,6 +106,10 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recycleView.adapter = userAdapter
     }
 
+    private fun startTimerActivity(user: User) {
+        TogglNativeApp.createUserComponent(this, user)
+        startActivity(TimerActivity.newIntent(this))
+    }
     private fun showAddUserDialog() {
         val addUserDialog = AddUserDialog()
 

@@ -21,14 +21,14 @@ class UserViewModel(private val userSelectionService: UserSelectionService, priv
         private const val ERROR_MESSAGE_SHOW_TIME = 10_000L
     }
 
-    private val addUserListenerConsumer = ListenerGroupConsumer<AddUserListener>()
+    private val addUserListenerConsumer = ListenerGroupConsumer<UpdateUserListener>()
     private val selectUserListenerConsumer = ListenerGroupConsumer<SelectUserListener>()
     private val userList: MutableList<User> = userSelectionService.getAllUsers()
 
     val searchingUserInProgress = ObservableBoolean(false)
     val errorMessageVisible = ObservableBoolean(false)
     val errorMessage = ObservableField<String>("")
-    val addUserListeners: ListenerGroup<AddUserListener> = addUserListenerConsumer
+    val updateUserListeners: ListenerGroup<UpdateUserListener> = addUserListenerConsumer
     val selectUserListeners: ListenerGroup<SelectUserListener> = selectUserListenerConsumer
 
     fun userCount() = userList.size
@@ -42,12 +42,9 @@ class UserViewModel(private val userSelectionService: UserSelectionService, priv
 
             val user: User? = async(CommonPool) { addingUserService.addUserByApiToken(apiToken) }.await()
 
-            if (user == null) {
-                Log.w(TAG, "Null user")
-            } else {
-                userList.add(user)
-                val position = userList.size - 1
-                addUserListenerConsumer.accept { it.onAddUser(position) }
+            when (user) {
+                null -> Log.w(TAG, "Null user")
+                else -> updateOrInsertUser(user)
             }
         }
         catch (e: Exception) {
@@ -65,6 +62,23 @@ class UserViewModel(private val userSelectionService: UserSelectionService, priv
     fun selectUser(user: User) = launch(UI) {
         async(CommonPool) { userSelectionService.selectUser(user) }.await()
         selectUserListenerConsumer.accept { it.onUserSelected(user) }
+    }
+
+    private fun updateOrInsertUser(user: User) {
+
+        val userPosition = userList.indexOfFirst { it.id == user.id }
+
+        when {
+            userPosition >= 0 -> {
+                userList[userPosition] = user
+                addUserListenerConsumer.accept { it.onUpdateUser(userPosition) }
+            }
+            else -> {
+                userList.add(user)
+                val position = userList.size - 1
+                addUserListenerConsumer.accept { it.onAddUser(position) }
+            }
+        }
     }
 
     private fun showErrorMessage(msg: String?) {

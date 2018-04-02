@@ -1,6 +1,6 @@
 package app.obywatel.togglnative.model.entity
 
-import app.obywatel.togglnative.model.repository.AppDatabase
+import app.obywatel.togglnative.model.db.AppDatabase
 import com.raizlabs.android.dbflow.annotation.*
 
 @Table(database = AppDatabase::class)
