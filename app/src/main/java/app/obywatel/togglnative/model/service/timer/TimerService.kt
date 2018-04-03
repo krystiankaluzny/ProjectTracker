@@ -1,25 +1,27 @@
 package app.obywatel.togglnative.model.service.timer
 
 import android.util.Log
+import app.obywatel.togglnative.model.entity.User
+import app.obywatel.togglnative.model.entity.Workspace
+import app.obywatel.togglnative.model.entity.Workspace_Table
 import ch.simas.jtoggl.JToggl
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import com.raizlabs.android.dbflow.sql.language.SQLite.select
 
-class TimerService(val jToggl: JToggl) {
+class TimerService(private val user: User, private val jToggl: JToggl) {
     companion object {
         private val TAG = "TimerService"
     }
 
-    fun getWorkspaces() {
-        launch(UI) {
-            async(CommonPool) {
+    // @formatter:off
+    fun getStoredWorkspaces() = select()
+                                .from(Workspace::class.java)
+                                .where(Workspace_Table.user_id.eq(user.id))
+    // @formatter:on
 
-                jToggl.workspaces.forEach {
-                    Log.d(TAG, it.toString())
-                }
-            }
+    fun fetchWorkspaces() {
+
+        jToggl.workspaces.forEach {
+            Log.d(TAG, it.toString())
         }
     }
 }

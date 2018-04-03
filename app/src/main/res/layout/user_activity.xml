@@ -19,7 +19,7 @@
         tools:openDrawer="start">
 
         <include
-            layout="@layout/user_app_bar"
+            layout="@layout/user_activity_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:viewModel="@{viewModel}" />
@@ -30,8 +30,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
-            app:headerLayout="@layout/user_nav_header"
-            app:menu="@menu/user_activity_drawer" />
+            app:headerLayout="@layout/nav_header"
+            app:menu="@menu/nav_menu" />
 
     </android.support.v4.widget.DrawerLayout>
 </layout>

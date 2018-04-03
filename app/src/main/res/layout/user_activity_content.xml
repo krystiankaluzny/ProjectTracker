@@ -40,7 +40,7 @@
             android:animateLayoutChanges="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:context=".view.user.UserActivity"
-            tools:showIn="@layout/user_app_bar">
+            tools:showIn="@layout/user_activity_content">
 
             <TextView
                 android:id="@+id/errorMessage"

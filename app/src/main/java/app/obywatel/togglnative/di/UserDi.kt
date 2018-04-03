@@ -17,7 +17,7 @@ class UserModule(private val user: User) {
 
     @UserScope
     @Provides
-    fun provideTimerService(jToggl: JToggl) = TimerService(jToggl)
+    fun provideTimerService(jToggl: JToggl) = TimerService(user, jToggl)
 }
 
 @UserScope

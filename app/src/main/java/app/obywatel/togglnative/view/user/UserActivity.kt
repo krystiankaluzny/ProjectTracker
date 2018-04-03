@@ -21,7 +21,7 @@ import app.obywatel.togglnative.view.timer.TimerActivity
 import app.obywatel.togglnative.viewmodel.user.SelectUserListener
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
 import kotlinx.android.synthetic.main.user_activity.*
-import kotlinx.android.synthetic.main.user_app_bar.*
+import kotlinx.android.synthetic.main.user_activity_content.*
 import javax.inject.Inject
 
 class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SelectUserListener {

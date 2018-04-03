@@ -7,5 +7,5 @@ import com.raizlabs.android.dbflow.annotation.*
 class Workspace(
     @PrimaryKey @Unique var id: Long = -1,
     @Column var name: String = "",
-    @ForeignKey(tableClass = User::class) var userId: Long? = null
+    @ForeignKey(stubbedRelationship = true) var user: User? = null
 )

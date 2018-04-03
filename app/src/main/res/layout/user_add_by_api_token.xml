@@ -21,6 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:text="095198d264049afffde3d49aec627539"
         android:hint="@string/api_token"
         android:inputType="textPersonName" />
+    <!--android:text="ab463ac076cde9a06994c8a5a40e87c0"-->
+    <!--android:text="095198d264049afffde3d49aec627539"-->
 </LinearLayout>

@@ -9,7 +9,7 @@ import app.obywatel.togglnative.TogglNativeApp
 import app.obywatel.togglnative.di.TimerViewModelModule
 import app.obywatel.togglnative.model.service.timer.TimerService
 import app.obywatel.togglnative.model.service.user.UserSelectionService
-import kotlinx.android.synthetic.main.timer_activity.*
+import kotlinx.android.synthetic.main.timer_activity_content.*
 import javax.inject.Inject
 
 class TimerActivity : AppCompatActivity() {
@@ -33,6 +33,6 @@ class TimerActivity : AppCompatActivity() {
         setContentView(R.layout.timer_activity)
 
         button.setOnClickListener { userSelectionService.unselectUsers() }
-        timerService.getWorkspaces()
+        timerService.getStoredWorkspaces()
     }
 }
