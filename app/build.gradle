@@ -64,8 +64,6 @@ dependencies {
     implementation "com.github.Raizlabs.DBFlow:dbflow:$dbFlowVersion"
     implementation "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:$dbFlowVersion"
 
-    kapt "com.android.databinding:compiler:$android_plugin_version"
-
     implementation "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
