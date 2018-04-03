@@ -1,10 +1,12 @@
 package app.obywatel.togglnative.di
 
 import app.obywatel.togglnative.model.service.JTogglFactory
+import app.obywatel.togglnative.model.service.timer.TimerService
 import app.obywatel.togglnative.model.service.user.AddingUserService
 import app.obywatel.togglnative.model.service.user.UserSelectionService
 import app.obywatel.togglnative.view.timer.TimerActivity
 import app.obywatel.togglnative.view.user.UserActivity
+import app.obywatel.togglnative.viewmodel.timer.TimerViewModel
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
 import dagger.Module
 import dagger.Provides
@@ -19,7 +21,7 @@ class UserViewModelModule {
 
     @ViewScope
     @Provides
-    fun providesUsersViewModel(userSelectionService: UserSelectionService, addingUserService: AddingUserService): UserViewModel {
+    fun providesUserViewModel(userSelectionService: UserSelectionService, addingUserService: AddingUserService): UserViewModel {
         return UserViewModel(userSelectionService, addingUserService)
     }
 }
@@ -34,6 +36,9 @@ interface UserViewModelComponent {
 @Module
 class TimerViewModelModule {
 
+    @ViewScope
+    @Provides
+    fun provideTimerViewModel(timerService: TimerService) = TimerViewModel(timerService)
 }
 
 @ViewScope

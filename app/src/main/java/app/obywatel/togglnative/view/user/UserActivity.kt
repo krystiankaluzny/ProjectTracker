@@ -4,19 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.view.MenuItem
 import app.obywatel.togglnative.R
 import app.obywatel.togglnative.TogglNativeApp
 import app.obywatel.togglnative.databinding.UserActivityBinding
 import app.obywatel.togglnative.di.UserViewModelModule
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.service.user.UserSelectionService
+import app.obywatel.togglnative.view.BaseActivity
 import app.obywatel.togglnative.view.timer.TimerActivity
 import app.obywatel.togglnative.viewmodel.user.SelectUserListener
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
@@ -24,7 +21,7 @@ import kotlinx.android.synthetic.main.user_activity.*
 import kotlinx.android.synthetic.main.user_activity_content.*
 import javax.inject.Inject
 
-class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SelectUserListener {
+class UserActivity : BaseActivity(), SelectUserListener {
 
     companion object {
         fun newIntent(context: Context): Intent {
@@ -40,32 +37,20 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        TogglNativeApp.getAppComponent(this)
-            .plus(UserViewModelModule())
-            .inject(this)
-
-        val binding: UserActivityBinding = DataBindingUtil.setContentView(this, R.layout.user_activity)
-        binding.viewModel = userViewModel
-
-        setSupportActionBar(toolbar)
-
-        addUserButton.setOnClickListener { showAddUserDialog() }
-
-        initHamburgerButton()
-        initUserList()
-
-        navigationView.setNavigationItemSelectedListener(this)
+        setUpUserList()
+        setUpViewListeners()
     }
 
     override fun onResume() {
         super.onResume()
         TogglNativeApp.releaseUserComponent(this)
         val selectedUser = userSelectionService.getSelectedUser()
-        if (selectedUser != null) {
-            startTimerActivity(selectedUser)
-        } else {
-            userViewModel.updateUserListeners += userAdapter
-            userViewModel.selectUserListeners += this
+        when {
+            selectedUser != null -> startTimerActivity(selectedUser)
+            else -> {
+                userViewModel.updateUserListeners += userAdapter
+                userViewModel.selectUserListeners += this
+            }
         }
     }
 
@@ -83,24 +68,23 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
-        return true
-    }
-
     override fun onUserSelected(user: User) {
 
         startTimerActivity(user)
     }
 
-    private fun initHamburgerButton() {
-        val hamburgerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, 0, 0)
-        drawerLayout.addDrawerListener(hamburgerToggle)
-        hamburgerToggle.syncState()
+    override fun inject() {
+        TogglNativeApp.getAppComponent(this)
+            .plus(UserViewModelModule())
+            .inject(this)
     }
 
-    private fun initUserList() {
+    override fun setUpBinding() {
+        val binding: UserActivityBinding = DataBindingUtil.setContentView(this, R.layout.user_activity)
+        binding.viewModel = userViewModel
+    }
 
+    private fun setUpUserList() {
         userAdapter = UserAdapter(userViewModel)
 
         val linearLayoutManager = LinearLayoutManager(this)
@@ -109,6 +93,10 @@ class UserActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recycleView.layoutManager = linearLayoutManager
         recycleView.addItemDecoration(dividerItemDecoration)
         recycleView.adapter = userAdapter
+    }
+
+    private fun setUpViewListeners() {
+        addUserButton.setOnClickListener { showAddUserDialog() }
     }
 
     private fun startTimerActivity(user: User) {
