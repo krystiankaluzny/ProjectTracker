@@ -12,6 +12,7 @@ import app.obywatel.togglnative.model.service.timer.TimerService
 import app.obywatel.togglnative.model.service.user.UserSelectionService
 import app.obywatel.togglnative.view.BaseActivity
 import app.obywatel.togglnative.viewmodel.timer.TimerViewModel
+import app.obywatel.togglnative.viewmodel.timer.WorkspaceAdapter
 import kotlinx.android.synthetic.main.timer_activity_content.*
 import javax.inject.Inject
 
@@ -32,6 +33,7 @@ class TimerActivity : BaseActivity() {
 
         button.setOnClickListener { userSelectionService.unselectUsers() }
         timerService.getStoredWorkspaces()
+        workspaceSpinner.adapter = WorkspaceAdapter(this, timerViewModel)
     }
 
     override fun inject() {

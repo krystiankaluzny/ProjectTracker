@@ -40,7 +40,6 @@
             tools:context=".view.timer.TimerActivity"
             tools:showIn="@layout/timer_activity_content">
 
-
             <TextView
                 android:id="@+id/errorMessage"
                 android:layout_width="0dp"
@@ -51,12 +50,23 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:visibility="@{viewModel.errorMessageVisible ? View.VISIBLE : View.GONE}"
-                app:layout_constraintBottom_toTopOf="@+id/recycleView"
+                app:layout_constraintBottom_toTopOf="@+id/workspaceSpinner"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Error Message"
                 tools:visibility="visible" />
+
+            <Spinner
+                android:id="@+id/workspaceSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/errorMessage"
+
+                />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycleView"
@@ -65,7 +75,7 @@
                 android:scrollbars="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/errorMessage" />
+                app:layout_constraintTop_toBottomOf="@+id/workspaceSpinner" />
 
             <Button
                 android:id="@+id/button"
