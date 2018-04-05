@@ -11,6 +11,7 @@ import app.obywatel.togglnative.viewmodel.user.UserViewModel
 class UserAdapter(private val userViewModel: UserViewModel) : RecyclerView.Adapter<UserAdapter.ViewHolder>(), UpdateUserListener {
 
     override fun getItemCount() = userViewModel.userCount()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.bind(R.layout.user_row))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -18,13 +19,9 @@ class UserAdapter(private val userViewModel: UserViewModel) : RecyclerView.Adapt
         holder.binding.viewModel = userViewModel.singleUserViewModel(position)
     }
 
-    override fun onAddUser(position: Int) {
-        notifyItemInserted(position)
-    }
+    override fun onAddUser(position: Int) = notifyItemInserted(position)
 
-    override fun onUpdateUser(position: Int) {
-        notifyItemChanged(position)
-    }
+    override fun onUpdateUser(position: Int) = notifyItemChanged(position)
 
     class ViewHolder(val binding: UserRowBinding) : RecyclerView.ViewHolder(binding.content)
 }

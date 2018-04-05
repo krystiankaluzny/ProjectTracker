@@ -8,7 +8,6 @@ import app.obywatel.togglnative.model.service.user.UserSelectionService
 import app.obywatel.togglnative.model.util.ListenerGroup
 import app.obywatel.togglnative.model.util.ListenerGroupConsumer
 import app.obywatel.togglnative.viewmodel.BaseViewModel
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
@@ -37,7 +36,7 @@ class UserViewModel(private val userSelectionService: UserSelectionService,
         try {
             searchingUserInProgress.set(true)
 
-            val user: User? = async(CommonPool) { addingUserService.addUserByApiToken(apiToken) }.await()
+            val user: User? = async { addingUserService.addUserByApiToken(apiToken) }.await()
 
             when (user) {
                 null -> Log.w(TAG, "Null user")
@@ -53,7 +52,7 @@ class UserViewModel(private val userSelectionService: UserSelectionService,
     }
 
     fun selectUser(user: User) = launch(UI) {
-        async(CommonPool) { userSelectionService.selectUser(user) }.await()
+        async { userSelectionService.selectUser(user) }.await()
         selectUserListenerConsumer.accept { it.onUserSelected(user) }
     }
 

@@ -12,7 +12,6 @@ import app.obywatel.togglnative.model.service.timer.TimerService
 import app.obywatel.togglnative.model.service.user.UserSelectionService
 import app.obywatel.togglnative.view.BaseActivity
 import app.obywatel.togglnative.viewmodel.timer.TimerViewModel
-import app.obywatel.togglnative.viewmodel.timer.WorkspaceAdapter
 import kotlinx.android.synthetic.main.timer_activity_content.*
 import javax.inject.Inject
 
@@ -28,12 +27,23 @@ class TimerActivity : BaseActivity() {
     @Inject lateinit var timerService: TimerService
     @Inject lateinit var userSelectionService: UserSelectionService
 
+    private lateinit var workspaceAdapter: WorkspaceAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        button.setOnClickListener { userSelectionService.unselectUsers() }
-        timerService.getStoredWorkspaces()
-        workspaceSpinner.adapter = WorkspaceAdapter(this, timerViewModel)
+        setUpWorkspaceSpinner()
+        setUpListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        timerViewModel.updateWorkspacesListener += workspaceAdapter
+    }
+
+    override fun onPause() {
+        super.onPause()
+        timerViewModel.updateWorkspacesListener -= workspaceAdapter
     }
 
     override fun inject() {
@@ -46,5 +56,14 @@ class TimerActivity : BaseActivity() {
 
         val binding: TimerActivityBinding = DataBindingUtil.setContentView(this, R.layout.timer_activity)
         binding.viewModel = timerViewModel
+    }
+
+    private fun setUpWorkspaceSpinner() {
+        workspaceAdapter = WorkspaceAdapter(this, timerViewModel)
+        workspaceSpinner.adapter = workspaceAdapter
+    }
+
+    private fun setUpListeners() {
+        button.setOnClickListener { userSelectionService.unselectUsers() }
     }
 }
