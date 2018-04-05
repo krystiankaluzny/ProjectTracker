@@ -16,13 +16,7 @@ class AddingUserService(private val jTogglFactory: JTogglFactory) {
 
         val userEntity: User? = jToggl.currentUser?.toEntity()
 
-        val savedUserEntity: User? = SQLite.select().from(User::class).where(User_Table.apiToken eq apiToken).result
-
-        if (savedUserEntity != null) {
-            userEntity?.update()
-        } else {
-            userEntity?.save()
-        }
+        userEntity?.save()
 
         return userEntity
     }

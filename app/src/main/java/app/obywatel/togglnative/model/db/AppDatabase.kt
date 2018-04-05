@@ -6,7 +6,7 @@ import com.raizlabs.android.dbflow.annotation.Migration
 import com.raizlabs.android.dbflow.sql.SQLiteType
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration
 
-@Database(version = 3, foreignKeyConstraintsEnforced = true)
+@Database(version = 4, foreignKeyConstraintsEnforced = true)
 object AppDatabase {
 
     @Migration(version = 2, database = AppDatabase::class)
