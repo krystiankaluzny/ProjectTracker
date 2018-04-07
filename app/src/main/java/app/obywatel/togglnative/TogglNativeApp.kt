@@ -1,13 +1,14 @@
 package app.obywatel.togglnative
 
-import android.content.Context
 import android.support.multidex.MultiDexApplication
 import app.obywatel.togglnative.di.*
-import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.db.AppDatabase
+import app.obywatel.togglnative.model.entity.User
 import com.raizlabs.android.dbflow.config.DatabaseConfig
 import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 class TogglNativeApp : MultiDexApplication() {
 
@@ -15,25 +16,26 @@ class TogglNativeApp : MultiDexApplication() {
     private var userComponent: UserComponent? = null
 
     companion object {
-        fun instance(context: Context) = context.applicationContext as TogglNativeApp
+        var instance: TogglNativeApp by NotNullSingleValueVar()
 
-        fun getAppComponent(context: Context) = instance(context).applicationComponent
+        fun getAppComponent() = instance.applicationComponent
 
-        fun getUserComponent(context: Context) = instance(context).userComponent!!
+        fun getUserComponent() = instance.userComponent!!
 
-        fun createUserComponent(context: Context, user: User) {
-            val app = instance(context)
+        fun createUserComponent(user: User) {
+            val app = instance
             app.userComponent = app.applicationComponent
                 .plus(UserModule(user))
         }
 
-        fun releaseUserComponent(context: Context) {
-            instance(context).userComponent = null
+        fun releaseUserComponent() {
+            instance.userComponent = null
         }
     }
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         initComponent()
         initDatabase()
     }
@@ -56,5 +58,18 @@ class TogglNativeApp : MultiDexApplication() {
             .build()
 
         FlowManager.init(flowConfig)
+    }
+
+    private class NotNullSingleValueVar<T> : ReadWriteProperty<Any?, T> {
+
+        private var value: T? = null
+        override fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            return value ?: throw IllegalStateException("${property.name} not initialized")
+        }
+
+        override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+            this.value = if (this.value == null) value
+            else throw IllegalStateException("${property.name} already initialized")
+        }
     }
 }

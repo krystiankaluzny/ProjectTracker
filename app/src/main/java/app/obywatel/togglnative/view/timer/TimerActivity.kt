@@ -47,7 +47,7 @@ class TimerActivity : BaseActivity() {
     }
 
     override fun inject() {
-        TogglNativeApp.getUserComponent(this)
+        TogglNativeApp.getUserComponent()
             .plus(TimerViewModelModule())
             .inject(this)
     }

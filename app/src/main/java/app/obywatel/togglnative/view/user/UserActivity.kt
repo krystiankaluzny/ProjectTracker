@@ -43,7 +43,7 @@ class UserActivity : BaseActivity(), SelectUserListener {
 
     override fun onResume() {
         super.onResume()
-        TogglNativeApp.releaseUserComponent(this)
+        TogglNativeApp.releaseUserComponent()
         val selectedUser = userSelectionService.getSelectedUser()
         when {
             selectedUser != null -> startTimerActivity(selectedUser)
@@ -74,7 +74,7 @@ class UserActivity : BaseActivity(), SelectUserListener {
     }
 
     override fun inject() {
-        TogglNativeApp.getAppComponent(this)
+        TogglNativeApp.getAppComponent()
             .plus(UserViewModelModule())
             .inject(this)
     }
@@ -100,7 +100,7 @@ class UserActivity : BaseActivity(), SelectUserListener {
     }
 
     private fun startTimerActivity(user: User) {
-        TogglNativeApp.createUserComponent(this, user)
+        TogglNativeApp.createUserComponent(user)
         startActivity(TimerActivity.newIntent(this))
     }
 
