@@ -1,6 +1,6 @@
 package app.obywatel.togglnative.di
 
-import app.obywatel.togglnative.model.service.JTogglFactory
+import app.obywatel.toggl.client.TogglClientBuilder
 import app.obywatel.togglnative.model.service.timer.TimerService
 import app.obywatel.togglnative.model.service.user.AddingUserService
 import app.obywatel.togglnative.model.service.user.UserSelectionService
@@ -17,7 +17,7 @@ class UserViewModelModule {
 
     @ViewScope
     @Provides
-    fun provideAddingUsersService(jTogglFactory: JTogglFactory) = AddingUserService(jTogglFactory)
+    fun provideAddingUsersService(togglClientBuilder: TogglClientBuilder) = AddingUserService(togglClientBuilder)
 
     @ViewScope
     @Provides

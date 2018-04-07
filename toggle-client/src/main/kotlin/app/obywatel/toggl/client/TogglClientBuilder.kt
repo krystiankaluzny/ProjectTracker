@@ -1,16 +1,22 @@
-package app.obywatel.togglnative.model.service
+package app.obywatel.toggl.client
 
+import app.obywatel.toggl.client.impl.TogglClientImpl
 import ch.simas.jtoggl.JToggl
 import javax.ws.rs.client.Client
 
-class JTogglFactory {
+class TogglClientBuilder(val androidSupport: Boolean) {
 
-    fun jToggl(apiToken: String) : JToggl {
-        val jToggl = AndroidJToggle(apiToken)
+    fun build(apiToken: String): TogglClient {
+
+        val jToggl: JToggl = when {
+            androidSupport -> AndroidJToggle(apiToken)
+            else -> JToggl(apiToken)
+        }
+
         jToggl.throttlePeriod = 1000L
         jToggl.switchLoggingOn()
 
-        return jToggl
+        return TogglClientImpl(jToggl)
     }
 
     internal class AndroidJToggle(apiToken: String) : JToggl(apiToken) {

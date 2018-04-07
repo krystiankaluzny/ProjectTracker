@@ -1,0 +1,33 @@
+apply plugin: 'java-library'
+apply plugin: "kotlin"
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/myKotlin'
+    main.java.srcDirs += 'src/main/myJava'
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+repositories {
+    maven { url "https://dl.bintray.com/konikvranik/jtoggl" }
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
+def kotlinCoroutines = "0.22.5"
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
+
+    api("ch.simas.jtoggl:jtoggl:8.0.0") {
+        exclude group: 'org.glassfish.hk2.external', module: 'javax.inject'
+    }
+}

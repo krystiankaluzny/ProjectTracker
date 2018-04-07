@@ -1,14 +1,14 @@
 package app.obywatel.togglnative.model.service.timer
 
 import android.util.Log
+import app.obywatel.toggl.client.TogglClient
 import app.obywatel.togglnative.model.entity.*
 import app.obywatel.togglnative.model.service.toEntity
-import ch.simas.jtoggl.JToggl
 import com.raizlabs.android.dbflow.kotlinextensions.list
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite.select
 
-class TimerService(private val user: User, private val jToggl: JToggl) {
+class TimerService(private val user: User, private val togglClient: TogglClient) {
 
     companion object {
         private val TAG = "TimerService"
@@ -29,7 +29,7 @@ class TimerService(private val user: User, private val jToggl: JToggl) {
 
     fun fetchWorkspaces() {
 
-        jToggl.workspaces.forEach {
+        togglClient.workspaces.forEach {
             Log.d(TAG, "Save workspace: $it")
             it.toEntity(user).save()
         }
@@ -37,7 +37,7 @@ class TimerService(private val user: User, private val jToggl: JToggl) {
 
     fun fetchProjects(workspace: Workspace) {
 
-        jToggl.getWorkspaceProjects(workspace.id).forEach {
+        togglClient.getWorkspaceProjects(workspace.id).forEach {
             Log.d(TAG, "Save project: $it")
             it.toEntity(workspace).save()
         }

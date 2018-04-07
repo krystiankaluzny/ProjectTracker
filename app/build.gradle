@@ -43,8 +43,7 @@ def androidSupportVersion = "26.1.0"
 def kotlinCoroutines = "0.22.5"
 
 dependencies {
-
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
@@ -67,7 +66,5 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
-    implementation("ch.simas.jtoggl:jtoggl:8.0.0") {
-        exclude group: 'org.glassfish.hk2.external', module: 'javax.inject'
-    }
+    implementation project(':toggle-client')
 }
