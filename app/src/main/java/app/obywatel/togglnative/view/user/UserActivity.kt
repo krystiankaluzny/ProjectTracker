@@ -46,7 +46,7 @@ class UserActivity : BaseActivity(), SelectUserListener {
         TogglNativeApp.releaseUserComponent()
         val selectedUser = userSelectionService.getSelectedUser()
         when {
-            selectedUser != null -> startTimerActivity(selectedUser)
+            selectedUser != null -> {} //startTimerActivity(selectedUser)
             else -> {
                 userViewModel.updateUserListeners += userAdapter
                 userViewModel.selectUserListeners += this

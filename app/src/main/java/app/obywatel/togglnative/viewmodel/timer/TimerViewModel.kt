@@ -21,7 +21,7 @@ class TimerViewModel(private val timerService: TimerService) : BaseViewModel() {
 
     private val updateWorkspacesListenerGroup = ListenerGroupConsumer<UpdateWorkspacesListener>()
     private var workspaces: List<Workspace> = timerService.getStoredWorkspaces()
-    private var projects: List<Project> = timerService.getStoredProjects(workspaces[0])
+    private var projects: List<Project> = timerService.getStoredProjects()
 
     val updateWorkspacesListener: ListenerGroup<UpdateWorkspacesListener> = updateWorkspacesListenerGroup
     val selectedWorkspacePosition = ObservableInt(0)

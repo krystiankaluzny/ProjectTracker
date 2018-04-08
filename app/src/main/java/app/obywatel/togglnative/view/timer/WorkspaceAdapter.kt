@@ -27,7 +27,7 @@ class WorkspaceAdapter(context: Context, private val timerViewModel: TimerViewMo
 
     override fun getItem(position: Int): String = timerViewModel.getWorkspaceName(position)
 
-    override fun getItemId(position: Int): Long = timerViewModel.getWorkspaceId(position)
+    override fun getItemId(position: Int): Long = 0//, timerViewModel.getWorkspaceId(position)
 
     override fun getCount(): Int = timerViewModel.getWorkspacesCount()
 

@@ -11,7 +11,7 @@ import dagger.Provides
 class ApplicationModule(context: Context) {
 
     private val appContext: Context = context.applicationContext
-    private val togglClientBuilder = TogglClientBuilder(true)
+    private val togglClientBuilder = TogglClientBuilder()
 
     @ApplicationScope
     @Provides

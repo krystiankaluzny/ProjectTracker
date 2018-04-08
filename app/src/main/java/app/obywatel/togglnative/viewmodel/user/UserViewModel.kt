@@ -44,6 +44,7 @@ class UserViewModel(private val userSelectionService: UserSelectionService,
             }
         }
         catch (e: Exception) {
+            Log.e(TAG, "addUserByApiToken", e)
             blinkException(e)
         }
         finally {
