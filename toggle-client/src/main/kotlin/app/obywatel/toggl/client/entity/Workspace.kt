@@ -1,16 +1,27 @@
 package app.obywatel.toggl.client.entity
 
+import app.obywatel.toggl.client.EnumCompanion
+import org.threeten.bp.ZonedDateTime
+
 data class Workspace(
     val id: Long,
     val name: String,
     val premium: Boolean,
     val admin: Boolean,
-    val default_hourly_rate: Double,
-    val default_currency: String,
-    val only_admins_may_create_projects: Boolean,
-    val only_admins_see_billable_rates: Boolean,
-    val rounding: Int,
-    val rounding_minutes: Int,
-    val at: Long,
-    val logo_url: String
+    val defaultHourlyRate: Double,
+    val defaultCurrency: String,
+    val onlyAdminsMayCreateProjects: Boolean,
+    val onlyAdminsSeeBillableRates: Boolean,
+    val rounding: RoundingType,
+    val roundingMinutes: Int,
+    val lastUpdateDate: ZonedDateTime,
+    val logoUrl: String
 )
+
+enum class RoundingType(val value: Byte) {
+    ROUND_DOWN(-1),
+    NEAREST(0),
+    ROUND_UP(1);
+
+    companion object : EnumCompanion<Byte, RoundingType>(RoundingType.values().associateBy(RoundingType::value))
+}

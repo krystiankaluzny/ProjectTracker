@@ -13,22 +13,44 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
 
         val userData = togglApi.me().execute().body()?.data ?: return null
 
-        return User(
-            id = userData.id,
-            apiToken = userData.api_token,
-            defaultWorkspaceId = userData.default_wid,
-            fullName = userData.fullname,
-            email = userData.email,
-            beginningOfWeek = Day.fromInt(userData.beginning_of_week),
-            language = userData.language,
-            timezone = userData.timezone,
-            imageUrl = userData.image_url ?: "",
-            creationDate = fromIsoString(userData.created_at),
-            lastUpdateDate = fromIsoString(userData.at)
-        )
+        return userData.let {
+            User(
+                id = it.id,
+                apiToken = it.api_token,
+                defaultWorkspaceId = it.default_wid,
+                fullName = it.fullname,
+                email = it.email,
+                beginningOfWeek = Day.fromValue(it.beginning_of_week),
+                language = it.language,
+                timezone = it.timezone,
+                imageUrl = it.image_url ?: "",
+                creationDate = fromIsoString(it.created_at),
+                lastUpdateDate = fromIsoString(it.at)
+            )
+        }
     }
 
-    override fun getWorkspaces(): List<Workspace> = emptyList()
+    override fun getWorkspaces(): List<Workspace> {
+
+        val workspaces = togglApi.workspaces().execute().body() ?: return emptyList()
+
+        return workspaces.map {
+            Workspace(
+                id = it.id,
+                name = it.name,
+                admin = it.admin,
+                defaultCurrency = it.default_currency,
+                logoUrl = it.logo_url ?: "",
+                premium = it.premium,
+                rounding = RoundingType.fromValue(it.rounding),
+                roundingMinutes = it.rounding_minutes,
+                onlyAdminsMayCreateProjects = it.only_admins_may_create_projects,
+                onlyAdminsSeeBillableRates = it.only_admins_see_billable_rates,
+                defaultHourlyRate = it.default_hourly_rate ?: 0.0,
+                lastUpdateDate = fromIsoString(it.at)
+            )
+        }
+    }
 
     override fun getWorkspaceProjects(id: Long): List<Project> = emptyList()
 

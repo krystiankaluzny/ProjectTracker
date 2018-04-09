@@ -32,9 +32,9 @@ class TimerViewModel(private val timerService: TimerService) : BaseViewModel() {
         refreshWorkspaces().invokeOnCompletion { refreshProjects() }
     }
 
-    fun getWorkspaceName(position: Int): String = workspaces[position].name
+    fun getWorkspaceName(position: Int): String = workspaces.getOrNull(position)?.name ?: ""
 
-    fun getWorkspaceId(position: Int): Long = workspaces[position].id
+    fun getWorkspaceId(position: Int): Long = workspaces.getOrNull(position)?.id ?: -1
 
     fun getWorkspacesCount(): Int = workspaces.size
 
