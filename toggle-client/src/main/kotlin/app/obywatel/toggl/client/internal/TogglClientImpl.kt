@@ -1,10 +1,9 @@
 package app.obywatel.toggl.client.internal
 
 import app.obywatel.toggl.client.TogglClient
-import app.obywatel.toggl.client.entity.Project
-import app.obywatel.toggl.client.entity.TimeEntry
-import app.obywatel.toggl.client.entity.User
-import app.obywatel.toggl.client.entity.Workspace
+import app.obywatel.toggl.client.entity.*
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 internal class TogglClientImpl(val apiToken: String) : TogglClient {
 
@@ -12,10 +11,21 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
 
     override fun getCurrentUser(): User? {
 
-        val body = togglApi.me().execute().body()
-        println(body)
+        val userData = togglApi.me().execute().body()?.data ?: return null
 
-        return User(34, "dupa")
+        return User(
+            id = userData.id,
+            apiToken = userData.api_token,
+            defaultWorkspaceId = userData.default_wid,
+            fullName = userData.fullname,
+            email = userData.email,
+            beginningOfWeek = Day.fromInt(userData.beginning_of_week),
+            language = userData.language,
+            timezone = userData.timezone,
+            imageUrl = userData.image_url ?: "",
+            creationDate = fromIsoString(userData.created_at),
+            lastUpdateDate = fromIsoString(userData.at)
+        )
     }
 
     override fun getWorkspaces(): List<Workspace> = emptyList()
@@ -25,4 +35,7 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
     override fun getProjectTimeEntries(workspaceId: Long, projectId: Long): List<TimeEntry> {
         return emptyList()
     }
+
+    private fun fromIsoString(isoString: String) = ZonedDateTime.parse(isoString, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 }
+

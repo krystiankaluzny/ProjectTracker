@@ -33,11 +33,5 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:3.9.1"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.5"
 
-
-//    api("ch.simas.jtoggl:jtoggl:8.0.0") {
-//        exclude group: 'org.glassfish.hk2.external', module: 'javax.inject'
-//    }
-
-//    api 'com.github.debona:khronos:4616c98'
-
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 }
