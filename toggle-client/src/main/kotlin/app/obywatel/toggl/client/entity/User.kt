@@ -1,7 +1,6 @@
 package app.obywatel.toggl.client.entity
 
 import app.obywatel.toggl.client.EnumCompanion
-import org.threeten.bp.ZonedDateTime
 
 data class User(
     val id: Long,
@@ -12,8 +11,8 @@ data class User(
     val beginningOfWeek: Day,
     val language: String,
     val imageUrl: String,
-    val lastUpdateDate: ZonedDateTime,
-    val creationDate: ZonedDateTime,
+    val lastUpdateTimestamp: Long,
+    val creationTimestamp: Long,
     val timezone: String
 )
 

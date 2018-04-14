@@ -1,7 +1,6 @@
 package app.obywatel.toggl.client.entity
 
 import app.obywatel.toggl.client.EnumCompanion
-import org.threeten.bp.ZonedDateTime
 
 data class Workspace(
     val id: Long,
@@ -14,7 +13,7 @@ data class Workspace(
     val onlyAdminsSeeBillableRates: Boolean,
     val rounding: RoundingType,
     val roundingMinutes: Int,
-    val lastUpdateDate: ZonedDateTime,
+    val lastUpdateTimestamp: Long,
     val logoUrl: String
 )
 

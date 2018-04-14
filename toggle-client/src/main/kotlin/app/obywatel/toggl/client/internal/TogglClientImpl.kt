@@ -24,8 +24,8 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
                 language = it.language,
                 timezone = it.timezone,
                 imageUrl = it.image_url ?: "",
-                creationDate = fromIsoString(it.created_at),
-                lastUpdateDate = fromIsoString(it.at)
+                creationTimestamp = fromIsoTimestamp(it.created_at),
+                lastUpdateTimestamp = fromIsoTimestamp(it.at)
             )
         }
     }
@@ -47,7 +47,7 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
                 onlyAdminsMayCreateProjects = it.only_admins_may_create_projects,
                 onlyAdminsSeeBillableRates = it.only_admins_see_billable_rates,
                 defaultHourlyRate = it.default_hourly_rate ?: 0.0,
-                lastUpdateDate = fromIsoString(it.at)
+                lastUpdateTimestamp = fromIsoTimestamp(it.at)
             )
         }
     }
@@ -58,6 +58,6 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
         return emptyList()
     }
 
-    private fun fromIsoString(isoString: String) = ZonedDateTime.parse(isoString, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+    private fun fromIsoTimestamp(isoString: String) = ZonedDateTime.parse(isoString, DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond()
 }
 
