@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import app.obywatel.togglnative.R
 import app.obywatel.togglnative.TogglNativeApp
 import app.obywatel.togglnative.databinding.TimerActivityBinding
@@ -24,7 +26,6 @@ class TimerActivity : BaseActivity() {
     }
 
     @Inject lateinit var timerViewModel: TimerViewModel
-    @Inject lateinit var timerService: TimerService
     @Inject lateinit var userSelectionService: UserSelectionService
 
     private lateinit var workspaceAdapter: WorkspaceAdapter
@@ -33,6 +34,7 @@ class TimerActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setUpWorkspaceSpinner()
+        setUpProjectList()
         setUpListeners()
     }
 
@@ -61,6 +63,17 @@ class TimerActivity : BaseActivity() {
     private fun setUpWorkspaceSpinner() {
         workspaceAdapter = WorkspaceAdapter(this, timerViewModel)
         workspaceSpinner.adapter = workspaceAdapter
+    }
+
+    private fun setUpProjectList() {
+        val projectAdapter = ProjectAdapter(timerViewModel)
+
+        val linearLayoutManager = LinearLayoutManager(this)
+        val dividerItemDecoration = DividerItemDecoration(this, linearLayoutManager.orientation)
+
+        recycleView.layoutManager = linearLayoutManager
+        recycleView.addItemDecoration(dividerItemDecoration)
+        recycleView.adapter = projectAdapter
     }
 
     private fun setUpListeners() {

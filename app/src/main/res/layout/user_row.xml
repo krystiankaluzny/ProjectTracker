@@ -7,8 +7,7 @@
 
         <variable
             name="viewModel"
-            type="app.obywatel.togglnative.viewmodel.user.SingleUserViewModel">
-        </variable>
+            type="app.obywatel.togglnative.viewmodel.user.SingleUserViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -22,7 +21,8 @@
             android:id="@+id/userIdTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
             android:text="@{viewModel.userId}"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"

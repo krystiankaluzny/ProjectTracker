@@ -24,7 +24,6 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
                                                                         .from(Project::class.java)
                                                                         .where(Project_Table.workspace_id.eq(workspace.id))
                                                                         .list
-    fun getStoredProjects(): MutableList<Project> = mutableListOf()
     // @formatter:on
 
 
@@ -38,12 +37,12 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
     fun fetchProjects(workspace: Workspace) {
 
-//        togglClient.getWorkspaceProjects(workspace.id).forEach {
-//            Log.d(TAG, "Save project: $it")
-//            it.toEntity(workspace).save()
-//
+        togglClient.getWorkspaceProjects(workspace.id).forEach {
+            Log.d(TAG, "Save project: $it")
+            it.toEntity(workspace).save()
+
 //            togglClient.getProjectTimeEntries(workspace.id, it.id)
-//        }
+        }
 
 //        Log.e(TAG, "fetchProjects: Dates.today " + Dates.today)
 //        Log.e(TAG, "fetchProjects: Dates.today.minus 6 month " + Dates.today.minus(6.month))

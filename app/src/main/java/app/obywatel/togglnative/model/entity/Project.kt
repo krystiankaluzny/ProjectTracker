@@ -7,6 +7,7 @@ import com.raizlabs.android.dbflow.annotation.*
 class Project(
     @PrimaryKey @Unique var id: Long = -1L,
     @Column var name: String = "",
-    @Column var color: Int = -1,
+    @Column var colorId: Int = 0,
+    @Column var color: Int = 0,
     @ForeignKey(stubbedRelationship = true) var workspace: Workspace? = null
 )

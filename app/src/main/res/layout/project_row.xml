@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="app.obywatel.togglnative.viewmodel.timer.SingleProjectViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        >
+
+        <View
+            android:id="@+id/colorView"
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:background="@{viewModel.projectColor}"
+            app:layout_constraintStart_toStartOf="parent"
+            tool:background="#aa0033"
+            />
+
+        <View
+            android:id="@+id/colorView2"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            app:backgroundGradientBase="@{viewModel.projectColor}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tool:background="#aa0033"
+            />
+
+        <TextView
+            android:id="@+id/projectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="0dp"
+            android:paddingStart="10dp"
+            android:text="@{viewModel.projectName}"
+            android:textColor="@{viewModel.projectColor}"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/colorView"
+            app:layout_constraintTop_toTopOf="parent"
+            tool:text="Projekt"
+            tool:textColor="#aa0033"
+            />
+
+        <TextView
+            android:id="@+id/todayDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="10dp"
+            android:paddingStart="0dp"
+            android:text="00:00:00"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/startStopButton"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <Button
+            android:id="@+id/startStopButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Start"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
