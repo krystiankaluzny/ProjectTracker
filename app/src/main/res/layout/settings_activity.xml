@@ -19,7 +19,7 @@
         tools:openDrawer="start">
 
         <include
-            layout="@layout/user_activity_content"
+            layout="@layout/settings_activity_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:viewModel="@{viewModel}" />

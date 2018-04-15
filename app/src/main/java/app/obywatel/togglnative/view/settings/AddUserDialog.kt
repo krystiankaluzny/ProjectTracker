@@ -1,4 +1,4 @@
-package app.obywatel.togglnative.view.user
+package app.obywatel.togglnative.view.settings
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -13,7 +13,7 @@ class AddUserDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val usersViewModel = (activity as UserActivity).userViewModel
+        val usersViewModel = (activity as SettingsActivity).userViewModel
 
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
         val addUserContentView: View = activity.layoutInflater.inflate(R.layout.user_add_by_api_token, null)

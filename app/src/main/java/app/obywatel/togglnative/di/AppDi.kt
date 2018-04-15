@@ -33,4 +33,6 @@ interface ApplicationComponent {
     fun plus(userViewModelModule: UserViewModelModule): UserViewModelComponent
 
     fun plus(userModule: UserModule): UserComponent
+
+    fun userSelectionService() : UserSelectionService
 }

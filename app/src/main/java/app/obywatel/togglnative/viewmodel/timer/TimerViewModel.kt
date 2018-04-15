@@ -55,15 +55,16 @@ class TimerViewModel(private val timerService: TimerService) : BaseViewModel() {
     }
 
     private fun refreshProjects() = launch(UI) {
-        val workspace = workspaces[selectedWorkspacePosition.get()]
+        workspaces.getOrNull(selectedWorkspacePosition.get())?.let {
 
-        projects = async {
-            Log.d(TAG, "refreshProjects: start fetching projects")
-            timerService.fetchProjects(workspace)
+            projects = async {
+                Log.d(TAG, "refreshProjects: start fetching projects")
+                timerService.fetchProjects(it)
 
-            Log.d(TAG, "refreshProjects: get projects after fetch")
-            timerService.getStoredProjects(workspace)
-        }.await()
+                Log.d(TAG, "refreshProjects: get projects after fetch")
+                timerService.getStoredProjects(it)
+            }.await()
+        }
     }
 
     private inner class OnWorkspacePositionChanged : Observable.OnPropertyChangedCallback() {

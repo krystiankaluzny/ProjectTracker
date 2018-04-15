@@ -29,7 +29,9 @@ class UserViewModel(private val userSelectionService: UserSelectionService,
     val selectUserListeners: ListenerGroup<SelectUserListener> = selectUserListenerConsumer
 
     fun userCount() = userList.size
-    fun singleUserViewModel(position: Int) = SingleUserViewModel(userList[position], this)
+
+    fun getUserName(position: Int) = userList.getOrNull(position)?.fullName ?: ""
+    fun getUserId(position: Int) = userList.getOrNull(position)?.id ?: -1L
 
     fun addUserByApiToken(apiToken: String) = launch(UI) {
 

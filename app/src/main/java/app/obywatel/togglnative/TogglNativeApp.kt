@@ -13,38 +13,39 @@ import kotlin.reflect.KProperty
 class TogglNativeApp : MultiDexApplication() {
 
     private lateinit var applicationComponent: ApplicationComponent
-    private var userComponent: UserComponent? = null
+    private lateinit var userComponent: UserComponent
 
     companion object {
         var instance: TogglNativeApp by NotNullSingleValueVar()
 
         fun getAppComponent() = instance.applicationComponent
 
-        fun getUserComponent() = instance.userComponent!!
+        fun getUserComponent() = instance.userComponent
 
         fun createUserComponent(user: User) {
             val app = instance
             app.userComponent = app.applicationComponent
                 .plus(UserModule(user))
         }
-
-        fun releaseUserComponent() {
-            instance.userComponent = null
-        }
     }
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-        initComponent()
         initDatabase()
+
+        initComponents()
     }
 
-    private fun initComponent() {
+    private fun initComponents() {
 
         applicationComponent = DaggerApplicationComponent.builder()
             .applicationModule(ApplicationModule(this))
             .build()
+
+        val selectedUser = applicationComponent.userSelectionService().getSelectedUser()
+
+        createUserComponent(selectedUser ?: User())
     }
 
     private fun initDatabase() {
