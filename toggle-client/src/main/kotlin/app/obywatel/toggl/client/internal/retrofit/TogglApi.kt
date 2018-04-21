@@ -1,5 +1,6 @@
-package app.obywatel.toggl.client.internal
+package app.obywatel.toggl.client.internal.retrofit
 
+import app.obywatel.toggl.client.internal.Response
 import app.obywatel.toggl.client.internal.entity.Project
 import app.obywatel.toggl.client.internal.entity.User
 import app.obywatel.toggl.client.internal.entity.Workspace

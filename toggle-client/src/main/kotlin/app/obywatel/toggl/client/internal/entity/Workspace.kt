@@ -1,6 +1,6 @@
 package app.obywatel.toggl.client.internal.entity
 
-internal class Workspace(
+internal data class Workspace(
     val id: Long,
     val name: String,
     val premium: Boolean,

@@ -1,4 +1,4 @@
-package app.obywatel.toggl.client.internal
+package app.obywatel.toggl.client.internal.retrofit
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -12,7 +12,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 
 internal object RetrofitFactory {
 
-    fun create(apiToken: String): Retrofit {
+    fun create(apiToken: String, baseUrl: String): Retrofit {
 
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(BasicAuthInterceptor(apiToken))
@@ -23,12 +23,12 @@ internal object RetrofitFactory {
 
         return Retrofit.Builder()
             .client(okHttpClient.build())
-            .baseUrl("https://www.toggl.com/api/v8/")
+            .baseUrl(baseUrl)
             .addConverterFactory(JacksonConverterFactory.create(objectMapper))
             .build()
     }
 
-    inline fun <reified TService> create(apiToken: String): TService = create(apiToken).create(TService::class.java)
+    inline fun <reified TService> create(apiToken: String, baseUrl: String): TService = create(apiToken, baseUrl).create(TService::class.java)
 
     private class BasicAuthInterceptor(user: String, password: String) : Interceptor {
 
