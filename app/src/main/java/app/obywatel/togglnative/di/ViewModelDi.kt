@@ -1,11 +1,9 @@
 package app.obywatel.togglnative.di
 
-import app.obywatel.toggl.client.TogglClientBuilder
 import app.obywatel.togglnative.model.service.timer.TimerService
-import app.obywatel.togglnative.model.service.user.AddingUserService
-import app.obywatel.togglnative.model.service.user.UserSelectionService
-import app.obywatel.togglnative.view.timer.TimerActivity
+import app.obywatel.togglnative.model.service.user.UserService
 import app.obywatel.togglnative.view.settings.SettingsActivity
+import app.obywatel.togglnative.view.timer.TimerActivity
 import app.obywatel.togglnative.viewmodel.timer.TimerViewModel
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
 import dagger.Module
@@ -17,13 +15,7 @@ class UserViewModelModule {
 
     @ViewScope
     @Provides
-    fun provideAddingUsersService(togglClientBuilder: TogglClientBuilder) = AddingUserService(togglClientBuilder)
-
-    @ViewScope
-    @Provides
-    fun providesUserViewModel(userSelectionService: UserSelectionService, addingUserService: AddingUserService): UserViewModel {
-        return UserViewModel(userSelectionService, addingUserService)
-    }
+    fun providesUserViewModel(userService: UserService): UserViewModel = UserViewModel(userService)
 }
 
 @ViewScope

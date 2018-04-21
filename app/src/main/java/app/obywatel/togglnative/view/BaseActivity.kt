@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.settings_activity_content.*
 
 abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    companion object { private val TAG = "BaseActivity" }
+    companion object { private const val TAG = "BaseActivity" }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

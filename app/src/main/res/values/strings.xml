@@ -11,7 +11,7 @@
     <string name="ok">OK</string>
     <string name="api_token">API Token</string>
     <string name="add_user_by_api_token">Add user by API Token</string>
-    <string name="workspaces">Workspaces</string>
+    <string name="active_workspaces">Active workspaces</string>
     <string name="users">Users</string>
     <string name="add">Add</string>
     <string name="noUser">There is no user selected. Go to Settings and add or select valid user</string>

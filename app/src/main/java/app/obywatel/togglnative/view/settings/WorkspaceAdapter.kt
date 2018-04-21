@@ -1,4 +1,4 @@
-package app.obywatel.togglnative.view.timer
+package app.obywatel.togglnative.view.settings
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
-import app.obywatel.togglnative.viewmodel.timer.TimerViewModel
 import app.obywatel.togglnative.viewmodel.timer.UpdateWorkspacesListener
+import app.obywatel.togglnative.viewmodel.user.WorkspaceViewModel
 
-class WorkspaceAdapter(context: Context, private val timerViewModel: TimerViewModel) : BaseAdapter(), UpdateWorkspacesListener {
+class WorkspaceAdapter(context: Context, private val workspaceViewModel: WorkspaceViewModel) : BaseAdapter(), UpdateWorkspacesListener {
 
     companion object {
         private const val resource = android.R.layout.simple_spinner_dropdown_item
@@ -25,11 +25,11 @@ class WorkspaceAdapter(context: Context, private val timerViewModel: TimerViewMo
         return textView
     }
 
-    override fun getItem(position: Int): String = timerViewModel.getWorkspaceName(position)
+    override fun getItem(position: Int): String = workspaceViewModel.getWorkspaceName(position)
 
-    override fun getItemId(position: Int): Long = timerViewModel.getWorkspaceId(position)
+    override fun getItemId(position: Int): Long = workspaceViewModel.getWorkspaceId(position)
 
-    override fun getCount(): Int = timerViewModel.getWorkspacesCount()
+    override fun getCount(): Int = workspaceViewModel.getWorkspacesCount()
 
     override fun onWorkspaceUpdate() = notifyDataSetChanged()
 }

@@ -5,7 +5,9 @@ open class ListenerGroup<T> {
     protected val listeners: MutableList<T> = mutableListOf()
 
     operator fun plusAssign(listener: T) {
-        listeners += listener
+        if (listeners.contains(listener).not()) {
+            listeners += listener
+        }
     }
 
     operator fun minusAssign(listener: T) {

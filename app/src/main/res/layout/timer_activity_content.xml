@@ -57,28 +57,7 @@
                 tools:text="Error Message"
                 tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/workspacesTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingStart="10dp"
-                android:text="@string/workspaces"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/workspaceSpinner"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/errorMessage" />
 
-            <Spinner
-                android:id="@+id/workspaceSpinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:selectedItemPosition="@={viewModel.selectedWorkspacePosition}"
-                android:spinnerMode="dropdown"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/workspacesTextView"
-                />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycleView"
@@ -89,17 +68,6 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/workspaceSpinner" />
-
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fab_margin"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="Button"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 

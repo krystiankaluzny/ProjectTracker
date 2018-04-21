@@ -3,8 +3,7 @@ package app.obywatel.togglnative.viewmodel.user
 import android.databinding.ObservableBoolean
 import android.util.Log
 import app.obywatel.togglnative.model.entity.User
-import app.obywatel.togglnative.model.service.user.AddingUserService
-import app.obywatel.togglnative.model.service.user.UserSelectionService
+import app.obywatel.togglnative.model.service.user.UserService
 import app.obywatel.togglnative.model.util.ListenerGroup
 import app.obywatel.togglnative.model.util.ListenerGroupConsumer
 import app.obywatel.togglnative.viewmodel.BaseViewModel
@@ -12,24 +11,28 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 
-class UserViewModel(private val userSelectionService: UserSelectionService,
-                    private val addingUserService: AddingUserService) : BaseViewModel() {
+class UserViewModel(private val userService: UserService) : BaseViewModel() {
 
     companion object {
         private const val TAG = "UserViewModel"
     }
 
-    private val addUserListenerConsumer = ListenerGroupConsumer<UpdateUserListener>()
+    private val updateUserListenerConsumer = ListenerGroupConsumer<UpdateUserListener>()
     private val selectUserListenerConsumer = ListenerGroupConsumer<SelectUserListener>()
-    private val userList: MutableList<User> = userSelectionService.getAllUsers()
-
-    val searchingUserInProgress = ObservableBoolean(false)
-
-    val updateUserListeners: ListenerGroup<UpdateUserListener> = addUserListenerConsumer
+    val updateUserListeners: ListenerGroup<UpdateUserListener> = updateUserListenerConsumer
     val selectUserListeners: ListenerGroup<SelectUserListener> = selectUserListenerConsumer
 
-    fun userCount() = userList.size
+    private val userList: MutableList<User> = userService.getAllUsers()
+    val searchingUserInProgress = ObservableBoolean(false)
+    val workspaceViewModel = WorkspaceViewModel(userService)
 
+    init {
+        userList.getOrNull(0)?.let {
+            workspaceViewModel.onUserSelected(it)
+        }
+    }
+
+    fun userCount() = userList.size
     fun getUserName(position: Int) = userList.getOrNull(position)?.fullName ?: ""
     fun getUserId(position: Int) = userList.getOrNull(position)?.id ?: -1L
 
@@ -38,7 +41,7 @@ class UserViewModel(private val userSelectionService: UserSelectionService,
         try {
             searchingUserInProgress.set(true)
 
-            val user: User? = async { addingUserService.addUserByApiToken(apiToken) }.await()
+            val user: User? = async { userService.addUserByApiToken(apiToken) }.await()
 
             when (user) {
                 null -> Log.w(TAG, "Null user")
@@ -55,7 +58,7 @@ class UserViewModel(private val userSelectionService: UserSelectionService,
     }
 
     fun selectUser(user: User) = launch(UI) {
-        async { userSelectionService.selectUser(user) }.await()
+        async { userService.selectUser(user) }.await()
         selectUserListenerConsumer.accept { it.onUserSelected(user) }
     }
 
@@ -66,12 +69,12 @@ class UserViewModel(private val userSelectionService: UserSelectionService,
         when {
             userPosition >= 0 -> {
                 userList[userPosition] = user
-                addUserListenerConsumer.accept { it.onUpdateUser(userPosition) }
+                updateUserListenerConsumer.accept { it.onUpdateUser(userPosition) }
             }
             else -> {
                 userList.add(user)
                 val position = userList.size - 1
-                addUserListenerConsumer.accept { it.onAddUser(position) }
+                updateUserListenerConsumer.accept { it.onAddUser(position) }
             }
         }
     }

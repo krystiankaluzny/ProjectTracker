@@ -11,8 +11,10 @@ import app.obywatel.togglnative.databinding.SettingsActivityBinding
 import app.obywatel.togglnative.di.UserViewModelModule
 import app.obywatel.togglnative.view.BaseActivity
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
+import app.obywatel.togglnative.viewmodel.user.WorkspaceViewModel
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.android.synthetic.main.settings_activity_content.*
+import kotlinx.android.synthetic.main.timer_activity_content.*
 import javax.inject.Inject
 
 class SettingsActivity : BaseActivity() {
@@ -26,11 +28,13 @@ class SettingsActivity : BaseActivity() {
     @Inject lateinit var userViewModel: UserViewModel
 
     private lateinit var userAdapter: UserAdapter
+    private lateinit var workspaceAdapter: WorkspaceAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setUpUserSpinner()
+        setUpWorkspaceSpinner()
         setUpViewListeners()
     }
 
@@ -66,6 +70,11 @@ class SettingsActivity : BaseActivity() {
     private fun setUpUserSpinner() {
         userAdapter = UserAdapter(this, userViewModel)
         usersSpinner.adapter = userAdapter
+    }
+
+    private fun setUpWorkspaceSpinner() {
+        workspaceAdapter = WorkspaceAdapter(this, userViewModel.workspaceViewModel)
+        workspaceSpinner.adapter = workspaceAdapter
     }
 
     private fun setUpViewListeners() {
