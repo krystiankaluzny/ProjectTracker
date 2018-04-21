@@ -1,4 +1,4 @@
-package app.obywatel.toggl.client.internal.entity
+package app.obywatel.toggl.client.internal.retrofit.dto
 
 internal data class Project(
     val id: Long,

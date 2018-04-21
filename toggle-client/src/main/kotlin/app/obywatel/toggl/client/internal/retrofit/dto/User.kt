@@ -1,4 +1,11 @@
-package app.obywatel.toggl.client.internal.entity
+package app.obywatel.toggl.client.internal.retrofit.dto
+
+internal class UserResponse(
+    since: Long,
+    data: User
+) {
+    val user = data
+}
 
 internal data class User(
     val id: Long,

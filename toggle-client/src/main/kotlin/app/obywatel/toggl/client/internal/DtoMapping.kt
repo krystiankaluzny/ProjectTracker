@@ -17,7 +17,7 @@ private fun String.fromHexColorToInt(): Int {
     return color.toInt()
 }
 
-internal fun app.obywatel.toggl.client.internal.entity.User.toExternal() =
+internal fun app.obywatel.toggl.client.internal.retrofit.dto.User.expose() =
     User(
         id = id,
         apiToken = api_token,
@@ -32,7 +32,7 @@ internal fun app.obywatel.toggl.client.internal.entity.User.toExternal() =
         lastUpdateTimestamp = at.toTimestamp()
     )
 
-internal fun app.obywatel.toggl.client.internal.entity.Workspace.toExternal() =
+internal fun app.obywatel.toggl.client.internal.retrofit.dto.Workspace.expose() =
     Workspace(
         id = id,
         name = name,
@@ -48,7 +48,7 @@ internal fun app.obywatel.toggl.client.internal.entity.Workspace.toExternal() =
         lastUpdateTimestamp = at.toTimestamp()
     )
 
-internal fun app.obywatel.toggl.client.internal.entity.Project.toExternal() =
+internal fun app.obywatel.toggl.client.internal.retrofit.dto.Project.expose() =
     Project(
         id = id,
         name = name,

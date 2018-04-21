@@ -2,8 +2,13 @@ package app.obywatel.toggl.client.request
 
 data class DetailedReportParameters(
     val baseReportParameters: BaseReportParameters = BaseReportParameters(),
-    val detailedOrder: DetailedOrder? = null
-)
+    val detailedOrder: DetailedOrder? = null,
+    val page: Int = ALL_PAGES
+) {
+    companion object {
+        const val ALL_PAGES = -1
+    }
+}
 
 enum class DetailedOrder(field: String, ascending: Boolean) {
 
