@@ -4,10 +4,10 @@ import android.util.Log
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.entity.Workspace
 import app.obywatel.togglnative.model.service.user.UserService
-import app.obywatel.togglnative.viewmodel.BaseViewModel
+import app.obywatel.togglnative.viewmodel.ErrorViewModel
 import kotlinx.coroutines.experimental.launch
 
-class WorkspaceViewModel(private val userService: UserService) : BaseViewModel(), SelectUserListener {
+class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel) : ErrorViewModel by userViewModel, SelectUserListener {
 
     companion object {
         private const val TAG = "WorkspaceViewModel"
@@ -20,6 +20,7 @@ class WorkspaceViewModel(private val userService: UserService) : BaseViewModel()
     fun getWorkspaceId(position: Int): Long = workspaces.getOrNull(position)?.id ?: -1
 
     override fun onUserSelected(user: User) {
+        Log.d(TAG, "onUserSelected: $user")
         refreshWorkspaces(user)
     }
 

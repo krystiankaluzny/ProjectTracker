@@ -6,7 +6,14 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 
-abstract class BaseViewModel {
+interface ErrorViewModel {
+    fun blinkError(error: String)
+    fun blinkException(exception: Exception)
+    fun showErrorMessage(msg: String?)
+    fun hideErrorMessage()
+}
+
+abstract class BaseViewModel : ErrorViewModel {
 
     companion object {
         private const val ERROR_MESSAGE_SHOW_TIME = 10_000L
@@ -18,20 +25,25 @@ abstract class BaseViewModel {
 
     fun onClickErrorMessage() = hideErrorMessage()
 
-    protected fun blinkError(error: String) = launch(UI) {
-        showErrorMessage(error)
-        delay(ERROR_MESSAGE_SHOW_TIME)
-        hideErrorMessage()
+    override fun blinkError(error: String) {
+
+        launch(UI) {
+            showErrorMessage(error)
+            delay(ERROR_MESSAGE_SHOW_TIME)
+            hideErrorMessage()
+        }
     }
 
-    protected fun blinkException(exception: Exception) = blinkError(exception.message?: UNKNOWN_ERROR_MESSAGE )
+    override fun blinkException(exception: Exception) {
+        blinkError(exception.message ?: UNKNOWN_ERROR_MESSAGE)
+    }
 
-    protected fun showErrorMessage(msg: String?) {
+    override fun showErrorMessage(msg: String?) {
         errorMessage.set(msg)
         errorMessageVisible.set(true)
     }
 
-    protected fun hideErrorMessage() {
+    override fun hideErrorMessage() {
         errorMessageVisible.set(false)
         errorMessage.set("")
     }

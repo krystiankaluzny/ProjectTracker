@@ -1,6 +1,8 @@
 package app.obywatel.togglnative.viewmodel.user
 
+import android.databinding.Observable
 import android.databinding.ObservableBoolean
+import android.databinding.ObservableInt
 import android.util.Log
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.service.user.UserService
@@ -24,17 +26,36 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
 
     private val userList: MutableList<User> = userService.getAllUsers()
     val searchingUserInProgress = ObservableBoolean(false)
-    val workspaceViewModel = WorkspaceViewModel(userService)
+    val workspaceViewModel = WorkspaceViewModel(userService, this)
+    val selectedUserPosition = ObservableInt(0)
 
     init {
-        userList.getOrNull(0)?.let {
-            workspaceViewModel.onUserSelected(it)
-        }
+        selectedUserPosition.addOnPropertyChangedCallback(OnUserPositionChanged())
+        selectUserListeners += workspaceViewModel
     }
 
     fun userCount() = userList.size
     fun getUserName(position: Int) = userList.getOrNull(position)?.fullName ?: ""
     fun getUserId(position: Int) = userList.getOrNull(position)?.id ?: -1L
+
+    fun showSelectedUser() {
+
+        var selectedUser = userService.getSelectedUser()
+
+        if (selectedUser == null) {
+            selectedUser = userList.getOrNull(0)
+            selectedUser?.let { userService.selectUser(it) }
+        }
+
+        selectedUser?.let { user ->
+            val indexOfUser = userList.indexOf(user)
+
+            when (indexOfUser) {
+                selectedUserPosition.get() -> selectUserListenerConsumer.accept { it.onUserSelected(user) }
+                else -> selectedUserPosition.set(indexOfUser)
+            }
+        }
+    }
 
     fun addUserByApiToken(apiToken: String) = launch(UI) {
 
@@ -57,7 +78,7 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
         }
     }
 
-    fun selectUser(user: User) = launch(UI) {
+    private fun selectUser(user: User) = launch(UI) {
         async { userService.selectUser(user) }.await()
         selectUserListenerConsumer.accept { it.onUserSelected(user) }
     }
@@ -79,5 +100,10 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
         }
     }
 
+    private inner class OnUserPositionChanged : Observable.OnPropertyChangedCallback() {
 
+        override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+            userList.getOrNull(selectedUserPosition.get())?.let { selectUser(it) }
+        }
+    }
 }

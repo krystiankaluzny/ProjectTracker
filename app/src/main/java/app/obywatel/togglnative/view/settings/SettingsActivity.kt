@@ -11,10 +11,8 @@ import app.obywatel.togglnative.databinding.SettingsActivityBinding
 import app.obywatel.togglnative.di.UserViewModelModule
 import app.obywatel.togglnative.view.BaseActivity
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
-import app.obywatel.togglnative.viewmodel.user.WorkspaceViewModel
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.android.synthetic.main.settings_activity_content.*
-import kotlinx.android.synthetic.main.timer_activity_content.*
 import javax.inject.Inject
 
 class SettingsActivity : BaseActivity() {
@@ -36,16 +34,22 @@ class SettingsActivity : BaseActivity() {
         setUpUserSpinner()
         setUpWorkspaceSpinner()
         setUpViewListeners()
+
+        userViewModel.updateUserListeners += userAdapter
+        userViewModel.selectUserListeners += workspaceAdapter
+        userViewModel.showSelectedUser()
     }
 
     override fun onResume() {
         super.onResume()
         userViewModel.updateUserListeners += userAdapter
+        userViewModel.selectUserListeners += workspaceAdapter
     }
 
     override fun onPause() {
         super.onPause()
         userViewModel.updateUserListeners -= userAdapter
+        userViewModel.selectUserListeners -= workspaceAdapter
     }
 
     override fun onBackPressed() {
@@ -64,7 +68,8 @@ class SettingsActivity : BaseActivity() {
 
     override fun setUpBinding() {
         val binding: SettingsActivityBinding = DataBindingUtil.setContentView(this, R.layout.settings_activity)
-        binding.viewModel = userViewModel
+        binding.userViewModel = userViewModel
+        binding.workspaceViewModel = userViewModel.workspaceViewModel
     }
 
     private fun setUpUserSpinner() {

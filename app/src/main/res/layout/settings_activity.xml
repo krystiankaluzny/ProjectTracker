@@ -4,8 +4,12 @@
     <data>
 
         <variable
-            name="viewModel"
+            name="userViewModel"
             type="app.obywatel.togglnative.viewmodel.user.UserViewModel" />
+
+        <variable
+            name="workspaceViewModel"
+            type="app.obywatel.togglnative.viewmodel.user.WorkspaceViewModel" />
     </data>
 
     <android.support.v4.widget.DrawerLayout
@@ -22,7 +26,9 @@
             layout="@layout/settings_activity_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:viewModel="@{viewModel}" />
+            app:userViewModel="@{userViewModel}"
+            app:workspaceViewModel="@{workspaceViewModel}"
+            />
 
         <android.support.design.widget.NavigationView
             android:id="@+id/navigationView"
