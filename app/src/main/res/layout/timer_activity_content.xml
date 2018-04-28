@@ -50,7 +50,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:visibility="@{viewModel.errorMessageVisible ? View.VISIBLE : View.GONE}"
-                app:layout_constraintBottom_toTopOf="@+id/workspacesTextView"
+                app:layout_constraintBottom_toTopOf="@+id/recycleView"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -67,7 +67,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/workspaceSpinner" />
+                app:layout_constraintTop_toBottomOf="@+id/errorMessage" />
 
         </android.support.constraint.ConstraintLayout>
 

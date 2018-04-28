@@ -2,9 +2,11 @@ package app.obywatel.togglnative.model.service.timer
 
 import android.util.Log
 import app.obywatel.toggl.client.TogglClient
+import app.obywatel.toggl.client.request.DetailedReportParameters
 import app.obywatel.togglnative.model.entity.*
 import app.obywatel.togglnative.model.service.toEntity
 import com.raizlabs.android.dbflow.kotlinextensions.list
+import com.raizlabs.android.dbflow.kotlinextensions.result
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite.select
 
@@ -16,25 +18,26 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
     // @formatter:off
 
-    fun getStoredProjects(workspace: Workspace): MutableList<Project> = select()
-                                                                        .from(Project::class.java)
-                                                                        .where(Project_Table.workspace_id.eq(workspace.id))
-                                                                        .list
+    fun getStoredProjects(): MutableList<Project> = select()
+                                                    .from(Project::class.java)
+                                                    .where(Project_Table.workspace_id.eq(user.activeWorkspaceId))
+                                                    .list
     // @formatter:on
 
 
+    fun fetchTimeEntries() {
 
+        val workspace = select().from(Workspace::class.java).where(Workspace_Table.id.eq(user.activeWorkspaceId)).result
 
-    fun fetchProjects(workspace: Workspace) {
+        workspace?.let {
 
-        togglClient.getWorkspaceProjects(workspace.id).forEach {
-            Log.d(TAG, "Save project: $it")
-            it.toEntity(workspace).save()
+            togglClient.getWorkspaceProjects(user.activeWorkspaceId).forEach {
+                Log.d(TAG, "Save project: $it")
+                it.toEntity(workspace).save()
+            }
 
-//            togglClient.getProjectTimeEntries(workspace.id, it.id)
+            val detailedReport = togglClient.getDetailedReport(it.id, DetailedReportParameters())
+            Log.d(TAG, "fetchTimeEntries: $detailedReport")
         }
-
-//        Log.e(TAG, "fetchProjects: Dates.today " + Dates.today)
-//        Log.e(TAG, "fetchProjects: Dates.today.minus 6 month " + Dates.today.minus(6.month))
     }
 }

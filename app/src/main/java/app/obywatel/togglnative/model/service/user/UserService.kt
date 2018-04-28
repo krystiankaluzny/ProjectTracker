@@ -69,8 +69,6 @@ class UserService(private val togglClientBuilder: TogglClientBuilder) {
         togglClient.getWorkspaces().forEach {
             Log.d(TAG, "Save workspace: $it")
             it.toEntity(user).save()
-
-            togglClient.getDetailedReport(it.id, DetailedReportParameters())
         }
     }
 

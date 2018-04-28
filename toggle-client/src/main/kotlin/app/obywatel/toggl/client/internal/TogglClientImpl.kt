@@ -1,10 +1,7 @@
 package app.obywatel.toggl.client.internal
 
 import app.obywatel.toggl.client.TogglClient
-import app.obywatel.toggl.client.entity.Project
-import app.obywatel.toggl.client.entity.TimeEntry
-import app.obywatel.toggl.client.entity.User
-import app.obywatel.toggl.client.entity.Workspace
+import app.obywatel.toggl.client.entity.*
 import app.obywatel.toggl.client.internal.retrofit.RetrofitFactory
 import app.obywatel.toggl.client.internal.retrofit.TogglApi
 import app.obywatel.toggl.client.internal.retrofit.TogglReportApi
@@ -20,6 +17,8 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
     private val togglApi = RetrofitFactory.create<TogglApi>(apiToken, "https://www.toggl.com/api/v8/")
     private val togglReportApi = RetrofitFactory.create<TogglReportApi>(apiToken, "https://toggl.com/reports/api/v2/")
     private val userAgent = "TogglClient"
+
+    private val emptyDetailedReport = DetailedReport(0, 0, 0, 0, emptyList(), emptyList())
 
     override fun getCurrentUser(): User? {
 
@@ -42,10 +41,6 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
         return workspaceProjects.map { it.expose() }
     }
 
-    override fun getProjectTimeEntries(workspaceId: Long, projectId: Long): List<TimeEntry> {
-        return emptyList()
-    }
-
     override fun getWeeklyReport(workspaceId: Long, weeklyReportParameters: WeeklyReportParameters) {
         val params = createBaseRequestParams(workspaceId, weeklyReportParameters.baseReportParameters)
 
@@ -53,10 +48,9 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
             params["order_field"] = it.field
             params["order_desc"] = if (it.ascending) "off" else "on"
         }
-
     }
 
-    override fun getDetailedReport(workspaceId: Long, detailedReportParameters: DetailedReportParameters) {
+    override fun getDetailedReport(workspaceId: Long, detailedReportParameters: DetailedReportParameters): DetailedReport {
         val params = createBaseRequestParams(workspaceId, detailedReportParameters.baseReportParameters)
 
         detailedReportParameters.detailedOrder?.let {
@@ -65,8 +59,9 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
         }
 //        detailedReportParameters.page
 
+        val detailedReport = togglReportApi.detailed(params).execute().body() ?: return  emptyDetailedReport
 
-        val body: DetailedReportResponse? = togglReportApi.detailed(params).execute().body()
+        return detailedReport.expose()
     }
 
     override fun getSummaryReport(workspaceId: Long, summaryReportParameters: SummaryReportParameters) {
@@ -103,4 +98,3 @@ internal class TogglClientImpl(val apiToken: String) : TogglClient {
         return params
     }
 }
-
