@@ -1,21 +1,9 @@
 package app.obywatel.toggl.client.internal
 
 import app.obywatel.toggl.client.entity.*
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import app.obywatel.toggl.client.fromHexColorToInt
+import app.obywatel.toggl.client.toEpochSecond
 
-private fun String.toTimestamp() = ZonedDateTime.parse(this, DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond()
-
-private fun String.fromHexColorToInt(): Int {
-
-    val colorStr = if (this.startsWith("#")) this.substring(1) else this
-    var color = colorStr.toLongOrNull(16) ?: 0
-
-    if (colorStr.length == 6) {
-        color = color or 0x00000000ff000000
-    }
-    return color.toInt()
-}
 
 internal fun app.obywatel.toggl.client.internal.retrofit.dto.User.expose() =
     User(
@@ -28,8 +16,8 @@ internal fun app.obywatel.toggl.client.internal.retrofit.dto.User.expose() =
         language = language,
         timezone = timezone,
         imageUrl = image_url ?: "",
-        creationTimestamp = created_at.toTimestamp(),
-        lastUpdateTimestamp = at.toTimestamp()
+        creationTimestamp = created_at.toEpochSecond(),
+        lastUpdateTimestamp = at.toEpochSecond()
     )
 
 internal fun app.obywatel.toggl.client.internal.retrofit.dto.Workspace.expose() =
@@ -45,7 +33,7 @@ internal fun app.obywatel.toggl.client.internal.retrofit.dto.Workspace.expose() 
         onlyAdminsMayCreateProjects = only_admins_may_create_projects,
         onlyAdminsSeeBillableRates = only_admins_see_billable_rates,
         defaultHourlyRate = default_hourly_rate ?: 0.0,
-        lastUpdateTimestamp = at.toTimestamp()
+        lastUpdateTimestamp = at.toEpochSecond()
     )
 
 internal fun app.obywatel.toggl.client.internal.retrofit.dto.Project.expose() =
@@ -56,7 +44,7 @@ internal fun app.obywatel.toggl.client.internal.retrofit.dto.Project.expose() =
         clientId = cid,
         active = active,
         private = is_private,
-        creationTimestamp = at.toTimestamp(),
+        creationTimestamp = at.toEpochSecond(),
         colorId = color,
         color = hex_color.fromHexColorToInt()
     )

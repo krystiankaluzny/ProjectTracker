@@ -2,6 +2,7 @@ package app.obywatel.togglnative.model.service.user
 
 import android.util.Log
 import app.obywatel.toggl.client.TogglClientBuilder
+import app.obywatel.toggl.client.request.DetailedReportParameters
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.entity.User_Table
 import app.obywatel.togglnative.model.entity.Workspace
@@ -69,6 +70,8 @@ class UserService(private val togglClientBuilder: TogglClientBuilder) {
         togglClient.getWorkspaces().forEach {
             Log.d(TAG, "Save workspace: $it")
             it.toEntity(user).save()
+
+            togglClient.getDetailedReport(it.id, DetailedReportParameters())
         }
     }
 }

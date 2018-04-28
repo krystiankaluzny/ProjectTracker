@@ -5,7 +5,7 @@ class SummaryReportParameters(
     val summaryOrder: SummaryOrder? = null
 )
 
-enum class SummaryOrder(field: String, ascending: Boolean) {
+enum class SummaryOrder(val field: String, val ascending: Boolean) {
     TITLE_ASC("title", true),
     TITLE_DESC("title", false),
 

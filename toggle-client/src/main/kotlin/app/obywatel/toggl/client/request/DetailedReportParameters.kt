@@ -10,7 +10,7 @@ data class DetailedReportParameters(
     }
 }
 
-enum class DetailedOrder(field: String, ascending: Boolean) {
+enum class DetailedOrder(val field: String, val ascending: Boolean) {
 
     DATE_ASC("date", true),
     DATE_DESC("date", false),
