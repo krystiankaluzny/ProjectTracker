@@ -125,12 +125,13 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/usersLayout" />
 
-            <!--android:selectedItemPosition="@={workspaceViewModel.selectedWorkspacePosition}"-->
+
             <Spinner
                 android:id="@+id/workspaceSpinner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
+                android:selectedItemPosition="@={workspaceViewModel.selectedWorkspacePosition}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/workspacesTextView"

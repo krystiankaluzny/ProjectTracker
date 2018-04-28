@@ -28,7 +28,6 @@ class UserService(private val togglClientBuilder: TogglClientBuilder) {
             .set(User_Table.selected eq false)
             .where(User_Table.id notEq user.id)
             .execute()
-
     }
 
     // @formatter:off
@@ -72,6 +71,30 @@ class UserService(private val togglClientBuilder: TogglClientBuilder) {
             it.toEntity(user).save()
 
             togglClient.getDetailedReport(it.id, DetailedReportParameters())
+        }
+    }
+
+    fun setActiveWorkspace(user: User, workspace: Workspace) {
+
+        if (user.activeWorkspaceId == workspace.id) return
+
+        if (workspace.user != null) {
+            if (workspace.user?.id == user.id) {
+
+                user.activeWorkspaceId = workspace.id
+                user.save()
+            }
+
+        } else {
+            val isUserWorkspace = select()
+                .from(Workspace::class.java)
+                .where(Workspace_Table.id.eq(workspace.id), Workspace_Table.user_id.eq(user.id))
+                .list.isNotEmpty()
+
+            if (isUserWorkspace) {
+                user.activeWorkspaceId = workspace.id
+                user.save()
+            }
         }
     }
 }

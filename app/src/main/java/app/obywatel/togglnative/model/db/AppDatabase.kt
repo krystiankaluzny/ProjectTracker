@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.annotation.Migration
 import com.raizlabs.android.dbflow.sql.SQLiteType
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration
 
-@Database(version = 5, foreignKeyConstraintsEnforced = true)
+@Database(version = 6, foreignKeyConstraintsEnforced = true)
 object AppDatabase {
 
     @Migration(version = 2, database = AppDatabase::class)
@@ -23,6 +23,14 @@ object AppDatabase {
 
         override fun onPreMigrate() {
             addColumn(SQLiteType.TEXT, "colorId")
+        }
+    }
+
+    @Migration(version = 6, database = AppDatabase::class)
+    class AddActiveWorkspaceIdToUser : AlterTableMigration<User>(User::class.java) {
+
+        override fun onPreMigrate() {
+            addColumn(SQLiteType.INTEGER, "activeWorkspaceId")
         }
     }
 }

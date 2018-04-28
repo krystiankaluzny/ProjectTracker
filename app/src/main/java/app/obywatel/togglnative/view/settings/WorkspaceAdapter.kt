@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
-import app.obywatel.togglnative.model.entity.User
-import app.obywatel.togglnative.viewmodel.timer.UpdateWorkspacesListener
-import app.obywatel.togglnative.viewmodel.user.SelectUserListener
+import app.obywatel.togglnative.viewmodel.user.UpdateWorkspacesListener
 import app.obywatel.togglnative.viewmodel.user.WorkspaceViewModel
 
-class WorkspaceAdapter(context: Context, private val workspaceViewModel: WorkspaceViewModel) : BaseAdapter(), UpdateWorkspacesListener, SelectUserListener {
+class WorkspaceAdapter(context: Context, private val workspaceViewModel: WorkspaceViewModel) : BaseAdapter(), UpdateWorkspacesListener {
 
     companion object {
         private const val resource = android.R.layout.simple_spinner_dropdown_item
@@ -33,7 +31,5 @@ class WorkspaceAdapter(context: Context, private val workspaceViewModel: Workspa
 
     override fun getCount(): Int = workspaceViewModel.getWorkspacesCount()
 
-    override fun onWorkspaceUpdate() = notifyDataSetChanged()
-
-    override fun onUserSelected(user: User) = notifyDataSetChanged()
+    override fun onUpdateWorkspaces() = notifyDataSetChanged()
 }

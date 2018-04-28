@@ -11,6 +11,7 @@ import app.obywatel.togglnative.databinding.SettingsActivityBinding
 import app.obywatel.togglnative.di.UserViewModelModule
 import app.obywatel.togglnative.view.BaseActivity
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
+import app.obywatel.togglnative.viewmodel.user.WorkspaceViewModel
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.android.synthetic.main.settings_activity_content.*
 import javax.inject.Inject
@@ -24,6 +25,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     @Inject lateinit var userViewModel: UserViewModel
+    private lateinit var workspaceViewModel: WorkspaceViewModel
 
     private lateinit var userAdapter: UserAdapter
     private lateinit var workspaceAdapter: WorkspaceAdapter
@@ -36,20 +38,20 @@ class SettingsActivity : BaseActivity() {
         setUpViewListeners()
 
         userViewModel.updateUserListeners += userAdapter
-        userViewModel.selectUserListeners += workspaceAdapter
+        workspaceViewModel.updateWorkspacesListeners += workspaceAdapter
         userViewModel.showSelectedUser()
     }
 
     override fun onResume() {
         super.onResume()
         userViewModel.updateUserListeners += userAdapter
-        userViewModel.selectUserListeners += workspaceAdapter
+        workspaceViewModel.updateWorkspacesListeners += workspaceAdapter
     }
 
     override fun onPause() {
         super.onPause()
         userViewModel.updateUserListeners -= userAdapter
-        userViewModel.selectUserListeners -= workspaceAdapter
+        workspaceViewModel.updateWorkspacesListeners -= workspaceAdapter
     }
 
     override fun onBackPressed() {
@@ -64,12 +66,14 @@ class SettingsActivity : BaseActivity() {
         TogglNativeApp.getAppComponent()
             .plus(UserViewModelModule())
             .inject(this)
+
+        workspaceViewModel = userViewModel.workspaceViewModel
     }
 
     override fun setUpBinding() {
         val binding: SettingsActivityBinding = DataBindingUtil.setContentView(this, R.layout.settings_activity)
         binding.userViewModel = userViewModel
-        binding.workspaceViewModel = userViewModel.workspaceViewModel
+        binding.workspaceViewModel = workspaceViewModel
     }
 
     private fun setUpUserSpinner() {
@@ -78,7 +82,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun setUpWorkspaceSpinner() {
-        workspaceAdapter = WorkspaceAdapter(this, userViewModel.workspaceViewModel)
+        workspaceAdapter = WorkspaceAdapter(this, workspaceViewModel)
         workspaceSpinner.adapter = workspaceAdapter
     }
 

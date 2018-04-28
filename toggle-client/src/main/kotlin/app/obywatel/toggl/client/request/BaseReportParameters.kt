@@ -25,4 +25,3 @@ enum class Billable(val value: String) {
     NO("no"),
     BOTH("both");
 }
-

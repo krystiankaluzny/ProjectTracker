@@ -40,7 +40,7 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
 
     fun showSelectedUser() {
 
-        var selectedUser = userService.getSelectedUser()
+        var selectedUser = userList.find { it.selected }
 
         if (selectedUser == null) {
             selectedUser = userList.getOrNull(0)
@@ -51,7 +51,7 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
             val indexOfUser = userList.indexOf(user)
 
             when (indexOfUser) {
-                selectedUserPosition.get() -> selectUserListenerConsumer.accept { it.onUserSelected(user) }
+                selectedUserPosition.get() -> selectUserListenerConsumer.accept { it.onSelectUser(user) }
                 else -> selectedUserPosition.set(indexOfUser)
             }
         }
@@ -80,7 +80,7 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
 
     private fun selectUser(user: User) = launch(UI) {
         async { userService.selectUser(user) }.await()
-        selectUserListenerConsumer.accept { it.onUserSelected(user) }
+        selectUserListenerConsumer.accept { it.onSelectUser(user) }
     }
 
     private fun updateOrInsertUser(user: User) {
