@@ -31,13 +31,18 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
         workspace?.let {
 
-            togglClient.getWorkspaceProjects(user.activeWorkspaceId).forEach {
-                Log.d(TAG, "Save project: $it")
-                it.toEntity(workspace).save()
-            }
+            val projectsById: Map<Long, List<Project>> = togglClient.getWorkspaceProjects(user.activeWorkspaceId)
+                .map { it.toEntity(workspace) }
+                .onEach { it.save() }
+                .groupBy { it.id }
 
-            val detailedReport = togglClient.getDetailedReport(it.id, DetailedReportParameters())
-            Log.d(TAG, "fetchTimeEntries: $detailedReport")
+            val projectsTimeEntries = togglClient.getDetailedReport(it.id, DetailedReportParameters())
+                .timeEntries
+                .filter { it.project != null && projectsById.containsKey(it.project!!.id) }
+
+            Log.d(TAG, "fetchTimeEntries: $projectsTimeEntries")
         }
     }
 }
+
+private fun List<Project>.contains(projectId: Long) = this.find { it.id == projectId } != null

@@ -23,7 +23,7 @@ data class TimeEntry(
     val description: String?,
     val startTimestamp: Long,
     val endTimestamp: Long?,
-    val duration: Int?,
+    val durationMillis: Long?,
     val lastUpdateTimestamp: Long,
     val useStop: Boolean,
     val billable: Boolean,

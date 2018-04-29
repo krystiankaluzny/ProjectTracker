@@ -21,7 +21,7 @@ internal data class TimeEntry(
     val description: String?,
     val start: String,
     val end: String?,
-    val dur: Int?,
+    val dur: Long?,
     val updated: String,
     val use_stop: Boolean,
     val is_billable: Boolean,

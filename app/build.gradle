@@ -71,5 +71,7 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+
     implementation project(':toggle-client')
 }

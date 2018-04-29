@@ -67,7 +67,7 @@ internal fun app.obywatel.toggl.client.internal.retrofit.dto.TimeEntry.expose() 
         description = description,
         startTimestamp = start.toEpochSecond(),
         endTimestamp = end?.toEpochSecond(),
-        duration = dur,
+        durationMillis = dur,
         lastUpdateTimestamp = updated.toEpochSecond(),
         useStop = use_stop,
         billable = is_billable,
