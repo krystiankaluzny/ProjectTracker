@@ -6,10 +6,10 @@ internal data class DetailedReportResponse(
     val total_grand: Long?,
     val total_billable: Long?,
     val total_currencies: List<CurrencyAmount>,
-    val data: List<TimeEntry>
+    val data: List<DetailedTimeEntry>
 )
 
-internal data class TimeEntry(
+internal data class DetailedTimeEntry(
     val id: Long,
     val pid: Long?,
     val project: String?,

@@ -25,9 +25,11 @@ internal fun String.toOffsetDateTime() = OffsetDateTime.parse(this, DateTimeForm
 internal fun String.toEpochSecond() = this.toOffsetDateTime().toEpochSecond()
 
 internal fun Long.secondsToOffsetDateTime() = OffsetDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneId.systemDefault())
+internal fun Long.secondsToOffsetDateTimeStr() = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(this.secondsToOffsetDateTime())
 internal fun Long.secondsToLocalDate() = this.secondsToOffsetDateTime().toLocalDate()
 internal fun Long.secondsToLocalDateStr() =  DateTimeFormatter.ISO_LOCAL_DATE.format(this.secondsToLocalDate())
 
 internal fun Long.millisToOffsetDateTime() = OffsetDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
+internal fun Long.millisToOffsetDateTimeStr() = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(this.millisToOffsetDateTime())
 internal fun Long.millisToLocalDate() = this.millisToOffsetDateTime().toLocalDate()
 internal fun Long.millisToLocalDateStr() = DateTimeFormatter.ISO_LOCAL_DATE.format(this.millisToLocalDate())

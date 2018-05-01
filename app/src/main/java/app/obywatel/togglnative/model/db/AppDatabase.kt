@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.annotation.Migration
 import com.raizlabs.android.dbflow.sql.SQLiteType
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration
 
-@Database(version = 6, foreignKeyConstraintsEnforced = true)
+@Database(version = 7, foreignKeyConstraintsEnforced = true)
 object AppDatabase {
 
     @Migration(version = 2, database = AppDatabase::class)
@@ -31,6 +31,14 @@ object AppDatabase {
 
         override fun onPreMigrate() {
             addColumn(SQLiteType.INTEGER, "activeWorkspaceId")
+        }
+    }
+
+    @Migration(version = 7, database = AppDatabase::class)
+    class AddLastSynchronizationTimeToUser : AlterTableMigration<User>(User::class.java) {
+
+        override fun onPreMigrate() {
+            addColumn(SQLiteType.TEXT, "lastSynchronizationTime")
         }
     }
 }

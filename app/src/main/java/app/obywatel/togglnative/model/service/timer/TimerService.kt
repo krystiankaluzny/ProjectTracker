@@ -9,6 +9,7 @@ import com.raizlabs.android.dbflow.kotlinextensions.list
 import com.raizlabs.android.dbflow.kotlinextensions.result
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite.select
+import org.threeten.bp.OffsetDateTime
 
 class TimerService(private val user: User, private val togglClient: TogglClient) {
 
@@ -36,11 +37,18 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
                 .onEach { it.save() }
                 .groupBy { it.id }
 
-            val projectsTimeEntries = togglClient.getDetailedReport(it.id, DetailedReportParameters())
-                .timeEntries
+            val filteredTimeEntries = togglClient.getDetailedReport(it.id, DetailedReportParameters())
+                .detailedTimeEntries
                 .filter { it.project != null && projectsById.containsKey(it.project!!.id) }
 
-            Log.d(TAG, "fetchTimeEntries: $projectsTimeEntries")
+            val timeEntryEntities: List<TimeEntry> = filteredTimeEntries
+                .map { it.toEntity(projectsById[it.project!!.id]!!.first()) }
+                .onEach { it.save() }
+
+            user.lastSynchronizationTime = OffsetDateTime.now()
+            user.save()
+
+            Log.d(TAG, "fetchTimeEntries: $filteredTimeEntries")
         }
     }
 }

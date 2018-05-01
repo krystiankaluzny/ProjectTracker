@@ -5,6 +5,7 @@ import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
 import com.raizlabs.android.dbflow.annotation.Unique
+import org.threeten.bp.OffsetDateTime
 
 @Table(database = AppDatabase::class, useBooleanGetterSetters = false)
 data class User(
@@ -12,5 +13,6 @@ data class User(
     @Unique @Column var apiToken: String = "",
     @Column var fullName: String = "",
     @Column var selected: Boolean = false,
-    @Column var activeWorkspaceId: Long = -1L
+    @Column var activeWorkspaceId: Long = -1L,
+    @Column var lastSynchronizationTime: OffsetDateTime? = null
 )

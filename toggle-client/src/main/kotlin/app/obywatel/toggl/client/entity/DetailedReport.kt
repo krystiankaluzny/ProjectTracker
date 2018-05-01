@@ -6,7 +6,7 @@ data class DetailedReport(
     val totalGrand: Long?,
     val totalPayment: Long?,
     val totalCurrencies: List<CurrencyAmount>,
-    val timeEntries: List<TimeEntry>
+    val detailedTimeEntries: List<DetailedTimeEntry>
 )
 
 data class CurrencyAmount(
@@ -14,7 +14,7 @@ data class CurrencyAmount(
     val amount: Double?
 )
 
-data class TimeEntry(
+data class DetailedTimeEntry(
     val id: Long,
     val client: String?,
     val project: Info?,

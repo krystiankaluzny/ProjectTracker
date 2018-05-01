@@ -34,7 +34,7 @@ fun app.obywatel.toggl.client.entity.Project.toEntity(workspace: Workspace) =
         workspace = workspace
     )
 
-fun app.obywatel.toggl.client.entity.TimeEntry.toEntity(project: Project) =
+fun app.obywatel.toggl.client.entity.DetailedTimeEntry.toEntity(project: Project) =
     TimeEntry(
         id = id,
         description = description ?: project.name,
