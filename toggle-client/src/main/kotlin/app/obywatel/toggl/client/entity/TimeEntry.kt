@@ -1,16 +1,16 @@
 package app.obywatel.toggl.client.entity
 
 data class TimeEntry(
-    val id: Long?,
-    val description: String?,
-    val workspaceId: Long?,
-    val projectId: Long?,
-    val taskId: Long?,
-    val billable: Boolean?,
+    val id: Long? = null,
+    val description: String? = null,
+    val workspaceId: Long? = null,
+    val projectId: Long? = null,
+    val taskId: Long? = null,
+    val billable: Boolean? = null,
+    val endTimestamp: Long? = null,
     val startTimestamp: Long,
-    val endTimestamp: Long?,
-    val durationSeconds: Long?,
-    val createdWith: String,
-    val tags: List<String>?,
-    val lastUpdateTimestamp: Long?
+    val durationSeconds: Long? = null,
+    val createdWith: String? = null,
+    val tags: List<String>? = emptyList(),
+    val lastUpdateTimestamp: Long? = null
 )

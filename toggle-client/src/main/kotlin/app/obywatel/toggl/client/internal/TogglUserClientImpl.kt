@@ -6,10 +6,5 @@ import app.obywatel.toggl.client.internal.retrofit.TogglApi
 
 internal class TogglUserClientImpl(private val togglApi: TogglApi) : TogglUserClient {
 
-    override fun getCurrentUser(): User? {
-
-        val userData = togglApi.me().execute().body()?.user ?: return null
-
-        return userData.toExternal()
-    }
+    override fun getCurrentUser(): User? = togglApi.me().execute().body()?.user?.toExternal()
 }

@@ -21,6 +21,8 @@ internal fun String.fromHexColorToInt(): Int {
     return color.toInt()
 }
 
+internal fun String?.defaultIfBlank(default: String) = if(this.isNullOrBlank()) default else this!!
+
 internal fun String.toOffsetDateTime() = OffsetDateTime.parse(this, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 internal fun String.toEpochSecond() = this.toOffsetDateTime().toEpochSecond()
 

@@ -23,7 +23,7 @@ internal class TogglClientImpl(togglApi: TogglApi, togglReportApi: TogglReportAp
 
     override fun getTimeEntriy(timeEntryId: Long) = togglTimeEntityClient.getTimeEntriy(timeEntryId)
     override fun getRunningTimeEntriy() = togglTimeEntityClient.getRunningTimeEntriy()
-    override fun createTimeEntriy(timeEntry: TimeEntry) = togglTimeEntityClient.createTimeEntriy(timeEntry)
+    override fun createTimeEntry(timeEntry: TimeEntry) = togglTimeEntityClient.createTimeEntry(timeEntry)
     override fun startTimeEntriy(timeEntry: TimeEntry) = togglTimeEntityClient.startTimeEntriy(timeEntry)
     override fun stopTimeEntriy(timeEntry: TimeEntry) = togglTimeEntityClient.stopTimeEntriy(timeEntry)
     override fun updateTimeEntriy(timeEntry: TimeEntry) = togglTimeEntityClient.updateTimeEntriy(timeEntry)

@@ -49,6 +49,18 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
             user.save()
 
             Log.d(TAG, "fetchTimeEntries: $filteredTimeEntries")
+
+            val nowTimestamp = OffsetDateTime.now().toEpochSecond()
+            val timeEntry = app.obywatel.toggl.client.entity.TimeEntry(
+                description = "Dupa",
+//                workspaceId = workspace.id,
+                projectId = projectsById.keys.first(),
+                startTimestamp = nowTimestamp,
+                durationSeconds = -nowTimestamp,
+                tags = listOf("Dupa", "test", "abc")
+            )
+            val createTimeEntriy = togglClient.createTimeEntry(timeEntry)
+            Log.d(TAG, "fetchTimeEntries: $createTimeEntriy")
         }
     }
 }

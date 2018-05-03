@@ -114,7 +114,7 @@ internal fun TimeEntry.toInternal() =
         start = startTimestamp.secondsToOffsetDateTimeStr(),
         stop = endTimestamp?.secondsToOffsetDateTimeStr(),
         duration = durationSeconds,
-        created_with = createdWith,
+        created_with = createdWith ?: "",
         tags = tags,
         at = lastUpdateTimestamp?.secondsToOffsetDateTimeStr()
     )

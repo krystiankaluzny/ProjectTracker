@@ -23,7 +23,7 @@ interface TogglTimeEntityClient {
 
     fun getTimeEntriy(timeEntryId: Long): TimeEntry
     fun getRunningTimeEntriy(): TimeEntry?
-    fun createTimeEntriy(timeEntry: TimeEntry): TimeEntry
+    fun createTimeEntry(timeEntry: TimeEntry): TimeEntry?
     fun startTimeEntriy(timeEntry: TimeEntry): TimeEntry
     fun stopTimeEntriy(timeEntry: TimeEntry): TimeEntry
     fun updateTimeEntriy(timeEntry: TimeEntry): TimeEntry

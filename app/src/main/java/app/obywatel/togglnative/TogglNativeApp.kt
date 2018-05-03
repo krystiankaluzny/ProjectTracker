@@ -4,6 +4,7 @@ import android.support.multidex.MultiDexApplication
 import app.obywatel.togglnative.di.*
 import app.obywatel.togglnative.model.db.AppDatabase
 import app.obywatel.togglnative.model.entity.User
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.raizlabs.android.dbflow.config.DatabaseConfig
 import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager
@@ -31,6 +32,7 @@ class TogglNativeApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        AndroidThreeTen.init(this)
         instance = this
         initDatabase()
 

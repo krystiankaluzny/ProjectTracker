@@ -2,7 +2,7 @@ package app.obywatel.toggl.client.internal.retrofit.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-internal class UserResponse(
+internal data class UserResponse(
     val since: Long,
     @JsonProperty("data") val user: User
 )
