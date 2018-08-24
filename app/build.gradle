@@ -73,5 +73,5 @@ dependencies {
 
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 
-    implementation project(':toggle-client')
+    implementation project(':toggl-client')
 }
