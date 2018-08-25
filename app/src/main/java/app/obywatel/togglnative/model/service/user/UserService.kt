@@ -1,8 +1,8 @@
 package app.obywatel.togglnative.model.service.user
 
 import android.util.Log
-import app.obywatel.toggl.client.TogglClientBuilder
-import app.obywatel.toggl.client.request.DetailedReportParameters
+import org.ktoggl.TogglClientBuilder
+import org.ktoggl.request.DetailedReportParameters
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.entity.User_Table
 import app.obywatel.togglnative.model.entity.Workspace

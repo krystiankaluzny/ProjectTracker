@@ -9,7 +9,7 @@ import org.threeten.bp.Instant
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 
-fun app.obywatel.toggl.client.entity.User.toEntity() =
+fun org.ktoggl.entity.User.toEntity() =
     User(
         id = id,
         apiToken = apiToken,
@@ -18,14 +18,14 @@ fun app.obywatel.toggl.client.entity.User.toEntity() =
         activeWorkspaceId = defaultWorkspaceId
     )
 
-fun app.obywatel.toggl.client.entity.Workspace.toEntity(user: User) =
+fun org.ktoggl.entity.Workspace.toEntity(user: User) =
     Workspace(
         id = id,
         name = name,
         user = user
     )
 
-fun app.obywatel.toggl.client.entity.Project.toEntity(workspace: Workspace) =
+fun org.ktoggl.entity.Project.toEntity(workspace: Workspace) =
     Project(
         id = id,
         name = name,
@@ -34,7 +34,7 @@ fun app.obywatel.toggl.client.entity.Project.toEntity(workspace: Workspace) =
         workspace = workspace
     )
 
-fun app.obywatel.toggl.client.entity.DetailedTimeEntry.toEntity(project: Project) =
+fun org.ktoggl.entity.DetailedTimeEntry.toEntity(project: Project) =
     TimeEntry(
         id = id,
         description = description ?: project.name,

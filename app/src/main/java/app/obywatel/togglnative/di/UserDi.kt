@@ -1,7 +1,7 @@
 package app.obywatel.togglnative.di
 
-import app.obywatel.toggl.client.TogglClient
-import app.obywatel.toggl.client.TogglClientBuilder
+import org.ktoggl.TogglClient
+import org.ktoggl.TogglClientBuilder
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.service.timer.TimerService
 import dagger.Module

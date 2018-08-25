@@ -8,6 +8,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.raizlabs.android.dbflow.config.DatabaseConfig
 import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager
+import org.ktoggl.android.AndroidKToggl
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -32,6 +33,7 @@ class TogglNativeApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        AndroidKToggl.init(this)
         AndroidThreeTen.init(this)
         instance = this
         initDatabase()

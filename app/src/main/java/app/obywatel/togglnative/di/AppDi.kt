@@ -1,17 +1,18 @@
 package app.obywatel.togglnative.di
 
 import android.content.Context
-import app.obywatel.toggl.client.TogglClientBuilder
 import app.obywatel.togglnative.model.service.user.UserService
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.ktoggl.TogglClientBuilder
+import org.ktoggl.android.AndroidTogglClientBuilder
 
 @Module
 class ApplicationModule(context: Context) {
 
     private val appContext: Context = context.applicationContext
-    private val togglClientBuilder = TogglClientBuilder()
+    private val togglClientBuilder: TogglClientBuilder = AndroidTogglClientBuilder()
 
     @ApplicationScope
     @Provides
@@ -34,5 +35,5 @@ interface ApplicationComponent {
 
     fun plus(userModule: UserModule): UserComponent
 
-    fun userSelectionService() : UserService
+    fun userSelectionService(): UserService
 }

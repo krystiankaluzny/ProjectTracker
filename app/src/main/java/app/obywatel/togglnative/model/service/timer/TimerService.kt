@@ -1,8 +1,8 @@
 package app.obywatel.togglnative.model.service.timer
 
 import android.util.Log
-import app.obywatel.toggl.client.TogglClient
-import app.obywatel.toggl.client.request.DetailedReportParameters
+import org.ktoggl.TogglClient
+import org.ktoggl.request.DetailedReportParameters
 import app.obywatel.togglnative.model.entity.*
 import app.obywatel.togglnative.model.service.toEntity
 import com.raizlabs.android.dbflow.kotlinextensions.list
@@ -51,7 +51,7 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
             Log.d(TAG, "fetchTimeEntries: $filteredTimeEntries")
 
             val nowTimestamp = OffsetDateTime.now().toEpochSecond()
-            val timeEntry = app.obywatel.toggl.client.entity.TimeEntry(
+            val timeEntry = org.ktoggl.entity.TimeEntry(
                 description = "Dupa",
 //                workspaceId = workspace.id,
                 projectId = projectsById.keys.first(),
