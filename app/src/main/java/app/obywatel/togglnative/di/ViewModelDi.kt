@@ -4,7 +4,7 @@ import app.obywatel.togglnative.model.service.timer.TimerService
 import app.obywatel.togglnative.model.service.user.UserService
 import app.obywatel.togglnative.view.settings.SettingsActivity
 import app.obywatel.togglnative.view.timer.TimerActivity
-import app.obywatel.togglnative.viewmodel.timer.TimerViewModel
+import app.obywatel.togglnative.viewmodel.timer.DailyTimerViewModel
 import app.obywatel.togglnative.viewmodel.user.UserViewModel
 import dagger.Module
 import dagger.Provides
@@ -30,7 +30,7 @@ class TimerViewModelModule {
 
     @ViewScope
     @Provides
-    fun provideTimerViewModel(timerService: TimerService) = TimerViewModel(timerService)
+    fun provideDailyTimerViewModel(timerService: TimerService) = DailyTimerViewModel(timerService)
 }
 
 @ViewScope

@@ -2,7 +2,7 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tool="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
     <data>
@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:background="@{viewModel.projectColor}"
             app:layout_constraintStart_toStartOf="parent"
-            tool:background="#aa0033"
+            tools:background="#aa0033"
             />
 
         <View
@@ -33,7 +33,7 @@
             android:layout_height="2dp"
             app:backgroundGradientBase="@{viewModel.projectColor}"
             app:layout_constraintBottom_toBottomOf="parent"
-            tool:background="#aa0033"
+            tools:background="#aa0033"
             />
 
         <TextView
@@ -48,8 +48,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/colorView"
             app:layout_constraintTop_toTopOf="parent"
-            tool:text="Projekt"
-            tool:textColor="#aa0033"
+            tools:text="Projekt"
+            tools:textColor="#aa0033"
             />
 
         <TextView

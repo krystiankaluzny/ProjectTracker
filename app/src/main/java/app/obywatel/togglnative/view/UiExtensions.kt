@@ -30,7 +30,7 @@ fun View.bindVisibleOrGone(show: Boolean) {
 }
 
 @BindingAdapter("backgroundGradientBase")
-fun View.bindbackgroundGradientBase(color: Int) {
+fun View.bindBackgroundGradientBase(color: Int) {
 
     val shapeDrawable = ShapeDrawable(RectShape())
     shapeDrawable.paint.shader = LinearGradient(0f, 0f, width.toFloat(), 0f,

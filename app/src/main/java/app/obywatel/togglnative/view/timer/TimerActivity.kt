@@ -11,7 +11,7 @@ import app.obywatel.togglnative.TogglNativeApp
 import app.obywatel.togglnative.databinding.TimerActivityBinding
 import app.obywatel.togglnative.di.TimerViewModelModule
 import app.obywatel.togglnative.view.BaseActivity
-import app.obywatel.togglnative.viewmodel.timer.TimerViewModel
+import app.obywatel.togglnative.viewmodel.timer.DailyTimerViewModel
 import kotlinx.android.synthetic.main.timer_activity_content.*
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ class TimerActivity : BaseActivity() {
         }
     }
 
-    @Inject lateinit var timerViewModel: TimerViewModel
+    @Inject lateinit var dailyTimerViewModel: DailyTimerViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,12 +42,11 @@ class TimerActivity : BaseActivity() {
     override fun setUpBinding() {
 
         val binding: TimerActivityBinding = DataBindingUtil.setContentView(this, R.layout.timer_activity)
-        binding.viewModel = timerViewModel
+        binding.viewModel = dailyTimerViewModel
     }
 
-
     private fun setUpProjectList() {
-        val projectAdapter = ProjectAdapter(timerViewModel)
+        val projectAdapter = ProjectAdapter(dailyTimerViewModel)
 
         val linearLayoutManager = LinearLayoutManager(this)
         val dividerItemDecoration = DividerItemDecoration(this, linearLayoutManager.orientation)

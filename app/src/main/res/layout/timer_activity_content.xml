@@ -10,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="app.obywatel.togglnative.viewmodel.timer.TimerViewModel" />
+            type="app.obywatel.togglnative.viewmodel.timer.DailyTimerViewModel" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -50,14 +50,46 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:visibility="@{viewModel.errorMessageVisible ? View.VISIBLE : View.GONE}"
-                app:layout_constraintBottom_toTopOf="@+id/recycleView"
+                app:layout_constraintBottom_toTopOf="@+id/todayTotalDurationLayout"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Error Message"
                 tools:visibility="visible" />
 
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/todayTotalDurationLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:layout_constraintBottom_toTopOf="@+id/recycleView"
+                app:layout_constraintTop_toBottomOf="@+id/errorMessage"
+                >
 
+                <TextView
+                    android:id="@+id/todayTotalDurationText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="0dp"
+                    android:paddingStart="10dp"
+                    android:text="@string/todayTotalDurationText"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/todayTotalDuration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.totalDurationStr}"
+                    android:textSize="20sp"
+                    android:layout_marginStart="55dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/todayTotalDurationText"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycleView"
@@ -67,7 +99,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/errorMessage" />
+                app:layout_constraintTop_toBottomOf="@id/todayTotalDurationLayout" />
 
         </android.support.constraint.ConstraintLayout>
 

@@ -24,7 +24,7 @@ class ApplicationModule(context: Context) {
 
     @ApplicationScope
     @Provides
-    fun provideUserSelectionService() = UserService(togglClientBuilder)
+    fun provideUserService() = UserService(togglClientBuilder)
 }
 
 @ApplicationScope
@@ -35,5 +35,5 @@ interface ApplicationComponent {
 
     fun plus(userModule: UserModule): UserComponent
 
-    fun userSelectionService(): UserService
+    fun userService(): UserService
 }

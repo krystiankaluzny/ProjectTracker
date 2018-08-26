@@ -41,17 +41,6 @@ class TogglNativeApp : MultiDexApplication() {
         initComponents()
     }
 
-    private fun initComponents() {
-
-        applicationComponent = DaggerApplicationComponent.builder()
-            .applicationModule(ApplicationModule(this))
-            .build()
-
-        val selectedUser = applicationComponent.userSelectionService().getSelectedUser()
-
-        createUserComponent(selectedUser ?: User())
-    }
-
     private fun initDatabase() {
 
         val databaseConfig = DatabaseConfig.builder(AppDatabase.javaClass)
@@ -63,6 +52,17 @@ class TogglNativeApp : MultiDexApplication() {
             .build()
 
         FlowManager.init(flowConfig)
+    }
+
+    private fun initComponents() {
+
+        applicationComponent = DaggerApplicationComponent.builder()
+            .applicationModule(ApplicationModule(this))
+            .build()
+
+        val selectedUser = applicationComponent.userService().getSelectedUser()
+
+        createUserComponent(selectedUser ?: User())
     }
 
     private class NotNullSingleValueVar<T> : ReadWriteProperty<Any?, T> {

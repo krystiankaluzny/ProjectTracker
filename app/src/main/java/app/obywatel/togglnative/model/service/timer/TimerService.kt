@@ -1,15 +1,18 @@
 package app.obywatel.togglnative.model.service.timer
 
 import android.util.Log
-import org.ktoggl.TogglClient
-import org.ktoggl.request.DetailedReportParameters
 import app.obywatel.togglnative.model.entity.*
 import app.obywatel.togglnative.model.service.toEntity
 import com.raizlabs.android.dbflow.kotlinextensions.list
 import com.raizlabs.android.dbflow.kotlinextensions.result
 import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.sql.language.SQLite.delete
 import com.raizlabs.android.dbflow.sql.language.SQLite.select
+import org.ktoggl.TogglClient
+import org.ktoggl.request.BaseReportParameters
+import org.ktoggl.request.DetailedReportParameters
 import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.ZoneId
 
 class TimerService(private val user: User, private val togglClient: TogglClient) {
 
@@ -23,10 +26,40 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
                                                     .from(Project::class.java)
                                                     .where(Project_Table.workspace_id.eq(user.activeWorkspaceId))
                                                     .list
+
+    fun getStoredTimeEntriesForToday(): MutableList<TimeEntry> {
+
+        val toTime = OffsetDateTime.now()
+        val fromTime = toTime.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
+
+        return select()
+               .from(TimeEntry::class.java)
+               .where(TimeEntry_Table.startDateTime.between(fromTime).and(toTime))
+               .list
+    }
     // @formatter:on
 
 
-    fun fetchTimeEntries() {
+    fun fetchTodayTimeEntries() {
+
+        val toTime = OffsetDateTime.now()
+        val fromTime = toTime.minusDays(1)
+
+        synchronizeTimeEntries(fromTime, toTime)
+    }
+
+    fun synchronizeTimeEntries() {
+
+        val fromTime = user.lastSynchronizationTime ?: OffsetDateTime.now().minusMonths(1)
+        val toTime = OffsetDateTime.now()
+
+        synchronizeTimeEntries(fromTime, toTime)
+
+        user.lastSynchronizationTime = toTime
+        user.save()
+    }
+
+    private fun synchronizeTimeEntries(fromTime: OffsetDateTime, toTime: OffsetDateTime) {
 
         val workspace = select().from(Workspace::class.java).where(Workspace_Table.id.eq(user.activeWorkspaceId)).result
 
@@ -37,30 +70,22 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
                 .onEach { it.save() }
                 .groupBy { it.id }
 
-            val filteredTimeEntries = togglClient.getDetailedReport(it.id, DetailedReportParameters())
+            val baseReportParameters = BaseReportParameters(
+                fromTimestamp = fromTime.toEpochSecond(),
+                toTimestamp = toTime.toEpochSecond())
+
+            val filteredTimeEntries = togglClient.getDetailedReport(it.id, DetailedReportParameters(baseReportParameters))
                 .detailedTimeEntries
                 .filter { it.project != null && projectsById.containsKey(it.project!!.id) }
 
-            val timeEntryEntities: List<TimeEntry> = filteredTimeEntries
+            delete(TimeEntry::class.java)
+                .where(TimeEntry_Table.startDateTime.between(fromTime).and(toTime))
+
+            filteredTimeEntries
                 .map { it.toEntity(projectsById[it.project!!.id]!!.first()) }
                 .onEach { it.save() }
 
-            user.lastSynchronizationTime = OffsetDateTime.now()
-            user.save()
-
             Log.d(TAG, "fetchTimeEntries: $filteredTimeEntries")
-
-            val nowTimestamp = OffsetDateTime.now().toEpochSecond()
-            val timeEntry = org.ktoggl.entity.TimeEntry(
-                description = "Dupa",
-//                workspaceId = workspace.id,
-                projectId = projectsById.keys.first(),
-                startTimestamp = nowTimestamp,
-                durationSeconds = -nowTimestamp,
-                tags = listOf("Dupa", "test", "abc")
-            )
-            val createTimeEntriy = togglClient.createTimeEntry(timeEntry)
-            Log.d(TAG, "fetchTimeEntries: $createTimeEntriy")
         }
     }
 }
