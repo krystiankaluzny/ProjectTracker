@@ -81,7 +81,7 @@
                     android:id="@+id/todayTotalDuration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.totalDurationStr}"
+                    android:text="@{viewModel.allProjectsDuration}"
                     android:textSize="20sp"
                     android:layout_marginStart="55dp"
                     app:layout_constraintBottom_toBottomOf="parent"

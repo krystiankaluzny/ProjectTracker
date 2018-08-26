@@ -6,8 +6,10 @@ import app.obywatel.togglnative.R
 import app.obywatel.togglnative.databinding.ProjectRowBinding
 import app.obywatel.togglnative.view.bind
 import app.obywatel.togglnative.viewmodel.timer.DailyTimerViewModel
+import app.obywatel.togglnative.viewmodel.timer.UpdateProjectsListener
 
-class ProjectAdapter(private val dailyTimerViewModel: DailyTimerViewModel) : RecyclerView.Adapter<ProjectAdapter.ViewHolder>() {
+class ProjectAdapter(private val dailyTimerViewModel: DailyTimerViewModel)
+    : RecyclerView.Adapter<ProjectAdapter.ViewHolder>(), UpdateProjectsListener {
 
     override fun getItemCount() = dailyTimerViewModel.projectsCount()
 
@@ -16,6 +18,10 @@ class ProjectAdapter(private val dailyTimerViewModel: DailyTimerViewModel) : Rec
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.binding.viewModel = dailyTimerViewModel.singleProjectViewModel(position)
+    }
+
+    override fun onUpdateProjects() {
+        notifyDataSetChanged()
     }
 
     class ViewHolder(val binding: ProjectRowBinding) : RecyclerView.ViewHolder(binding.content)

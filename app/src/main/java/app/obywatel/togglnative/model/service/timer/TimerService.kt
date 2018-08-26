@@ -42,6 +42,19 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         // @formatter:on
     }
 
+    fun getStoredTimeEntriesForToday(project: Project): MutableList<TimeEntry> {
+
+        val toTime = OffsetDateTime.now()
+        val fromTime = toTime.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
+
+        // @formatter:off
+        return select()
+               .from(TimeEntry::class.java)
+               .where(TimeEntry_Table.project_id.eq(project.id))
+               .and(TimeEntry_Table.startDateTime.between(fromTime).and(toTime))
+               .list
+        // @formatter:on
+    }
 
     fun fetchTodayTimeEntries() {
 
