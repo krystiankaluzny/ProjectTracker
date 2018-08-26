@@ -7,6 +7,7 @@ import app.obywatel.togglnative.model.entity.User
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.raizlabs.android.dbflow.config.DatabaseConfig
 import com.raizlabs.android.dbflow.config.FlowConfig
+import com.raizlabs.android.dbflow.config.FlowLog
 import com.raizlabs.android.dbflow.config.FlowManager
 import org.ktoggl.android.AndroidKToggl
 import kotlin.properties.ReadWriteProperty
@@ -43,6 +44,7 @@ class TogglNativeApp : MultiDexApplication() {
 
     private fun initDatabase() {
 
+        FlowLog.setMinimumLoggingLevel(FlowLog.Level.V)
         val databaseConfig = DatabaseConfig.builder(AppDatabase.javaClass)
             .databaseName("AppDatabase")
             .build()

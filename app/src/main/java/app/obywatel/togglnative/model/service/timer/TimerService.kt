@@ -27,17 +27,20 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
                                                     .where(Project_Table.workspace_id.eq(user.activeWorkspaceId))
                                                     .list
 
+    // @formatter:on
+
     fun getStoredTimeEntriesForToday(): MutableList<TimeEntry> {
 
         val toTime = OffsetDateTime.now()
         val fromTime = toTime.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
 
+        // @formatter:off
         return select()
                .from(TimeEntry::class.java)
                .where(TimeEntry_Table.startDateTime.between(fromTime).and(toTime))
                .list
+        // @formatter:on
     }
-    // @formatter:on
 
 
     fun fetchTodayTimeEntries() {
@@ -80,6 +83,7 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
             delete(TimeEntry::class.java)
                 .where(TimeEntry_Table.startDateTime.between(fromTime).and(toTime))
+                .execute()
 
             filteredTimeEntries
                 .map { it.toEntity(projectsById[it.project!!.id]!!.first()) }
@@ -89,5 +93,3 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         }
     }
 }
-
-private fun List<Project>.contains(projectId: Long) = this.find { it.id == projectId } != null
