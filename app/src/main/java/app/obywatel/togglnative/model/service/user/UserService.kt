@@ -1,6 +1,5 @@
 package app.obywatel.togglnative.model.service.user
 
-import android.util.Log
 import org.ktoggl.TogglClientBuilder
 import org.ktoggl.request.DetailedReportParameters
 import app.obywatel.togglnative.model.entity.User
@@ -11,11 +10,12 @@ import app.obywatel.togglnative.model.service.toEntity
 import com.raizlabs.android.dbflow.kotlinextensions.*
 import com.raizlabs.android.dbflow.sql.language.SQLite.select
 import com.raizlabs.android.dbflow.sql.language.SQLite.update
+import org.slf4j.LoggerFactory
 
 class UserService(private val togglClientBuilder: TogglClientBuilder) {
 
     companion object {
-        private const val TAG = "UserService"
+        private val logger = LoggerFactory.getLogger(UserService::class.java)
     }
 
     fun getAllUsers(): MutableList<User> = select().from(User::class).list
@@ -48,7 +48,7 @@ class UserService(private val togglClientBuilder: TogglClientBuilder) {
 
         userEntity?.let {
             togglClient.getWorkspaces().forEach {
-                Log.d(TAG, "Save workspace: $it")
+                logger.debug("Save workspace: $it")
                 it.toEntity(userEntity).save()
             }
         }
@@ -67,7 +67,7 @@ class UserService(private val togglClientBuilder: TogglClientBuilder) {
 
         val togglClient = togglClientBuilder.build(user.apiToken)
         togglClient.getWorkspaces().forEach {
-            Log.d(TAG, "Save workspace: $it")
+            logger.debug("Save workspace: $it")
             it.toEntity(user).save()
         }
     }

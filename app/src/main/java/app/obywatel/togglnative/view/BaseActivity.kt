@@ -5,10 +5,9 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
+import org.slf4j.LoggerFactory
 import app.obywatel.togglnative.R
-import app.obywatel.togglnative.TogglNativeApp
 import app.obywatel.togglnative.view.settings.SettingsActivity
 import app.obywatel.togglnative.view.timer.TimerActivity
 import kotlinx.android.synthetic.main.settings_activity.*
@@ -16,7 +15,9 @@ import kotlinx.android.synthetic.main.settings_activity_content.*
 
 abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    companion object { private const val TAG = "BaseActivity" }
+    companion object {
+        private val logger = LoggerFactory.getLogger(BaseActivity::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,24 +48,24 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
-        Log.d(TAG, "onNavigationItemSelected: " + item.itemId)
+        logger.trace("onNavigationItemSelected: {}", item.itemId)
         when (item.itemId) {
             R.id.navTimer -> {
-                Log.d(TAG, "onNavigationItemSelected: navTimer")
+                logger.trace("onNavigationItemSelected: navTimer")
                 when {
                     this is TimerActivity -> drawerLayout.closeDrawer(GravityCompat.START)
                     else -> {
-                        Log.d(TAG, "onNavigationItemSelected: is not timer")
+                        logger.trace("onNavigationItemSelected: is not timer")
                         startActivity(TimerActivity.newIntent(this))
                     }
                 }
             }
             R.id.navSettings -> {
-                Log.d(TAG, "onNavigationItemSelected: navSettings")
+                logger.trace("onNavigationItemSelected: navSettings")
                 when {
                     this is SettingsActivity -> drawerLayout.closeDrawer(GravityCompat.START)
                     else -> {
-                        Log.d(TAG, "onNavigationItemSelected: is not settings")
+                        logger.trace("onNavigationItemSelected: is not settings")
                         startActivity(SettingsActivity.newIntent(this))
                     }
                 }

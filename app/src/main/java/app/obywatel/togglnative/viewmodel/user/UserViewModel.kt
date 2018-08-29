@@ -3,7 +3,7 @@ package app.obywatel.togglnative.viewmodel.user
 import android.databinding.Observable
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableInt
-import android.util.Log
+import org.slf4j.LoggerFactory
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.service.user.UserService
 import app.obywatel.togglnative.model.util.ListenerGroup
@@ -16,7 +16,7 @@ import kotlinx.coroutines.experimental.launch
 class UserViewModel(private val userService: UserService) : BaseViewModel() {
 
     companion object {
-        private const val TAG = "UserViewModel"
+        private val logger = LoggerFactory.getLogger(UserViewModel::class.java)
     }
 
     private val updateUserListenerConsumer = ListenerGroupConsumer<UpdateUserListener>()
@@ -65,12 +65,12 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
             val user: User? = async { userService.addUserByApiToken(apiToken) }.await()
 
             when (user) {
-                null -> Log.w(TAG, "Null user")
+                null -> logger.warn("Null user")
                 else -> updateOrInsertUser(user)
             }
         }
         catch (e: Exception) {
-            Log.e(TAG, "addUserByApiToken", e)
+            logger.error("addUserByApiToken", e)
             blinkException(e)
         }
         finally {

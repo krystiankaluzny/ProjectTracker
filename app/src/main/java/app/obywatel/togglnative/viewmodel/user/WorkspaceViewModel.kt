@@ -2,7 +2,7 @@ package app.obywatel.togglnative.viewmodel.user
 
 import android.databinding.Observable
 import android.databinding.ObservableInt
-import android.util.Log
+import org.slf4j.LoggerFactory
 import app.obywatel.togglnative.model.entity.User
 import app.obywatel.togglnative.model.entity.Workspace
 import app.obywatel.togglnative.model.service.user.UserService
@@ -16,7 +16,7 @@ import kotlinx.coroutines.experimental.launch
 class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel) : ErrorViewModel by userViewModel, SelectUserListener {
 
     companion object {
-        private const val TAG = "WorkspaceViewModel"
+        private val logger = LoggerFactory.getLogger(WorkspaceViewModel::class.java)
     }
 
     private val updateWorkspacesListenerConsumer = ListenerGroupConsumer<UpdateWorkspacesListener>()
@@ -37,7 +37,7 @@ class WorkspaceViewModel(private val userService: UserService, userViewModel: Us
 
     override fun onSelectUser(user: User) {
         selectedUser = user
-        Log.d(TAG, "onSelectUser: $user")
+        logger.debug("onSelectUser: $user")
         refreshWorkspaces(user)
     }
 
@@ -49,9 +49,9 @@ class WorkspaceViewModel(private val userService: UserService, userViewModel: Us
         launch(UI) {
 
             async {
-                Log.d(TAG, "refreshWorkspaces: start fetching workspaces")
+                logger.trace("refreshWorkspaces: start fetching workspaces")
                 userService.fetchWorkspaces(user)
-                Log.d(TAG, "refreshWorkspaces: get workspaces after fetch")
+                logger.trace("refreshWorkspaces: get workspaces after fetch")
                 getWorkspaces(user)
             }.await()
 

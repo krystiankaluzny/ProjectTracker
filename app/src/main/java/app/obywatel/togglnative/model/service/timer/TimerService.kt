@@ -1,6 +1,6 @@
 package app.obywatel.togglnative.model.service.timer
 
-import android.util.Log
+import org.slf4j.LoggerFactory
 import app.obywatel.togglnative.model.entity.*
 import app.obywatel.togglnative.model.service.toEntity
 import com.raizlabs.android.dbflow.kotlinextensions.list
@@ -17,7 +17,7 @@ import org.threeten.bp.ZoneId
 class TimerService(private val user: User, private val togglClient: TogglClient) {
 
     companion object {
-        private val TAG = "TimerService"
+        private val logger = LoggerFactory.getLogger(TimerService::class.java)
     }
 
     // @formatter:off
@@ -79,7 +79,7 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
         val workspace = select().from(Workspace::class.java).where(Workspace_Table.id.eq(user.activeWorkspaceId)).result
 
-        workspace?.let {
+        workspace?.let { w ->
 
             val projectsById: Map<Long, List<Project>> = togglClient.getWorkspaceProjects(user.activeWorkspaceId)
                 .map { it.toEntity(workspace) }
@@ -90,7 +90,7 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
                 fromTimestamp = fromTime.toEpochSecond(),
                 toTimestamp = toTime.toEpochSecond())
 
-            val filteredTimeEntries = togglClient.getDetailedReport(it.id, DetailedReportParameters(baseReportParameters))
+            val filteredTimeEntries = togglClient.getDetailedReport(w.id, DetailedReportParameters(baseReportParameters))
                 .detailedTimeEntries
                 .filter { it.project != null && projectsById.containsKey(it.project!!.id) }
 
@@ -102,7 +102,7 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
                 .map { it.toEntity(projectsById[it.project!!.id]!!.first()) }
                 .onEach { it.save() }
 
-            Log.d(TAG, "fetchTimeEntries: $filteredTimeEntries")
+            logger.debug("fetchTimeEntries: $filteredTimeEntries")
         }
     }
 }

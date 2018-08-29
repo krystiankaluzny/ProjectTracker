@@ -12,6 +12,7 @@ import com.raizlabs.android.dbflow.config.FlowManager
 import org.ktoggl.android.AndroidKToggl
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import org.slf4j.LoggerFactory
 
 class TogglNativeApp : MultiDexApplication() {
 
@@ -33,6 +34,7 @@ class TogglNativeApp : MultiDexApplication() {
     }
 
     override fun onCreate() {
+
         super.onCreate()
         AndroidKToggl.init(this)
         AndroidThreeTen.init(this)
@@ -40,6 +42,18 @@ class TogglNativeApp : MultiDexApplication() {
         initDatabase()
 
         initComponents()
+        testLog()
+    }
+
+    private fun testLog() {
+        val logger = LoggerFactory.getLogger(TogglNativeApp::class.java)
+
+        logger.trace("dupa {}", "sram")
+        logger.debug("dupa {} {}", "sram", 23)
+        logger.info("dupa {} {}", "sram", 23)
+        logger.warn("dupa {} {}", "sram", 12, IllegalArgumentException())
+        logger.error("dupa {} {}", "sram", 34, IllegalArgumentException())
+        logger.error("", IllegalArgumentException("abc"))
     }
 
     private fun initDatabase() {
