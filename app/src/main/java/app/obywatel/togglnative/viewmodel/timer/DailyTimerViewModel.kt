@@ -7,6 +7,8 @@ import app.obywatel.togglnative.model.service.timer.TimerService
 import app.obywatel.togglnative.model.util.ListenerGroup
 import app.obywatel.togglnative.model.util.ListenerGroupConsumer
 import app.obywatel.togglnative.viewmodel.BaseViewModel
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import org.threeten.bp.Duration
 
@@ -21,18 +23,19 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
 
     var allProjectsDuration = ObservableField<String>("00:00:00")
 
-    private var projects: List<Project> = timerService.getStoredProjects()
     private var projectViewModels: List<SingleProjectViewModel> = emptyList()
 
     init {
-        launch {
+        launch(UI) {
             updateViewModels()
-            timerService.fetchTodayTimeEntries()
+            async {
+                timerService.fetchTodayTimeEntries()
+            }.await()
             updateViewModels()
         }
     }
 
-    fun projectsCount() = projects.size
+    fun projectsCount() = projectViewModels.size
     fun singleProjectViewModel(position: Int) = projectViewModels[position]
 
     private fun updateViewModels() {
