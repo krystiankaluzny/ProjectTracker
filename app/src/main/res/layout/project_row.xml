@@ -19,19 +19,19 @@
         >
 
         <View
-            android:id="@+id/colorView"
+            android:id="@+id/colorMark"
             android:layout_width="10dp"
             android:layout_height="match_parent"
-            android:background="@{viewModel.projectColor}"
+            app:backgroundVerticalGradientBase="@{viewModel.projectColor}"
             app:layout_constraintStart_toStartOf="parent"
             tools:background="#aa0033"
             />
 
         <View
-            android:id="@+id/colorView2"
+            android:id="@+id/colorFooter"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            app:backgroundGradientBase="@{viewModel.projectColor}"
+            app:backgroundHorizontalGradientBase="@{viewModel.projectColor}"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:background="#aa0033"
             />
@@ -46,7 +46,7 @@
             android:textColor="@{viewModel.projectColor}"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/colorView"
+            app:layout_constraintStart_toEndOf="@id/colorMark"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Projekt"
             tools:textColor="#aa0033"

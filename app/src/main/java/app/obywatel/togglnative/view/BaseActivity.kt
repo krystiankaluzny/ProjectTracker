@@ -6,12 +6,12 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import org.slf4j.LoggerFactory
 import app.obywatel.togglnative.R
 import app.obywatel.togglnative.view.settings.SettingsActivity
 import app.obywatel.togglnative.view.timer.TimerActivity
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.android.synthetic.main.settings_activity_content.*
+import org.slf4j.LoggerFactory
 
 abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -20,6 +20,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        logger.trace("on create start")
         super.onCreate(savedInstanceState)
 
         inject()
