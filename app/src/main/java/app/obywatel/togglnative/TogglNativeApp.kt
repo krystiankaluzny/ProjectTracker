@@ -20,6 +20,7 @@ class TogglNativeApp : MultiDexApplication() {
     private lateinit var userComponent: UserComponent
 
     companion object {
+        private val logger = LoggerFactory.getLogger(TogglNativeApp::class.java)
         var instance: TogglNativeApp by NotNullSingleValueVar()
 
         fun getAppComponent() = instance.applicationComponent
@@ -27,6 +28,8 @@ class TogglNativeApp : MultiDexApplication() {
         fun getUserComponent() = instance.userComponent
 
         fun createUserComponent(user: User) {
+            logger.debug("Create user component from $user")
+
             val app = instance
             app.userComponent = app.applicationComponent
                 .plus(UserModule(user))
@@ -34,7 +37,7 @@ class TogglNativeApp : MultiDexApplication() {
     }
 
     override fun onCreate() {
-
+        logger.trace("on create app start")
         super.onCreate()
         AndroidKToggl.init(this)
         AndroidThreeTen.init(this)
@@ -42,18 +45,6 @@ class TogglNativeApp : MultiDexApplication() {
         initDatabase()
 
         initComponents()
-        testLog()
-    }
-
-    private fun testLog() {
-        val logger = LoggerFactory.getLogger(TogglNativeApp::class.java)
-
-        logger.trace("dupa {}", "sram")
-        logger.debug("dupa {} {}", "sram", 23)
-        logger.info("dupa {} {}", "sram", 23)
-        logger.warn("dupa {} {}", "sram", 12, IllegalArgumentException())
-        logger.error("dupa {} {}", "sram", 34, IllegalArgumentException())
-        logger.error("", IllegalArgumentException("abc"))
     }
 
     private fun initDatabase() {
