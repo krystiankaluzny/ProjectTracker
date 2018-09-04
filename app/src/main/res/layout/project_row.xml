@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="app.obywatel.togglnative.viewmodel.timer.SingleProjectViewModel" />
+            type="org.projecttracker.viewmodel.timer.SingleProjectViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout

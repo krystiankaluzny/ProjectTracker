@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TogglNative</string>
+    <string name="app_name">ProjectTracker</string>
     <string name="user_activity_title">Users</string>
     <string name="timer_activity_title">Timer</string>
 

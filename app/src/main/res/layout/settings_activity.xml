@@ -5,11 +5,11 @@
 
         <variable
             name="userViewModel"
-            type="app.obywatel.togglnative.viewmodel.user.UserViewModel" />
+            type="org.projecttracker.viewmodel.user.UserViewModel" />
 
         <variable
             name="workspaceViewModel"
-            type="app.obywatel.togglnative.viewmodel.user.WorkspaceViewModel" />
+            type="org.projecttracker.viewmodel.user.WorkspaceViewModel" />
     </data>
 
     <android.support.v4.widget.DrawerLayout

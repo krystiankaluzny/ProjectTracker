@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="app.obywatel.togglnative.viewmodel.timer.DailyTimerViewModel" />
+            type="org.projecttracker.viewmodel.timer.DailyTimerViewModel" />
     </data>
 
     <android.support.v4.widget.DrawerLayout
