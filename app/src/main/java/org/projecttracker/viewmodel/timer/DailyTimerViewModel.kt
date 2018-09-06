@@ -1,20 +1,22 @@
 package org.projecttracker.viewmodel.timer
 
 import android.databinding.ObservableField
+import kotlinx.coroutines.experimental.DefaultDispatcher
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import org.projecttracker.model.entity.TimeEntry
 import org.projecttracker.model.service.timer.TimerService
 import org.projecttracker.model.util.ListenerGroup
 import org.projecttracker.model.util.ListenerGroupConsumer
 import org.projecttracker.viewmodel.BaseViewModel
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
 
 class DailyTimerViewModel(private val timerService: TimerService) : BaseViewModel() {
 
     companion object {
-        private val TAG = "DailyTimerViewModel"
+        private val logger = LoggerFactory.getLogger(DailyTimerViewModel::class.java)
     }
 
     private val updateProjectsListenerConsumer = ListenerGroupConsumer<UpdateProjectsListener>()
@@ -27,9 +29,9 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
     init {
         launch(UI) {
             updateViewModels()
-            async {
+            withContext(DefaultDispatcher) {
                 timerService.fetchTodayTimeEntries()
-            }.await()
+            }
             updateViewModels()
         }
     }
@@ -39,10 +41,21 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
 
     private fun updateViewModels() {
 
-        projectViewModels = timerService.getStoredProjects()
-            .map { SingleProjectViewModel(it) }
+        logger.trace("updateViewModels")
 
-        updateProjectsListenerConsumer.accept { it.onUpdateProjects() }
+        val storedProjects = timerService.getStoredProjects()
+
+        if (projectViewModels.size != storedProjects.size) {
+
+            projectViewModels = storedProjects
+                .map { SingleProjectViewModel(it) }
+
+            updateProjectsListenerConsumer.accept { it.onUpdateProjects() }
+        } else {
+            storedProjects.forEachIndexed { i, it ->
+                projectViewModels[i].setProject(it)
+            }
+        }
 
         var totalTodayDuration = Duration.ZERO
 
