@@ -2,16 +2,17 @@ package org.projecttracker.viewmodel.user
 
 import android.databinding.Observable
 import android.databinding.ObservableInt
-import org.slf4j.LoggerFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.projecttracker.model.entity.User
 import org.projecttracker.model.entity.Workspace
 import org.projecttracker.model.service.user.UserService
 import org.projecttracker.model.util.ListenerGroup
 import org.projecttracker.model.util.ListenerGroupConsumer
 import org.projecttracker.viewmodel.ErrorViewModel
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import org.slf4j.LoggerFactory
 
 class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel) : ErrorViewModel by userViewModel, SelectUserListener {
 
@@ -46,14 +47,14 @@ class WorkspaceViewModel(private val userService: UserService, userViewModel: Us
         getWorkspaces(user)
         updateWorkspacesListenerConsumer.accept { it.onUpdateWorkspaces() }
 
-        launch(UI) {
+        GlobalScope.launch(Dispatchers.Main) {
 
-            async {
+            withContext(Dispatchers.Default) {
                 logger.trace("refreshWorkspaces: start fetching workspaces")
                 userService.fetchWorkspaces(user)
                 logger.trace("refreshWorkspaces: get workspaces after fetch")
                 getWorkspaces(user)
-            }.await()
+            }
 
             updateWorkspacesListenerConsumer.accept { it.onUpdateWorkspaces() }
         }

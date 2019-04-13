@@ -1,10 +1,10 @@
 package org.projecttracker.viewmodel.timer
 
 import android.databinding.ObservableField
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.projecttracker.model.entity.TimeEntry
 import org.projecttracker.model.service.timer.TimerService
 import org.projecttracker.model.util.ListenerGroup
@@ -27,9 +27,9 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
     private var projectViewModels: List<SingleProjectViewModel> = emptyList()
 
     init {
-        launch(UI) {
+        GlobalScope.launch(Dispatchers.Main) {
             updateViewModels()
-            withContext(DefaultDispatcher) {
+            withContext(Dispatchers.Default) {
                 timerService.fetchTodayTimeEntries()
             }
             updateViewModels()

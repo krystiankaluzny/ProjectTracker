@@ -3,15 +3,16 @@ package org.projecttracker.viewmodel.user
 import android.databinding.Observable
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableInt
-import org.slf4j.LoggerFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.projecttracker.model.entity.User
 import org.projecttracker.model.service.user.UserService
 import org.projecttracker.model.util.ListenerGroup
 import org.projecttracker.model.util.ListenerGroupConsumer
 import org.projecttracker.viewmodel.BaseViewModel
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import org.slf4j.LoggerFactory
 
 class UserViewModel(private val userService: UserService) : BaseViewModel() {
 
@@ -57,12 +58,12 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
         }
     }
 
-    fun addUserByApiToken(apiToken: String) = launch(UI) {
+    fun addUserByApiToken(apiToken: String) = GlobalScope.launch(Dispatchers.Main) {
 
         try {
             searchingUserInProgress.set(true)
 
-            val user: User? = async { userService.addUserByApiToken(apiToken) }.await()
+            val user: User? = withContext(Dispatchers.Default) { userService.addUserByApiToken(apiToken) }
 
             when (user) {
                 null -> logger.warn("Null user")
@@ -78,8 +79,8 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
         }
     }
 
-    private fun selectUser(user: User) = launch(UI) {
-        async { userService.selectUser(user) }.await()
+    private fun selectUser(user: User) = GlobalScope.launch(Dispatchers.Main) {
+        withContext(Dispatchers.Default) { userService.selectUser(user) }
         selectUserListenerConsumer.accept { it.onSelectUser(user) }
     }
 

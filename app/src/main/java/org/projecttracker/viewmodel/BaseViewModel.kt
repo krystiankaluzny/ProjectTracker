@@ -2,9 +2,10 @@ package org.projecttracker.viewmodel
 
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 interface ErrorViewModel {
     fun blinkError(error: String)
@@ -27,7 +28,7 @@ abstract class BaseViewModel : ErrorViewModel {
 
     override fun blinkError(error: String) {
 
-        launch(UI) {
+        GlobalScope.launch(Dispatchers.Main) {
             showErrorMessage(error)
             delay(ERROR_MESSAGE_SHOW_TIME)
             hideErrorMessage()

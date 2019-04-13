@@ -1,1 +1,1 @@
-include ':app', ':toggl-client'
+include ':app'
