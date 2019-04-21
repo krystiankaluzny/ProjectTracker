@@ -16,10 +16,11 @@ import org.projecttracker.viewmodel.user.UserViewModel
 import org.projecttracker.viewmodel.user.WorkspaceViewModel
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.android.synthetic.main.settings_activity_content.*
+import org.projecttracker.viewmodel.user.UpdateUserListener
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-class SettingsActivity : BaseActivity(), SelectUserListener {
+class SettingsActivity : BaseActivity(), SelectUserListener, UpdateUserListener {
 
     companion object {
         private val logger = LoggerFactory.getLogger(SettingsActivity::class.java)
@@ -28,7 +29,8 @@ class SettingsActivity : BaseActivity(), SelectUserListener {
         }
     }
 
-    @Inject lateinit var userViewModel: UserViewModel
+    @Inject
+    lateinit var userViewModel: UserViewModel
     private lateinit var workspaceViewModel: WorkspaceViewModel
 
     private lateinit var userAdapter: UserAdapter
@@ -44,6 +46,7 @@ class SettingsActivity : BaseActivity(), SelectUserListener {
 
         userViewModel.updateUserListeners += userAdapter
         userViewModel.selectUserListeners += this
+        userViewModel.updateUserListeners += this
         workspaceViewModel.updateWorkspacesListeners += workspaceAdapter
         userViewModel.showSelectedUser()
     }
@@ -73,8 +76,8 @@ class SettingsActivity : BaseActivity(), SelectUserListener {
 
     override fun inject() {
         ProjectTrackerApp.getAppComponent()
-            .plus(UserViewModelModule())
-            .inject(this)
+                .plus(UserViewModelModule())
+                .inject(this)
 
         workspaceViewModel = userViewModel.workspaceViewModel
     }
@@ -87,6 +90,15 @@ class SettingsActivity : BaseActivity(), SelectUserListener {
 
     override fun onSelectUser(user: User) {
         ProjectTrackerApp.createUserComponent(user)
+    }
+
+    override fun onAddUser(position: Int, user: User) {
+    }
+
+    override fun onUpdateUser(position: Int, user: User) {
+        if (position == 0) {
+            ProjectTrackerApp.createUserComponent(user)
+        }
     }
 
     private fun setUpUserSpinner() {

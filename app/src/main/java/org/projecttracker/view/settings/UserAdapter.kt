@@ -32,11 +32,11 @@ class UserAdapter(context: Context, private val userViewModel: UserViewModel) : 
 
     override fun getCount(): Int = userViewModel.userCount()
 
-    override fun onAddUser(position: Int) {
+    override fun onAddUser(position: Int, user: User) {
         notifyDataSetChanged()
     }
 
-    override fun onUpdateUser(position: Int) {
+    override fun onUpdateUser(position: Int, user: User) {
         notifyDataSetChanged()
     }
 

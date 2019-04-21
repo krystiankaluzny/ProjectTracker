@@ -33,6 +33,7 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
     init {
         selectedUserPosition.addOnPropertyChangedCallback(OnUserPositionChanged())
         selectUserListeners += workspaceViewModel
+        updateUserListeners += workspaceViewModel
     }
 
     fun userCount() = userList.size
@@ -91,12 +92,12 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
         when {
             userPosition >= 0 -> {
                 userList[userPosition] = user
-                updateUserListenerConsumer.accept { it.onUpdateUser(userPosition) }
+                updateUserListenerConsumer.accept { it.onUpdateUser(userPosition, user) }
             }
             else -> {
                 userList.add(user)
                 val position = userList.size - 1
-                updateUserListenerConsumer.accept { it.onAddUser(position) }
+                updateUserListenerConsumer.accept { it.onAddUser(position, user) }
             }
         }
     }

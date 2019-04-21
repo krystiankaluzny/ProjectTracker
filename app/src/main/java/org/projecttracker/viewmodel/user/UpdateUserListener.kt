@@ -1,7 +1,9 @@
 package org.projecttracker.viewmodel.user
 
-interface UpdateUserListener {
-    fun onAddUser(position: Int)
+import org.projecttracker.model.entity.User
 
-    fun onUpdateUser(position: Int)
+interface UpdateUserListener {
+    fun onAddUser(position: Int, user: User)
+
+    fun onUpdateUser(position: Int, user: User)
 }

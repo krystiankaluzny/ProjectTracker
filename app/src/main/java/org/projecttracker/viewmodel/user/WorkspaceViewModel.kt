@@ -15,7 +15,7 @@ import org.projecttracker.viewmodel.ErrorViewModel
 import org.slf4j.LoggerFactory
 
 class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel)
-    : ErrorViewModel by userViewModel, SelectUserListener {
+    : ErrorViewModel by userViewModel, SelectUserListener, UpdateUserListener {
 
     companion object {
         private val logger = LoggerFactory.getLogger(WorkspaceViewModel::class.java)
@@ -41,6 +41,20 @@ class WorkspaceViewModel(private val userService: UserService, userViewModel: Us
         selectedUser = user
         logger.debug("onSelectUser: $user")
         refreshWorkspaces(user)
+    }
+
+    override fun onAddUser(position: Int, user: User) {
+        if (position == 0) {
+            selectedUser = user
+            getWorkspaces(user)
+            workspaces.firstOrNull()?.also {
+                userService.setActiveWorkspace(selectedUser, it)
+            }
+            updateWorkspacesListenerConsumer.accept { it.onUpdateWorkspaces() }
+        }
+    }
+
+    override fun onUpdateUser(position: Int, user: User) {
     }
 
     private fun refreshWorkspaces(user: User) {
