@@ -32,28 +32,45 @@ fun View.bindVisibleOrGone(show: Boolean) {
 @BindingAdapter("backgroundHorizontalGradientBase")
 fun View.bindBackgroundHorizontalGradientBase(color: Int) {
 
-    backgroundGradient(color, false)
+    backgroundGradient(color, false, false)
 }
 
 @BindingAdapter("backgroundVerticalGradientBase")
 fun View.bindBackgroundVerticalGradientBase(color: Int) {
 
-    backgroundGradient(color, true)
+    backgroundGradient(color, true, false)
 }
 
-private fun View.backgroundGradient(baseColor: Int, vertical: Boolean = false) {
+@BindingAdapter("backgroundHorizontalGradientInvertBase")
+fun View.bindBackgroundHorizontalGradientInvertBase(color: Int) {
+
+    backgroundGradient(color, false, true)
+}
+
+@BindingAdapter("backgroundVerticalGradientInvertBase")
+fun View.bindBackgroundVerticalGradientInvertBase(color: Int) {
+
+    backgroundGradient(color, true, true)
+}
+
+private fun View.backgroundGradient(baseColor: Int, vertical: Boolean, invert: Boolean) {
 
     val lighterColor = ColorUtils.setAlphaComponent(baseColor, 100)
     val transparentColor = ColorUtils.setAlphaComponent(baseColor, 0)
 
     val shapeDrawable = ShapeDrawable(RectShape())
 
+    val colors = if (invert) intArrayOf(transparentColor, lighterColor, baseColor)
+                 else intArrayOf(baseColor, lighterColor, transparentColor)
+
+    val positions = if (invert) floatArrayOf(0f, 0.4f, 1f) else floatArrayOf(0f, 0.6f, 1f)
+
     shapeDrawable.paint.shader = LinearGradient(
-        0f, if (vertical) height.toFloat() else 0f,
-        if (vertical) 0f else width.toFloat(), 0f,
-        intArrayOf(baseColor, lighterColor, transparentColor),
-        floatArrayOf(0f, 0.6f, 1f),
-        Shader.TileMode.CLAMP)
+            0f, if (vertical) height.toFloat() else 0f,
+            if (vertical) 0f else width.toFloat(), 0f,
+            colors,
+            positions,
+            Shader.TileMode.CLAMP)
 
     background = shapeDrawable
 }

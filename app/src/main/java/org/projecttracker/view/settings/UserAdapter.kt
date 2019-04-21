@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
+import org.projecttracker.model.entity.User
 import org.projecttracker.viewmodel.user.UpdateUserListener
 import org.projecttracker.viewmodel.user.UserViewModel
 

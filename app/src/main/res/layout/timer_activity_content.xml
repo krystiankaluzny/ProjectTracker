@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -62,15 +61,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 app:layout_constraintBottom_toTopOf="@+id/recycleView"
-                app:layout_constraintTop_toBottomOf="@+id/errorMessage"
-                >
+                app:layout_constraintTop_toBottomOf="@+id/errorMessage">
 
                 <TextView
                     android:id="@+id/todayTotalDurationText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingEnd="0dp"
                     android:paddingStart="10dp"
+                    android:paddingEnd="0dp"
                     android:text="@string/todayTotalDurationText"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -81,12 +79,12 @@
                     android:id="@+id/todayTotalDuration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="55dp"
                     android:text="@{viewModel.allProjectsDuration}"
                     android:textSize="20sp"
-                    android:layout_marginStart="55dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/todayTotalDurationText"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/todayTotalDurationText"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </android.support.constraint.ConstraintLayout>

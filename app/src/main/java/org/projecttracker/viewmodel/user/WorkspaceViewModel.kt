@@ -14,7 +14,8 @@ import org.projecttracker.model.util.ListenerGroupConsumer
 import org.projecttracker.viewmodel.ErrorViewModel
 import org.slf4j.LoggerFactory
 
-class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel) : ErrorViewModel by userViewModel, SelectUserListener {
+class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel)
+    : ErrorViewModel by userViewModel, SelectUserListener {
 
     companion object {
         private val logger = LoggerFactory.getLogger(WorkspaceViewModel::class.java)

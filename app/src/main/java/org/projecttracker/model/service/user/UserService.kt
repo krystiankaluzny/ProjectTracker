@@ -41,7 +41,7 @@ class UserService(private val togglClientBuilder: TogglClientBuilder) {
 
         val togglClient = togglClientBuilder.build(apiToken)
 
-        val userEntity: User? = togglClient.getCurrentUser()?.toEntity()
+        val userEntity: User? = togglClient.getCurrentUser().toEntity()
 
         userEntity?.save()
 

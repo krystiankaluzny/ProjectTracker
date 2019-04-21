@@ -5,7 +5,7 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import org.projecttracker.R
 import org.projecttracker.ProjectTrackerApp
 import org.projecttracker.databinding.TimerActivityBinding
@@ -64,11 +64,9 @@ class TimerActivity : BaseActivity() {
     private fun setUpProjectList() {
         projectAdapter = ProjectAdapter(dailyTimerViewModel)
 
-        val linearLayoutManager = LinearLayoutManager(this)
-        val dividerItemDecoration = DividerItemDecoration(this, linearLayoutManager.orientation)
+        val layoutManager = GridLayoutManager(this, 2)
 
-        recycleView.layoutManager = linearLayoutManager
-        recycleView.addItemDecoration(dividerItemDecoration)
+        recycleView.layoutManager = layoutManager
         recycleView.adapter = projectAdapter
     }
 
