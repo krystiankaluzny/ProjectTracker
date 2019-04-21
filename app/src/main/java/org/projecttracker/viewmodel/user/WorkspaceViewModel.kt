@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 import org.projecttracker.model.entity.User
 import org.projecttracker.model.entity.Workspace
 import org.projecttracker.model.service.user.UserService
@@ -13,16 +14,17 @@ import org.projecttracker.model.util.ListenerGroup
 import org.projecttracker.model.util.ListenerGroupConsumer
 import org.projecttracker.viewmodel.ErrorViewModel
 import org.slf4j.LoggerFactory
+import org.greenrobot.eventbus.Subscribe
+import org.projecttracker.event.UserAddedEvent
+import org.projecttracker.event.UserSelectedEvent
+import org.projecttracker.event.WorkspacesUpdatedEvent
 
-class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel)
-    : ErrorViewModel by userViewModel, SelectUserListener, UpdateUserListener {
+
+class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel) : ErrorViewModel by userViewModel {
 
     companion object {
         private val logger = LoggerFactory.getLogger(WorkspaceViewModel::class.java)
     }
-
-    private val updateWorkspacesListenerConsumer = ListenerGroupConsumer<UpdateWorkspacesListener>()
-    val updateWorkspacesListeners: ListenerGroup<UpdateWorkspacesListener> = updateWorkspacesListenerConsumer
 
     private var workspaces: List<Workspace> = emptyList()
     private lateinit var selectedUser: User
@@ -37,30 +39,27 @@ class WorkspaceViewModel(private val userService: UserService, userViewModel: Us
     fun getWorkspaceName(position: Int): String = workspaces.getOrNull(position)?.name ?: ""
     fun getWorkspaceId(position: Int): Long = workspaces.getOrNull(position)?.id ?: -1
 
-    override fun onSelectUser(user: User) {
-        selectedUser = user
-        logger.debug("onSelectUser: $user")
-        refreshWorkspaces(user)
+    @Subscribe
+    fun onUserSelected(userSelectedEvent: UserSelectedEvent) {
+        selectedUser = userSelectedEvent.user
+        logger.debug("onUserSelected: ${userSelectedEvent.user}")
+        refreshWorkspaces(userSelectedEvent.user)
     }
 
-    override fun onAddUser(position: Int, user: User) {
-        if (position == 0) {
-            selectedUser = user
-            getWorkspaces(user)
-            workspaces.firstOrNull()?.also {
-                userService.setActiveWorkspace(selectedUser, it)
-            }
-            updateWorkspacesListenerConsumer.accept { it.onUpdateWorkspaces() }
+    @Subscribe
+    fun onUserAdded(userAddedEvent: UserAddedEvent) {
+        logger.debug("onUserAdded: ${userAddedEvent.user}")
+        if (userAddedEvent.position == 0) {
+            selectedUser = userAddedEvent.user
+            getWorkspaces(selectedUser)
+            EventBus.getDefault().post(WorkspacesUpdatedEvent(workspaces))
         }
-    }
-
-    override fun onUpdateUser(position: Int, user: User) {
     }
 
     private fun refreshWorkspaces(user: User) {
 
         getWorkspaces(user)
-        updateWorkspacesListenerConsumer.accept { it.onUpdateWorkspaces() }
+        EventBus.getDefault().post(WorkspacesUpdatedEvent(workspaces))
 
         GlobalScope.launch(Dispatchers.Main) {
 
@@ -71,7 +70,7 @@ class WorkspaceViewModel(private val userService: UserService, userViewModel: Us
                 getWorkspaces(user)
             }
 
-            updateWorkspacesListenerConsumer.accept { it.onUpdateWorkspaces() }
+            EventBus.getDefault().post(WorkspacesUpdatedEvent(workspaces))
         }
     }
 

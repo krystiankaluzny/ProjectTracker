@@ -7,6 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.projecttracker.event.UserAddedEvent
+import org.projecttracker.event.UserSelectedEvent
 import org.projecttracker.model.entity.User
 import org.projecttracker.model.service.user.UserService
 import org.projecttracker.model.util.ListenerGroup
@@ -20,11 +23,6 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
         private val logger = LoggerFactory.getLogger(UserViewModel::class.java)
     }
 
-    private val updateUserListenerConsumer = ListenerGroupConsumer<UpdateUserListener>()
-    private val selectUserListenerConsumer = ListenerGroupConsumer<SelectUserListener>()
-    val updateUserListeners: ListenerGroup<UpdateUserListener> = updateUserListenerConsumer
-    val selectUserListeners: ListenerGroup<SelectUserListener> = selectUserListenerConsumer
-
     private val userList: MutableList<User> = userService.getAllUsers()
     val searchingUserInProgress = ObservableBoolean(false)
     val workspaceViewModel = WorkspaceViewModel(userService, this)
@@ -32,8 +30,6 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
 
     init {
         selectedUserPosition.addOnPropertyChangedCallback(OnUserPositionChanged())
-        selectUserListeners += workspaceViewModel
-        updateUserListeners += workspaceViewModel
     }
 
     fun userCount() = userList.size
@@ -52,9 +48,10 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
         selectedUser?.let { user ->
             val indexOfUser = userList.indexOf(user)
 
-            when (indexOfUser) {
-                selectedUserPosition.get() -> selectUserListenerConsumer.accept { it.onSelectUser(user) }
-                else -> selectedUserPosition.set(indexOfUser)
+            if (indexOfUser == selectedUserPosition.get()) {
+                EventBus.getDefault().post(UserSelectedEvent(user))
+            } else {
+                selectedUserPosition.set(indexOfUser)
             }
         }
     }
@@ -70,19 +67,17 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
                 null -> logger.warn("Null user")
                 else -> updateOrInsertUser(user)
             }
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             logger.error("addUserByApiToken", e)
             blinkException(e)
-        }
-        finally {
+        } finally {
             searchingUserInProgress.set(false)
         }
     }
 
     private fun selectUser(user: User) = GlobalScope.launch(Dispatchers.Main) {
         withContext(Dispatchers.Default) { userService.selectUser(user) }
-        selectUserListenerConsumer.accept { it.onSelectUser(user) }
+        EventBus.getDefault().post(UserSelectedEvent(user))
     }
 
     private fun updateOrInsertUser(user: User) {
@@ -92,12 +87,12 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
         when {
             userPosition >= 0 -> {
                 userList[userPosition] = user
-                updateUserListenerConsumer.accept { it.onUpdateUser(userPosition, user) }
+                EventBus.getDefault().post(UserAddedEvent(userPosition, user))
             }
             else -> {
                 userList.add(user)
                 val position = userList.size - 1
-                updateUserListenerConsumer.accept { it.onAddUser(position, user) }
+                EventBus.getDefault().post(UserAddedEvent(position, user))
             }
         }
     }

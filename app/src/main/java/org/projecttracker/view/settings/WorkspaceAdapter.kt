@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
-import org.projecttracker.viewmodel.user.UpdateWorkspacesListener
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import org.projecttracker.event.WorkspacesUpdatedEvent
 import org.projecttracker.viewmodel.user.WorkspaceViewModel
 
-class WorkspaceAdapter(context: Context, private val workspaceViewModel: WorkspaceViewModel) : BaseAdapter(), UpdateWorkspacesListener {
+class WorkspaceAdapter(context: Context, private val workspaceViewModel: WorkspaceViewModel) : BaseAdapter() {
 
     companion object {
         private const val resource = android.R.layout.simple_spinner_dropdown_item
@@ -18,7 +20,8 @@ class WorkspaceAdapter(context: Context, private val workspaceViewModel: Workspa
     private val inflater = LayoutInflater.from(context)
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val textView: CheckedTextView = (convertView ?: inflater.inflate(resource, parent, false)) as CheckedTextView
+        val textView: CheckedTextView = (convertView
+            ?: inflater.inflate(resource, parent, false)) as CheckedTextView
 
         textView.text = getItem(position)
 
@@ -31,5 +34,8 @@ class WorkspaceAdapter(context: Context, private val workspaceViewModel: Workspa
 
     override fun getCount(): Int = workspaceViewModel.getWorkspacesCount()
 
-    override fun onUpdateWorkspaces() = notifyDataSetChanged()
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onWorkspacesUpdated(workspacesUpdatedEvent: WorkspacesUpdatedEvent) {
+        notifyDataSetChanged()
+    }
 }

@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
-import org.projecttracker.model.entity.User
-import org.projecttracker.viewmodel.user.UpdateUserListener
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import org.projecttracker.event.UserAddedEvent
+import org.projecttracker.event.UserUpdatedEvent
 import org.projecttracker.viewmodel.user.UserViewModel
 
-class UserAdapter(context: Context, private val userViewModel: UserViewModel) : BaseAdapter(), UpdateUserListener {
+class UserAdapter(context: Context, private val userViewModel: UserViewModel) : BaseAdapter() {
 
     companion object {
         private const val resource = android.R.layout.simple_spinner_dropdown_item
@@ -19,7 +21,8 @@ class UserAdapter(context: Context, private val userViewModel: UserViewModel) : 
     private val inflater = LayoutInflater.from(context)
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val textView: CheckedTextView = (convertView ?: inflater.inflate(resource, parent, false)) as CheckedTextView
+        val textView: CheckedTextView = (convertView
+            ?: inflater.inflate(resource, parent, false)) as CheckedTextView
 
         textView.text = getItem(position)
 
@@ -32,12 +35,13 @@ class UserAdapter(context: Context, private val userViewModel: UserViewModel) : 
 
     override fun getCount(): Int = userViewModel.userCount()
 
-    override fun onAddUser(position: Int, user: User) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onUserAdded(userAddedEvent: UserAddedEvent) {
         notifyDataSetChanged()
     }
 
-    override fun onUpdateUser(position: Int, user: User) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onUserUpdated(userUpdatedEvent: UserUpdatedEvent) {
         notifyDataSetChanged()
     }
-
 }

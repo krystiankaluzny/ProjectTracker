@@ -9,18 +9,20 @@ import org.projecttracker.R
 import org.projecttracker.ProjectTrackerApp
 import org.projecttracker.databinding.SettingsActivityBinding
 import org.projecttracker.di.UserViewModelModule
-import org.projecttracker.model.entity.User
 import org.projecttracker.view.BaseActivity
-import org.projecttracker.viewmodel.user.SelectUserListener
 import org.projecttracker.viewmodel.user.UserViewModel
 import org.projecttracker.viewmodel.user.WorkspaceViewModel
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.android.synthetic.main.settings_activity_content.*
-import org.projecttracker.viewmodel.user.UpdateUserListener
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import org.projecttracker.event.UserAddedEvent
+import org.projecttracker.event.UserSelectedEvent
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-class SettingsActivity : BaseActivity(), SelectUserListener, UpdateUserListener {
+class SettingsActivity : BaseActivity() {
 
     companion object {
         private val logger = LoggerFactory.getLogger(SettingsActivity::class.java)
@@ -43,26 +45,33 @@ class SettingsActivity : BaseActivity(), SelectUserListener, UpdateUserListener 
         setUpUserSpinner()
         setUpWorkspaceSpinner()
         setUpViewListeners()
-
-        userViewModel.updateUserListeners += userAdapter
-        userViewModel.selectUserListeners += this
-        userViewModel.updateUserListeners += this
-        workspaceViewModel.updateWorkspacesListeners += workspaceAdapter
         userViewModel.showSelectedUser()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+        EventBus.getDefault().register(userAdapter)
+        EventBus.getDefault().register(workspaceViewModel)
+        EventBus.getDefault().register(workspaceAdapter)
     }
 
     override fun onResume() {
         logger.trace("on resume start")
         super.onResume()
-        userViewModel.updateUserListeners += userAdapter
-        workspaceViewModel.updateWorkspacesListeners += workspaceAdapter
     }
 
     override fun onPause() {
         logger.trace("on pause start")
         super.onPause()
-        userViewModel.updateUserListeners -= userAdapter
-        workspaceViewModel.updateWorkspacesListeners -= workspaceAdapter
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+        EventBus.getDefault().unregister(workspaceAdapter)
+        EventBus.getDefault().unregister(workspaceViewModel)
+        EventBus.getDefault().unregister(userAdapter)
     }
 
     override fun onBackPressed() {
@@ -76,8 +85,8 @@ class SettingsActivity : BaseActivity(), SelectUserListener, UpdateUserListener 
 
     override fun inject() {
         ProjectTrackerApp.getAppComponent()
-                .plus(UserViewModelModule())
-                .inject(this)
+            .plus(UserViewModelModule())
+            .inject(this)
 
         workspaceViewModel = userViewModel.workspaceViewModel
     }
@@ -88,16 +97,15 @@ class SettingsActivity : BaseActivity(), SelectUserListener, UpdateUserListener 
         binding.workspaceViewModel = workspaceViewModel
     }
 
-    override fun onSelectUser(user: User) {
-        ProjectTrackerApp.createUserComponent(user)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onUserSelected(userSelectedEvent: UserSelectedEvent) {
+        ProjectTrackerApp.createUserComponent(userSelectedEvent.user)
     }
 
-    override fun onAddUser(position: Int, user: User) {
-    }
-
-    override fun onUpdateUser(position: Int, user: User) {
-        if (position == 0) {
-            ProjectTrackerApp.createUserComponent(user)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onUserAdded(userAddedEvent: UserAddedEvent) {
+        if (userAddedEvent.position == 0) {
+            ProjectTrackerApp.createUserComponent(userAddedEvent.user)
         }
     }
 
