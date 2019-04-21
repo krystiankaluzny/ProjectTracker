@@ -45,15 +45,17 @@ class SettingsActivity : BaseActivity() {
         setUpUserSpinner()
         setUpWorkspaceSpinner()
         setUpViewListeners()
-        userViewModel.showSelectedUser()
     }
 
     override fun onStart() {
         super.onStart()
+
         EventBus.getDefault().register(this)
         EventBus.getDefault().register(userAdapter)
         EventBus.getDefault().register(workspaceViewModel)
         EventBus.getDefault().register(workspaceAdapter)
+
+        userViewModel.showSelectedUser()
     }
 
     override fun onResume() {
