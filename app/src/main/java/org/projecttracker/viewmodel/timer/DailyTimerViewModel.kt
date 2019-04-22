@@ -52,7 +52,7 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
 
             withContext(Dispatchers.Default) {
                 if (running) {
-//                    timerService.stopTimerForProject(projectViewModel.project)
+                    timerService.stopTimerForProject(projectViewModel.project)
                 } else {
                     timerService.startTimerForProject(projectViewModel.project)
                 }

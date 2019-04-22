@@ -22,6 +22,8 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         private val logger = LoggerFactory.getLogger(TimerService::class.java)
     }
 
+    private var lastStartedTimeEntry: TimeEntry? = null
+
     // @formatter:off
 
     fun getStoredProjects(): MutableList<Project> = select()
@@ -70,10 +72,32 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
         logger.debug("$project")
 
-        togglClient.startTimeEntry(StartTimeEntryData(
-            parent = ProjectParent(project.id),
-            description = project.name
-        ))
+        val startedTimeEntry = togglClient.startTimeEntry(
+            StartTimeEntryData(
+                parent = ProjectParent(project.id),
+                description = project.name
+            ))
+            .toEntity(project)
+
+        startedTimeEntry.save()
+
+        lastStartedTimeEntry = startedTimeEntry
+    }
+
+    fun stopTimerForProject(project: Project) {
+
+        lastStartedTimeEntry?.also {
+            if (it.project?.id != project.id) {
+                logger.warn("Stopped time entry in project: ${it.project} but it should be: $project")
+            }
+
+            val stoppedTimeEntry = togglClient.stopTimeEntry(it.id)
+                .toEntity(project)
+
+            stoppedTimeEntry.save()
+        }
+
+        lastStartedTimeEntry = null
     }
 
     fun synchronizeTimeEntries() {
