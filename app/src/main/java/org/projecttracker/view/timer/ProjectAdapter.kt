@@ -1,15 +1,18 @@
 package org.projecttracker.view.timer
 
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.view.ViewGroup
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.projecttracker.R
 import org.projecttracker.databinding.ProjectRowBinding
+import org.projecttracker.event.ProjectsUpdatedEvent
 import org.projecttracker.view.bind
 import org.projecttracker.viewmodel.timer.DailyTimerViewModel
-import org.projecttracker.viewmodel.timer.UpdateProjectsListener
 
 class ProjectAdapter(private val dailyTimerViewModel: DailyTimerViewModel)
-    : RecyclerView.Adapter<ProjectAdapter.ViewHolder>(), UpdateProjectsListener {
+    : RecyclerView.Adapter<ProjectAdapter.ViewHolder>() {
 
     override fun getItemCount() = dailyTimerViewModel.projectsCount()
 
@@ -20,9 +23,19 @@ class ProjectAdapter(private val dailyTimerViewModel: DailyTimerViewModel)
         holder.binding.viewModel = dailyTimerViewModel.singleProjectViewModel(position)
     }
 
-    override fun onUpdateProjects() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onProjectsUpdated(projectsUpdatedEvent: ProjectsUpdatedEvent) {
         notifyDataSetChanged()
     }
 
-    class ViewHolder(val binding: ProjectRowBinding) : RecyclerView.ViewHolder(binding.content)
+    inner class ViewHolder(val binding: ProjectRowBinding) : RecyclerView.ViewHolder(binding.content) {
+
+        init {
+            binding.content.setOnClickListener {
+                binding.viewModel?.let {
+                    dailyTimerViewModel.startCounting(it)
+                }
+            }
+        }
+    }
 }

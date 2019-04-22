@@ -13,6 +13,7 @@ import org.projecttracker.di.TimerViewModelModule
 import org.projecttracker.view.BaseActivity
 import org.projecttracker.viewmodel.timer.DailyTimerViewModel
 import kotlinx.android.synthetic.main.timer_activity_content.*
+import org.greenrobot.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -25,7 +26,8 @@ class TimerActivity : BaseActivity() {
         }
     }
 
-    @Inject lateinit var dailyTimerViewModel: DailyTimerViewModel
+    @Inject
+    lateinit var dailyTimerViewModel: DailyTimerViewModel
     private lateinit var projectAdapter: ProjectAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,20 +35,18 @@ class TimerActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setUpProjectList()
-
-        dailyTimerViewModel.updateProjectsListeners += projectAdapter
     }
 
-    override fun onResume() {
-        logger.trace("on resume start")
-        super.onResume()
-        dailyTimerViewModel.updateProjectsListeners += projectAdapter
+    override fun onStart() {
+        super.onStart()
+
+        EventBus.getDefault().register(projectAdapter)
     }
 
-    override fun onPause() {
-        logger.trace("on pause start")
-        super.onPause()
-        dailyTimerViewModel.updateProjectsListeners -= projectAdapter
+    override fun onStop() {
+        super.onStop()
+
+        EventBus.getDefault().unregister(projectAdapter)
     }
 
     override fun inject() {

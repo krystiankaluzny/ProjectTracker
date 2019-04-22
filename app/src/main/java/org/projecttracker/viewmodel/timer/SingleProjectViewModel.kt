@@ -5,17 +5,18 @@ import android.databinding.ObservableInt
 import org.projecttracker.model.entity.Project
 import org.threeten.bp.Duration
 
-class SingleProjectViewModel(internal var project: Project) {
+class SingleProjectViewModel(project: Project) {
+
+    internal var project: Project = project
+        set(value) {
+            this.projectName.set(value.name)
+            this.projectColor.set(value.color)
+            field = value
+        }
 
     val projectName = ObservableField<String>(project.name)
     val projectColor = ObservableInt(project.color)
     val projectDuration = ObservableField<String>("00:00:00")
-
-    fun setProject(project: Project) {
-        this.project = project
-        this.projectName.set(project.name)
-        this.projectColor.set(project.color)
-    }
 
     fun setDuration(duration: Duration) {
 
@@ -23,5 +24,9 @@ class SingleProjectViewModel(internal var project: Project) {
             duration.seconds / 3600,
             (duration.seconds % 3600) / 60,
             duration.seconds % 60))
+    }
+
+    fun startCounting() {
+
     }
 }

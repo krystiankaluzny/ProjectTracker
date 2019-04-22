@@ -9,6 +9,8 @@ import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite.delete
 import com.raizlabs.android.dbflow.sql.language.SQLite.select
 import org.ktoggl.TogglClient
+import org.ktoggl.entity.ProjectParent
+import org.ktoggl.entity.StartTimeEntryData
 import org.ktoggl.request.BaseReportParameters
 import org.ktoggl.request.DetailedReportParameters
 import org.threeten.bp.OffsetDateTime
@@ -62,6 +64,16 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         val fromTime = toTime.minusDays(1)
 
         synchronizeTimeEntries(fromTime, toTime)
+    }
+
+    fun startTimerForProject(project: Project) {
+
+        logger.debug("$project")
+
+        togglClient.startTimeEntry(StartTimeEntryData(
+            parent = ProjectParent(project.id),
+            description = project.name
+        ))
     }
 
     fun synchronizeTimeEntries() {

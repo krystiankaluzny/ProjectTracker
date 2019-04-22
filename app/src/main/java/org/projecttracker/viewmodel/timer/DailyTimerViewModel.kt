@@ -5,6 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.projecttracker.event.ProjectsUpdatedEvent
 import org.projecttracker.model.entity.TimeEntry
 import org.projecttracker.model.service.timer.TimerService
 import org.projecttracker.model.util.ListenerGroup
@@ -18,9 +20,6 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
     companion object {
         private val logger = LoggerFactory.getLogger(DailyTimerViewModel::class.java)
     }
-
-    private val updateProjectsListenerConsumer = ListenerGroupConsumer<UpdateProjectsListener>()
-    val updateProjectsListeners: ListenerGroup<UpdateProjectsListener> = updateProjectsListenerConsumer
 
     var allProjectsDuration = ObservableField<String>("00:00:00")
 
@@ -39,6 +38,16 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
     fun projectsCount() = projectViewModels.size
     fun singleProjectViewModel(position: Int) = projectViewModels[position]
 
+    fun startCounting(projectViewModel: SingleProjectViewModel) {
+
+        GlobalScope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.Default) {
+                timerService.startTimerForProject(projectViewModel.project)
+            }
+            projectViewModel.startCounting()
+        }
+    }
+
     private fun updateViewModels() {
 
         logger.trace("updateViewModels")
@@ -50,10 +59,11 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
             projectViewModels = storedProjects
                 .map { SingleProjectViewModel(it) }
 
-            updateProjectsListenerConsumer.accept { it.onUpdateProjects() }
+            EventBus.getDefault().post(ProjectsUpdatedEvent(storedProjects))
+
         } else {
             storedProjects.forEachIndexed { i, it ->
-                projectViewModels[i].setProject(it)
+                projectViewModels[i].project = it
             }
         }
 
