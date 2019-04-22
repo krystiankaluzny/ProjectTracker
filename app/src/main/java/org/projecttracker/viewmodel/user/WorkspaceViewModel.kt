@@ -7,17 +7,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
-import org.projecttracker.model.entity.User
-import org.projecttracker.model.entity.Workspace
-import org.projecttracker.model.service.user.UserService
-import org.projecttracker.model.util.ListenerGroup
-import org.projecttracker.model.util.ListenerGroupConsumer
-import org.projecttracker.viewmodel.ErrorViewModel
-import org.slf4j.LoggerFactory
 import org.greenrobot.eventbus.Subscribe
 import org.projecttracker.event.UserAddedEvent
 import org.projecttracker.event.UserSelectedEvent
 import org.projecttracker.event.WorkspacesUpdatedEvent
+import org.projecttracker.model.entity.User
+import org.projecttracker.model.entity.Workspace
+import org.projecttracker.model.service.user.UserService
+import org.projecttracker.viewmodel.ErrorViewModel
+import org.slf4j.LoggerFactory
 
 
 class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel) : ErrorViewModel by userViewModel {

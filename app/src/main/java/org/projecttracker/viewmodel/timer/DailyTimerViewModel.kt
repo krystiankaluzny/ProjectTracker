@@ -1,6 +1,5 @@
 package org.projecttracker.viewmodel.timer
 
-import android.databinding.ObservableField
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -9,8 +8,6 @@ import org.greenrobot.eventbus.EventBus
 import org.projecttracker.event.ProjectsUpdatedEvent
 import org.projecttracker.model.entity.TimeEntry
 import org.projecttracker.model.service.timer.TimerService
-import org.projecttracker.model.util.ListenerGroup
-import org.projecttracker.model.util.ListenerGroupConsumer
 import org.projecttracker.viewmodel.BaseViewModel
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
@@ -21,7 +18,7 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
         private val logger = LoggerFactory.getLogger(DailyTimerViewModel::class.java)
     }
 
-    var allProjectsDuration = ObservableField<String>("00:00:00")
+    val allProjectsTimer = ObservableTimer()
 
     private var projectViewModels: List<SingleProjectViewModel> = emptyList()
 
@@ -42,20 +39,26 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
 
         GlobalScope.launch(Dispatchers.Main) {
 
-            val running = projectViewModel.projectRunning.get()
+            val currentWasRunning = projectViewModel.projectRunning.get()
 
+            allProjectsTimer.stop()
             projectViewModels.forEach { it.stopCounting() }
 
-            if (!running) {
+            if (!currentWasRunning) {
+                allProjectsTimer.start()
                 projectViewModel.startCounting()
             }
 
             withContext(Dispatchers.Default) {
-                if (running) {
+                if (currentWasRunning) {
                     timerService.stopTimerForProject(projectViewModel.project)
+                    timerService.fetchTodayTimeEntries()
                 } else {
                     timerService.startTimerForProject(projectViewModel.project)
                 }
+            }
+            if(currentWasRunning) {
+                updateViewModels()
             }
         }
     }
@@ -85,15 +88,12 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
             val projectTimeEntries = timerService.getStoredTimeEntriesForToday(it.project)
             val todayProjectDuration = calculateTotalDuration(projectTimeEntries)
 
-            it.setDuration(todayProjectDuration)
+            it.projectTimer.duration = todayProjectDuration
 
             totalTodayDuration += todayProjectDuration
         }
 
-        allProjectsDuration.set("%02d:%02d:%02d".format(
-            totalTodayDuration.seconds / 3600,
-            (totalTodayDuration.seconds % 3600) / 60,
-            totalTodayDuration.seconds % 60))
+        allProjectsTimer.duration = totalTodayDuration
     }
 
     private fun calculateTotalDuration(timeEntries: List<TimeEntry>): Duration {

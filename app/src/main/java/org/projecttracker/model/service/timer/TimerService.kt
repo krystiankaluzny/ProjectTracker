@@ -135,7 +135,7 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
                 .execute()
 
             filteredTimeEntries
-                .map { it.toEntity(projectsById[it.project!!.id]!!.first()) }
+                .map { it.toEntity(projectsById.getValue(it.project!!.id).first()) }
                 .onEach { it.save() }
 
             logger.debug("fetchTimeEntries: $filteredTimeEntries")

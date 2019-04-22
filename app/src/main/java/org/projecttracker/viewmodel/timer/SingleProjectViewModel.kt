@@ -5,34 +5,30 @@ import android.databinding.ObservableField
 import android.databinding.ObservableInt
 import org.projecttracker.model.entity.Project
 import org.threeten.bp.Duration
+import kotlin.concurrent.fixedRateTimer
 
 class SingleProjectViewModel(project: Project) {
-
-    internal var project: Project = project
-        set(value) {
-            this.projectName.set(value.name)
-            this.projectColor.set(value.color)
-            field = value
-        }
 
     val projectName = ObservableField<String>(project.name)
     val projectColor = ObservableInt(project.color)
     val projectDuration = ObservableField<String>("00:00:00")
     val projectRunning = ObservableBoolean(false)
+    val projectTimer = ObservableTimer()
 
-    fun setDuration(duration: Duration) {
+    internal var project: Project = project
+        set(value) {
+            field = value
+            this.projectName.set(value.name)
+            this.projectColor.set(value.color)
+        }
 
-        this.projectDuration.set("%02d:%02d:%02d".format(
-            duration.seconds / 3600,
-            (duration.seconds % 3600) / 60,
-            duration.seconds % 60))
-    }
-
-    fun startCounting() {
+    internal fun startCounting() {
+        projectTimer.start()
         projectRunning.set(true)
     }
 
     fun stopCounting() {
+        projectTimer.stop()
         projectRunning.set(false)
     }
 }
