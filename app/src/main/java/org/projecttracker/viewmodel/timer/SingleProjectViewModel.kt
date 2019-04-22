@@ -1,5 +1,6 @@
 package org.projecttracker.viewmodel.timer
 
+import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import android.databinding.ObservableInt
 import org.projecttracker.model.entity.Project
@@ -17,6 +18,7 @@ class SingleProjectViewModel(project: Project) {
     val projectName = ObservableField<String>(project.name)
     val projectColor = ObservableInt(project.color)
     val projectDuration = ObservableField<String>("00:00:00")
+    val projectRunning = ObservableBoolean(false)
 
     fun setDuration(duration: Duration) {
 
@@ -27,6 +29,10 @@ class SingleProjectViewModel(project: Project) {
     }
 
     fun startCounting() {
+        projectRunning.set(true)
+    }
 
+    fun stopCounting() {
+        projectRunning.set(false)
     }
 }

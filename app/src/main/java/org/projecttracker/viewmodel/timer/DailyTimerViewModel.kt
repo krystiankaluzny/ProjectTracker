@@ -38,13 +38,25 @@ class DailyTimerViewModel(private val timerService: TimerService) : BaseViewMode
     fun projectsCount() = projectViewModels.size
     fun singleProjectViewModel(position: Int) = projectViewModels[position]
 
-    fun startCounting(projectViewModel: SingleProjectViewModel) {
+    fun toggleProject(projectViewModel: SingleProjectViewModel) {
 
         GlobalScope.launch(Dispatchers.Main) {
-            withContext(Dispatchers.Default) {
-                timerService.startTimerForProject(projectViewModel.project)
+
+            val running = projectViewModel.projectRunning.get()
+
+            projectViewModels.forEach { it.stopCounting() }
+
+            if (!running) {
+                projectViewModel.startCounting()
             }
-            projectViewModel.startCounting()
+
+            withContext(Dispatchers.Default) {
+                if (running) {
+//                    timerService.stopTimerForProject(projectViewModel.project)
+                } else {
+                    timerService.startTimerForProject(projectViewModel.project)
+                }
+            }
         }
     }
 

@@ -14,6 +14,7 @@
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:background="?attr/selectableItemBackground"
         android:padding="1dp">
 
         <View
@@ -32,21 +33,27 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:background="#aa0033" />
 
-        <!--<View-->
-            <!--android:id="@+id/rightColorMark"-->
-            <!--android:layout_width="3dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--app:backgroundVerticalGradientInvertBase="@{viewModel.projectColor}"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--tools:background="#aa0033" />-->
+        <View
+            android:id="@+id/startIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            app:visibleOrGone="@{!viewModel.projectRunning}"
+            android:background="@drawable/ic_media_play"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
-        <!--<View-->
-            <!--android:id="@+id/topColorMark"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="3dp"-->
-            <!--app:backgroundHorizontalGradientInvertBase="@{viewModel.projectColor}"-->
-            <!--app:layout_constraintTop_toTopOf="parent"-->
-            <!--tools:background="#aa0033" />-->
+        <View
+            android:id="@+id/stopIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            app:visibleOrGone="@{viewModel.projectRunning}"
+            android:background="@drawable/ic_media_stop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
         <TextView
             android:id="@+id/projectName"
