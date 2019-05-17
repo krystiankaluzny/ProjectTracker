@@ -19,6 +19,7 @@ abstract class BaseViewModel : ErrorViewModel {
     companion object {
         private const val ERROR_MESSAGE_SHOW_TIME = 10_000L
         private const val UNKNOWN_ERROR_MESSAGE = "Unknown Message"
+        private const val NOTWORK_CONNECTION_REQUIRED = "Network connection is required"
     }
 
     val errorMessageVisible = ObservableBoolean(false)
@@ -47,5 +48,11 @@ abstract class BaseViewModel : ErrorViewModel {
     override fun hideErrorMessage() {
         errorMessageVisible.set(false)
         errorMessage.set("")
+    }
+
+    fun invalidNetworkState(networkStateMonitor: NetworkStateMonitor): Boolean {
+        if(networkStateMonitor.isNetworkConnected) return false
+        blinkError(NOTWORK_CONNECTION_REQUIRED)
+        return true
     }
 }

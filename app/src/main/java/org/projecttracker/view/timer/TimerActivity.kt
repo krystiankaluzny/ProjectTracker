@@ -14,6 +14,7 @@ import org.projecttracker.view.BaseActivity
 import org.projecttracker.viewmodel.timer.DailyTimerViewModel
 import kotlinx.android.synthetic.main.timer_activity_content.*
 import org.greenrobot.eventbus.EventBus
+import org.projecttracker.viewmodel.NetworkStateMonitor
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -28,6 +29,9 @@ class TimerActivity : BaseActivity() {
 
     @Inject
     lateinit var dailyTimerViewModel: DailyTimerViewModel
+    @Inject
+    lateinit var networkStateMonitor: NetworkStateMonitor
+
     private lateinit var projectAdapter: ProjectAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +44,8 @@ class TimerActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
 
+        networkStateMonitor.startMonitoring()
+
         EventBus.getDefault().register(projectAdapter)
     }
 
@@ -47,11 +53,13 @@ class TimerActivity : BaseActivity() {
         super.onStop()
 
         EventBus.getDefault().unregister(projectAdapter)
+
+        networkStateMonitor.stopMonitoring()
     }
 
     override fun inject() {
         ProjectTrackerApp.getUserComponent()
-            .plus(TimerViewModelModule())
+            .plus(TimerViewModelModule(this))
             .inject(this)
     }
 

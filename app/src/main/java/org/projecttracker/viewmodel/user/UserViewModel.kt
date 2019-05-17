@@ -12,12 +12,11 @@ import org.projecttracker.event.UserAddedEvent
 import org.projecttracker.event.UserSelectedEvent
 import org.projecttracker.model.entity.User
 import org.projecttracker.model.service.user.UserService
-import org.projecttracker.model.util.ListenerGroup
-import org.projecttracker.model.util.ListenerGroupConsumer
 import org.projecttracker.viewmodel.BaseViewModel
+import org.projecttracker.viewmodel.NetworkStateMonitor
 import org.slf4j.LoggerFactory
 
-class UserViewModel(private val userService: UserService) : BaseViewModel() {
+class UserViewModel(private val userService: UserService, private val networkStateMonitor: NetworkStateMonitor) : BaseViewModel() {
 
     companion object {
         private val logger = LoggerFactory.getLogger(UserViewModel::class.java)
@@ -25,7 +24,7 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
 
     private val userList: MutableList<User> = userService.getAllUsers()
     val searchingUserInProgress = ObservableBoolean(false)
-    val workspaceViewModel = WorkspaceViewModel(userService, this)
+    val workspaceViewModel = WorkspaceViewModel(userService, this, networkStateMonitor)
     val selectedUserPosition = ObservableInt(0)
 
     init {
@@ -57,6 +56,8 @@ class UserViewModel(private val userService: UserService) : BaseViewModel() {
     }
 
     fun addUserByApiToken(apiToken: String) = GlobalScope.launch(Dispatchers.Main) {
+
+        if (invalidNetworkState(networkStateMonitor)) return@launch
 
         try {
             searchingUserInProgress.set(true)

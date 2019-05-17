@@ -5,20 +5,21 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
-import org.projecttracker.R
-import org.projecttracker.ProjectTrackerApp
-import org.projecttracker.databinding.SettingsActivityBinding
-import org.projecttracker.di.UserViewModelModule
-import org.projecttracker.view.BaseActivity
-import org.projecttracker.viewmodel.user.UserViewModel
-import org.projecttracker.viewmodel.user.WorkspaceViewModel
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.android.synthetic.main.settings_activity_content.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.projecttracker.ProjectTrackerApp
+import org.projecttracker.R
+import org.projecttracker.databinding.SettingsActivityBinding
+import org.projecttracker.di.UserViewModelModule
 import org.projecttracker.event.UserAddedEvent
 import org.projecttracker.event.UserSelectedEvent
+import org.projecttracker.view.BaseActivity
+import org.projecttracker.viewmodel.NetworkStateMonitor
+import org.projecttracker.viewmodel.user.UserViewModel
+import org.projecttracker.viewmodel.user.WorkspaceViewModel
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -33,6 +34,8 @@ class SettingsActivity : BaseActivity() {
 
     @Inject
     lateinit var userViewModel: UserViewModel
+    @Inject
+    lateinit var networkStateMonitor: NetworkStateMonitor
     private lateinit var workspaceViewModel: WorkspaceViewModel
 
     private lateinit var userAdapter: UserAdapter
@@ -49,6 +52,8 @@ class SettingsActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        networkStateMonitor.startMonitoring()
 
         EventBus.getDefault().register(this)
         EventBus.getDefault().register(userAdapter)
@@ -74,6 +79,8 @@ class SettingsActivity : BaseActivity() {
         EventBus.getDefault().unregister(workspaceAdapter)
         EventBus.getDefault().unregister(workspaceViewModel)
         EventBus.getDefault().unregister(userAdapter)
+
+        networkStateMonitor.stopMonitoring()
     }
 
     override fun onBackPressed() {
@@ -87,7 +94,7 @@ class SettingsActivity : BaseActivity() {
 
     override fun inject() {
         ProjectTrackerApp.getAppComponent()
-            .plus(UserViewModelModule())
+            .plus(UserViewModelModule(this))
             .inject(this)
 
         workspaceViewModel = userViewModel.workspaceViewModel

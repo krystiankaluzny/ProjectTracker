@@ -9,10 +9,11 @@ import org.projecttracker.event.ProjectsUpdatedEvent
 import org.projecttracker.model.entity.TimeEntry
 import org.projecttracker.model.service.timer.TimerService
 import org.projecttracker.viewmodel.BaseViewModel
+import org.projecttracker.viewmodel.NetworkStateMonitor
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
 
-class DailyTimerViewModel(private val timerService: TimerService) : BaseViewModel() {
+class DailyTimerViewModel(private val timerService: TimerService, networkStateMonitor: NetworkStateMonitor) : BaseViewModel() {
 
     companion object {
         private val logger = LoggerFactory.getLogger(DailyTimerViewModel::class.java)

@@ -1,21 +1,27 @@
 package org.projecttracker.di
 
+import android.content.Context
+import dagger.Module
+import dagger.Provides
+import dagger.Subcomponent
 import org.projecttracker.model.service.timer.TimerService
 import org.projecttracker.model.service.user.UserService
 import org.projecttracker.view.settings.SettingsActivity
 import org.projecttracker.view.timer.TimerActivity
+import org.projecttracker.viewmodel.NetworkStateMonitor
 import org.projecttracker.viewmodel.timer.DailyTimerViewModel
 import org.projecttracker.viewmodel.user.UserViewModel
-import dagger.Module
-import dagger.Provides
-import dagger.Subcomponent
 
 @Module
-class UserViewModelModule {
+class UserViewModelModule(private val context: Context) {
 
     @ViewScope
     @Provides
-    fun providesUserViewModel(userService: UserService): UserViewModel = UserViewModel(userService)
+    fun providesNetworkStateMonitor(): NetworkStateMonitor = NetworkStateMonitor(context)
+
+    @ViewScope
+    @Provides
+    fun providesUserViewModel(userService: UserService, networkStateMonitor: NetworkStateMonitor): UserViewModel = UserViewModel(userService, networkStateMonitor)
 }
 
 @ViewScope
@@ -26,11 +32,15 @@ interface UserViewModelComponent {
 }
 
 @Module
-class TimerViewModelModule {
+class TimerViewModelModule(private val context: Context) {
 
     @ViewScope
     @Provides
-    fun provideDailyTimerViewModel(timerService: TimerService) = DailyTimerViewModel(timerService)
+    fun providesNetworkStateMonitor(): NetworkStateMonitor = NetworkStateMonitor(context)
+
+    @ViewScope
+    @Provides
+    fun provideDailyTimerViewModel(timerService: TimerService, networkStateMonitor: NetworkStateMonitor) = DailyTimerViewModel(timerService, networkStateMonitor)
 }
 
 @ViewScope

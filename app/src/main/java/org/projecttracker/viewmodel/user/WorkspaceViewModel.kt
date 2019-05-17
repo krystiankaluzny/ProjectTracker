@@ -15,10 +15,11 @@ import org.projecttracker.model.entity.User
 import org.projecttracker.model.entity.Workspace
 import org.projecttracker.model.service.user.UserService
 import org.projecttracker.viewmodel.ErrorViewModel
+import org.projecttracker.viewmodel.NetworkStateMonitor
 import org.slf4j.LoggerFactory
 
 
-class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel) : ErrorViewModel by userViewModel {
+class WorkspaceViewModel(private val userService: UserService, userViewModel: UserViewModel, private val networkStateMonitor: NetworkStateMonitor) : ErrorViewModel by userViewModel {
 
     companion object {
         private val logger = LoggerFactory.getLogger(WorkspaceViewModel::class.java)
@@ -59,16 +60,19 @@ class WorkspaceViewModel(private val userService: UserService, userViewModel: Us
         getWorkspaces(user)
         EventBus.getDefault().post(WorkspacesUpdatedEvent(workspaces))
 
-        GlobalScope.launch(Dispatchers.Main) {
+        if (networkStateMonitor.isNetworkConnected) {
 
-            withContext(Dispatchers.Default) {
-                logger.trace("refreshWorkspaces: start fetching workspaces")
-                userService.fetchWorkspaces(user)
-                logger.trace("refreshWorkspaces: get workspaces after fetch")
-                getWorkspaces(user)
+            GlobalScope.launch(Dispatchers.Main) {
+
+                withContext(Dispatchers.Default) {
+                    logger.trace("refreshWorkspaces: start fetching workspaces")
+                    userService.fetchWorkspaces(user)
+                    logger.trace("refreshWorkspaces: get workspaces after fetch")
+                    getWorkspaces(user)
+                }
+
+                EventBus.getDefault().post(WorkspacesUpdatedEvent(workspaces))
             }
-
-            EventBus.getDefault().post(WorkspacesUpdatedEvent(workspaces))
         }
     }
 
