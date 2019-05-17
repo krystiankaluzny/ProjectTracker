@@ -18,6 +18,18 @@ class NetworkStateMonitor constructor(private val context: Context) {
 
     private val connectivityManager: ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+    inline fun ifConnected(block: () -> Unit) {
+        if (isNetworkConnected) {
+            block()
+        }
+    }
+
+    inline fun ifDisconnected(block: () -> Unit) {
+        if (!isNetworkConnected) {
+            block()
+        }
+    }
+
     fun startMonitoring() {
 
         checkConnection()

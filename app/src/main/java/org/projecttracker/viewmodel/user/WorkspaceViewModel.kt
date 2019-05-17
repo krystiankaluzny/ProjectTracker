@@ -60,7 +60,7 @@ class WorkspaceViewModel(private val userService: UserService, userViewModel: Us
         getWorkspaces(user)
         EventBus.getDefault().post(WorkspacesUpdatedEvent(workspaces))
 
-        if (networkStateMonitor.isNetworkConnected) {
+        networkStateMonitor.ifConnected {
 
             GlobalScope.launch(Dispatchers.Main) {
 

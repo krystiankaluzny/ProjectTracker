@@ -13,7 +13,7 @@ import org.projecttracker.viewmodel.NetworkStateMonitor
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
 
-class DailyTimerViewModel(private val timerService: TimerService, networkStateMonitor: NetworkStateMonitor) : BaseViewModel() {
+class DailyTimerViewModel(private val timerService: TimerService, private val networkStateMonitor: NetworkStateMonitor) : BaseViewModel() {
 
     companion object {
         private val logger = LoggerFactory.getLogger(DailyTimerViewModel::class.java)
@@ -26,10 +26,13 @@ class DailyTimerViewModel(private val timerService: TimerService, networkStateMo
     init {
         GlobalScope.launch(Dispatchers.Main) {
             updateViewModels()
-            withContext(Dispatchers.Default) {
-                timerService.fetchTodayTimeEntries()
+
+            networkStateMonitor.ifConnected {
+                withContext(Dispatchers.Default) {
+                    timerService.fetchTodayTimeEntries()
+                }
+                updateViewModels()
             }
-            updateViewModels()
         }
     }
 
@@ -37,6 +40,8 @@ class DailyTimerViewModel(private val timerService: TimerService, networkStateMo
     fun singleProjectViewModel(position: Int) = projectViewModels[position]
 
     fun toggleProject(projectViewModel: SingleProjectViewModel) {
+
+        if(invalidNetworkState(networkStateMonitor)) return
 
         GlobalScope.launch(Dispatchers.Main) {
 
