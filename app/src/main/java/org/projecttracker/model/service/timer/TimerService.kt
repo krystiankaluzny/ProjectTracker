@@ -71,6 +71,8 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
     fun startTimerForProject(project: Project) {
 
+        stopTimer()
+
         val currentTime = OffsetDateTime.now()
         logger.debug("$project")
 
@@ -93,13 +95,9 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         lastStartedTimeEntry = startedTimeEntry
     }
 
-    fun stopTimerForProject(project: Project) {
+    fun stopTimer() {
 
         lastStartedTimeEntry?.also {
-
-            if (it.project?.id != project.id) {
-                logger.warn("Stopped time entry in project: ${it.project} but it should be: $project")
-            }
 
             val currentTime = OffsetDateTime.now()
 
@@ -112,7 +110,7 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
             )
 
             val stoppedTimeEntry = togglClient.updateTimeEntry(it.id, updateTimeEntryData)
-                .toEntity(project)
+                .toEntity(it.project!!)
 
             stoppedTimeEntry.save()
         }

@@ -57,7 +57,7 @@ class DailyTimerViewModel(private val timerService: TimerService, private val ne
 
             withContext(Dispatchers.Default) {
                 if (currentWasRunning) {
-                    timerService.stopTimerForProject(projectViewModel.project)
+                    timerService.stopTimer()
                     timerService.fetchTodayTimeEntries()
                 } else {
                     timerService.startTimerForProject(projectViewModel.project)
