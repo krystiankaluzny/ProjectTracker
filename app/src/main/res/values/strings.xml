@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ProjectTracker</string>
     <string name="user_activity_title">Users</string>
-    <string name="timer_activity_title">Timer</string>
+    <string name="timer_activity_title">Daily Timer</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
