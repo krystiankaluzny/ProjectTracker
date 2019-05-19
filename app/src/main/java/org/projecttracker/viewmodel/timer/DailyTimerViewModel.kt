@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.projecttracker.event.ProjectsUpdatedEvent
+import org.projecttracker.event.TodayTimerDataRefreshedEvent
 import org.projecttracker.model.entity.TimeEntry
 import org.projecttracker.model.service.timer.TimerService
 import org.projecttracker.viewmodel.BaseViewModel
@@ -24,6 +25,13 @@ class DailyTimerViewModel(private val timerService: TimerService, private val ne
     private var projectViewModels: List<SingleProjectViewModel> = emptyList()
 
     init {
+        refresh()
+    }
+
+    fun projectsCount() = projectViewModels.size
+    fun singleProjectViewModel(position: Int) = projectViewModels[position]
+
+    fun refresh() {
         GlobalScope.launch(Dispatchers.Main) {
             updateViewModels()
 
@@ -33,11 +41,10 @@ class DailyTimerViewModel(private val timerService: TimerService, private val ne
                 }
                 updateViewModels()
             }
+
+            EventBus.getDefault().post(TodayTimerDataRefreshedEvent())
         }
     }
-
-    fun projectsCount() = projectViewModels.size
-    fun singleProjectViewModel(position: Int) = projectViewModels[position]
 
     fun toggleProject(projectViewModel: SingleProjectViewModel) {
 

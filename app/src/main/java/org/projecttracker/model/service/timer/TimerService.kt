@@ -63,8 +63,8 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
     fun fetchTodayTimeEntries() {
 
-        val toTime = OffsetDateTime.now()
-        val fromTime = toTime.minusDays(1)
+        val toTime = OffsetDateTime.now().plusDays(1)
+        val fromTime = toTime.minusDays(2)
 
         synchronizeTimeEntries(fromTime, toTime)
     }
