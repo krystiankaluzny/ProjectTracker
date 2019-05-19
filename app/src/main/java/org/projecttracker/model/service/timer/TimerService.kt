@@ -1,8 +1,5 @@
 package org.projecttracker.model.service.timer
 
-import org.slf4j.LoggerFactory
-import org.projecttracker.model.entity.*
-import org.projecttracker.model.service.toEntity
 import com.raizlabs.android.dbflow.kotlinextensions.list
 import com.raizlabs.android.dbflow.kotlinextensions.result
 import com.raizlabs.android.dbflow.kotlinextensions.save
@@ -11,8 +8,12 @@ import com.raizlabs.android.dbflow.sql.language.SQLite.select
 import org.ktoggl.TogglClient
 import org.ktoggl.entity.ProjectParent
 import org.ktoggl.entity.StartTimeEntryData
+import org.ktoggl.entity.UpdateTimeEntryData
 import org.ktoggl.request.BaseReportParameters
 import org.ktoggl.request.DetailedReportParameters
+import org.projecttracker.model.entity.*
+import org.projecttracker.model.service.toEntity
+import org.slf4j.LoggerFactory
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 
@@ -70,13 +71,21 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
     fun startTimerForProject(project: Project) {
 
+        val currentTime = OffsetDateTime.now()
         logger.debug("$project")
 
-        val startedTimeEntry = togglClient.startTimeEntry(
+        val startTimeEntry = togglClient.startTimeEntry(
             StartTimeEntryData(
                 parent = ProjectParent(project.id),
                 description = project.name
             ))
+
+        val updateTimeEntryData = UpdateTimeEntryData(
+            startTimestamp = currentTime.toEpochSecond(),
+            durationSeconds = -currentTime.toEpochSecond()
+        )
+
+        val startedTimeEntry = togglClient.updateTimeEntry(startTimeEntry.id, updateTimeEntryData)
             .toEntity(project)
 
         startedTimeEntry.save()
@@ -87,11 +96,22 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
     fun stopTimerForProject(project: Project) {
 
         lastStartedTimeEntry?.also {
+
             if (it.project?.id != project.id) {
                 logger.warn("Stopped time entry in project: ${it.project} but it should be: $project")
             }
 
-            val stoppedTimeEntry = togglClient.stopTimeEntry(it.id)
+            val currentTime = OffsetDateTime.now()
+
+            val start = it.startDateTime!!.toEpochSecond()
+            val stop = currentTime.toEpochSecond()
+            val updateTimeEntryData = UpdateTimeEntryData(
+                startTimestamp = start,
+                durationSeconds = stop - start,
+                endTimestamp = stop
+            )
+
+            val stoppedTimeEntry = togglClient.updateTimeEntry(it.id, updateTimeEntryData)
                 .toEntity(project)
 
             stoppedTimeEntry.save()

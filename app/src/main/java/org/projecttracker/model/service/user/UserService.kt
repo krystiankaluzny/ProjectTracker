@@ -39,6 +39,8 @@ class UserService(private val togglClientBuilder: TogglClientBuilder) {
 
     fun addUserByApiToken(apiToken: String): User? {
 
+        logger.info("Add user with api token: {}", apiToken)
+
         val togglClient = togglClientBuilder.build(apiToken)
 
         val userEntity: User? = togglClient.getCurrentUser().toEntity()
