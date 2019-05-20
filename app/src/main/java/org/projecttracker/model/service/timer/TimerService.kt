@@ -23,8 +23,6 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         private val logger = LoggerFactory.getLogger(TimerService::class.java)
     }
 
-    private var lastStartedTimeEntry: TimeEntry? = null
-
     // @formatter:off
 
     fun getStoredProjects(): MutableList<Project> = select()
@@ -34,18 +32,6 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
     // @formatter:on
 
-    fun getStoredTimeEntriesForToday(): MutableList<TimeEntry> {
-
-        val toTime = OffsetDateTime.now()
-        val fromTime = toTime.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
-
-        // @formatter:off
-        return select()
-               .from(TimeEntry::class.java)
-               .where(TimeEntry_Table.startDateTime.between(fromTime).and(toTime))
-               .list
-        // @formatter:on
-    }
 
     fun getStoredTimeEntriesForToday(project: Project): MutableList<TimeEntry> {
 
@@ -66,7 +52,8 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         val toTime = OffsetDateTime.now().plusDays(1)
         val fromTime = toTime.minusDays(2)
 
-        synchronizeTimeEntries(fromTime, toTime)
+        synchronizeFinishedTimeEntries(fromTime, toTime)
+        synchronizeCurrentRunningTimeEntry()
     }
 
     fun startTimerForProject(project: Project) {
@@ -91,18 +78,27 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
             .toEntity(project)
 
         startedTimeEntry.save()
-
-        lastStartedTimeEntry = startedTimeEntry
     }
 
     fun stopTimer() {
 
-        lastStartedTimeEntry?.also {
+        fetchTodayTimeEntries()
+
+        val currentRunningTimeEntry = select()
+            .from(TimeEntry::class.java)
+            .where(TimeEntry_Table.project_id.`in`(getStoredProjects().map { it.id }))
+            .and(TimeEntry_Table.endDateTime.isNull)
+            .and(TimeEntry_Table.startDateTime.isNotNull)
+            .result
+
+        currentRunningTimeEntry?.also {
 
             val currentTime = OffsetDateTime.now()
 
             val start = it.startDateTime!!.toEpochSecond()
-            val stop = currentTime.toEpochSecond()
+            var stop = currentTime.toEpochSecond()
+            if (stop == start) stop++
+
             val updateTimeEntryData = UpdateTimeEntryData(
                 startTimestamp = start,
                 durationSeconds = stop - start,
@@ -114,22 +110,9 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
 
             stoppedTimeEntry.save()
         }
-
-        lastStartedTimeEntry = null
     }
 
-    fun synchronizeTimeEntries() {
-
-        val fromTime = user.lastSynchronizationTime ?: OffsetDateTime.now().minusMonths(1)
-        val toTime = OffsetDateTime.now()
-
-        synchronizeTimeEntries(fromTime, toTime)
-
-        user.lastSynchronizationTime = toTime
-        user.save()
-    }
-
-    private fun synchronizeTimeEntries(fromTime: OffsetDateTime, toTime: OffsetDateTime) {
+    private fun synchronizeFinishedTimeEntries(fromTime: OffsetDateTime, toTime: OffsetDateTime) {
 
         val workspace = select().from(Workspace::class.java).where(Workspace_Table.id.eq(user.activeWorkspaceId)).result
 
@@ -157,6 +140,29 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
                 .onEach { it.save() }
 
             logger.debug("fetchTimeEntries: $filteredTimeEntries")
+        }
+    }
+
+    private fun synchronizeCurrentRunningTimeEntry() {
+
+        togglClient.getCurrentTimeEntry()?.also {
+
+            if (it.projectId == null) {
+                logger.error("time entry {} have null project id", it)
+                return@also
+            }
+
+            val project = select()
+                .from(Project::class.java)
+                .where(Project_Table.id.eq(it.projectId))
+                .result
+
+            if (project == null) {
+                logger.error("Project with id {} doesn't found", it.projectId)
+                return@also
+            }
+
+            it.toEntity(project).save()
         }
     }
 }

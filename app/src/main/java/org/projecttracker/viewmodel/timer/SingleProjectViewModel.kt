@@ -11,7 +11,6 @@ class SingleProjectViewModel(project: Project) {
 
     val projectName = ObservableField<String>(project.name)
     val projectColor = ObservableInt(project.color)
-    val projectDuration = ObservableField<String>("00:00:00")
     val projectRunning = ObservableBoolean(false)
     val projectTimer = ObservableTimer()
 

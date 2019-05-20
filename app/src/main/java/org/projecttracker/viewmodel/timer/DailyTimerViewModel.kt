@@ -13,6 +13,7 @@ import org.projecttracker.viewmodel.BaseViewModel
 import org.projecttracker.viewmodel.NetworkStateMonitor
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
+import org.threeten.bp.OffsetDateTime
 
 class DailyTimerViewModel(private val timerService: TimerService, private val networkStateMonitor: NetworkStateMonitor) : BaseViewModel() {
 
@@ -48,7 +49,7 @@ class DailyTimerViewModel(private val timerService: TimerService, private val ne
 
     fun toggleProject(projectViewModel: SingleProjectViewModel) {
 
-        if(invalidNetworkState(networkStateMonitor)) return
+        if (invalidNetworkState(networkStateMonitor)) return
 
         GlobalScope.launch(Dispatchers.Main) {
 
@@ -65,14 +66,12 @@ class DailyTimerViewModel(private val timerService: TimerService, private val ne
             withContext(Dispatchers.Default) {
                 if (currentWasRunning) {
                     timerService.stopTimer()
-                    timerService.fetchTodayTimeEntries()
                 } else {
                     timerService.startTimerForProject(projectViewModel.project)
                 }
             }
-            if(currentWasRunning) {
-                updateViewModels()
-            }
+
+            updateViewModels()
         }
     }
 
@@ -97,27 +96,50 @@ class DailyTimerViewModel(private val timerService: TimerService, private val ne
 
         var totalTodayDuration = Duration.ZERO
 
+        allProjectsTimer.stop()
+
         projectViewModels.forEach {
+
             val projectTimeEntries = timerService.getStoredTimeEntriesForToday(it.project)
-            val todayProjectDuration = calculateTotalDuration(projectTimeEntries)
+            val finishedEntriesDuration = calculateFinishedEntriesDuration(projectTimeEntries)
 
-            it.projectTimer.duration = todayProjectDuration
+            it.projectTimer.duration = finishedEntriesDuration
+            totalTodayDuration += finishedEntriesDuration
 
-            totalTodayDuration += todayProjectDuration
+            val runningTimeEntry = selectRunningTimeEntry(projectTimeEntries)
+
+            if (runningTimeEntry != null) {
+                val runningEntryDuration = Duration.between(runningTimeEntry.startDateTime, OffsetDateTime.now())
+
+                it.projectTimer.duration += runningEntryDuration
+                totalTodayDuration += runningEntryDuration
+
+                it.startCounting()
+                allProjectsTimer.start()
+
+            } else {
+                it.stopCounting()
+            }
         }
 
         allProjectsTimer.duration = totalTodayDuration
     }
 
-    private fun calculateTotalDuration(timeEntries: List<TimeEntry>): Duration {
+
+    private fun calculateFinishedEntriesDuration(timeEntries: List<TimeEntry>): Duration {
         var total = Duration.ZERO
 
         for (timeEntry in timeEntries) {
             timeEntry.duration?.let {
-                total += it
+                if (it > Duration.ZERO) total += it
             }
         }
 
         return total
+    }
+
+    private fun selectRunningTimeEntry(projectTimeEntries: MutableList<TimeEntry>): TimeEntry? {
+
+        return projectTimeEntries.find { it.endDateTime == null }
     }
 }
