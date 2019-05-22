@@ -1,6 +1,7 @@
 package org.projecttracker.model.service.timer
 
 import com.raizlabs.android.dbflow.kotlinextensions.list
+import com.raizlabs.android.dbflow.kotlinextensions.or
 import com.raizlabs.android.dbflow.kotlinextensions.result
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite.delete
@@ -14,6 +15,7 @@ import org.ktoggl.request.DetailedReportParameters
 import org.projecttracker.model.entity.*
 import org.projecttracker.model.service.toEntity
 import org.slf4j.LoggerFactory
+import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 
@@ -56,11 +58,10 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         synchronizeCurrentRunningTimeEntry()
     }
 
-    fun startTimerForProject(project: Project) {
+    fun startTimerForProjectAt(project: Project, currentTime: OffsetDateTime) {
 
-        stopTimer()
+        stopTimerAt(currentTime)
 
-        val currentTime = OffsetDateTime.now()
         logger.debug("$project")
 
         val startTimeEntry = togglClient.startTimeEntry(
@@ -80,39 +81,54 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         startedTimeEntry.save()
     }
 
-    fun stopTimer() {
+    fun stopTimerAt(currentTime: OffsetDateTime) {
 
-        fetchTodayTimeEntries()
+        synchronizeCurrentRunningTimeEntry()
 
         val currentRunningTimeEntry = select()
             .from(TimeEntry::class.java)
             .where(TimeEntry_Table.project_id.`in`(getStoredProjects().map { it.id }))
-            .and(TimeEntry_Table.endDateTime.isNull)
             .and(TimeEntry_Table.startDateTime.isNotNull)
+            .and(TimeEntry_Table.endDateTime.isNull.or(TimeEntry_Table.duration.lessThan(Duration.ZERO)))
+            .orderBy(TimeEntry_Table.lastUpdateDateTime.desc())
+            .orderBy(TimeEntry_Table.id.desc())
             .result
 
+        logger.info("toggleProject id {}", currentRunningTimeEntry?.project?.id)
         currentRunningTimeEntry?.also {
 
-            val currentTime = OffsetDateTime.now()
-
             val start = it.startDateTime!!.toEpochSecond()
-            var stop = currentTime.toEpochSecond()
-            if (stop == start) stop++
+            val stop = currentTime.toEpochSecond()
+            if (stop == start) {
 
-            val updateTimeEntryData = UpdateTimeEntryData(
-                startTimestamp = start,
-                durationSeconds = stop - start,
-                endTimestamp = stop
-            )
+                logger.debug("delete current task {}", it.id)
 
-            val stoppedTimeEntry = togglClient.updateTimeEntry(it.id, updateTimeEntryData)
-                .toEntity(it.project!!)
+                delete()
+                    .from(TimeEntry::class.java)
+                    .where(TimeEntry_Table.id.eq(it.id))
 
-            stoppedTimeEntry.save()
+                togglClient.deleteTimeEntry(it.id)
+
+            } else {
+
+                logger.debug("update current task {}", it.id)
+
+                val updateTimeEntryData = UpdateTimeEntryData(
+                    startTimestamp = start,
+                    durationSeconds = stop - start,
+                    endTimestamp = stop
+                )
+
+                val stoppedTimeEntry = togglClient.updateTimeEntry(it.id, updateTimeEntryData)
+                    .toEntity(it.project!!)
+
+                stoppedTimeEntry.save()
+            }
         }
     }
 
     private fun synchronizeFinishedTimeEntries(fromTime: OffsetDateTime, toTime: OffsetDateTime) {
+
 
         val workspace = select().from(Workspace::class.java).where(Workspace_Table.id.eq(user.activeWorkspaceId)).result
 
@@ -144,6 +160,12 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
     }
 
     private fun synchronizeCurrentRunningTimeEntry() {
+
+        delete()
+            .from(TimeEntry::class.java)
+            .where(TimeEntry_Table.startDateTime.isNotNull)
+            .and(TimeEntry_Table.endDateTime.isNull.or(TimeEntry_Table.duration.lessThan(Duration.ZERO)))
+            .execute()
 
         togglClient.getCurrentTimeEntry()?.also {
 

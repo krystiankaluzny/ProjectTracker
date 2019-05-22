@@ -52,7 +52,7 @@ fun org.ktoggl.entity.TimeEntry.toEntity(project: Project) =
         description = description ?: project.name,
         startDateTime = OffsetDateTime.ofInstant(Instant.ofEpochSecond(startTimestamp), ZoneId.systemDefault()),
         endDateTime = endTimestamp?.let { OffsetDateTime.ofInstant(Instant.ofEpochSecond(it), ZoneId.systemDefault()) },
-        duration = if (durationSeconds > 0) Duration.ofSeconds(durationSeconds) else Duration.ZERO,
+        duration = Duration.ofSeconds(durationSeconds),
         lastUpdateDateTime = OffsetDateTime.ofInstant(Instant.ofEpochSecond(lastUpdateTimestamp), ZoneId.systemDefault()),
         synchronized = false,
         project = if (projectId == project.id) project else null

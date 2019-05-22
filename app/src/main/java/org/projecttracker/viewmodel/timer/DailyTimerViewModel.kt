@@ -1,5 +1,6 @@
 package org.projecttracker.viewmodel.timer
 
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,6 +15,7 @@ import org.projecttracker.viewmodel.NetworkStateMonitor
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
+import java.util.concurrent.Executors
 
 class DailyTimerViewModel(private val timerService: TimerService, private val networkStateMonitor: NetworkStateMonitor) : BaseViewModel() {
 
@@ -24,6 +26,8 @@ class DailyTimerViewModel(private val timerService: TimerService, private val ne
     val allProjectsTimer = ObservableTimer()
 
     private var projectViewModels: List<SingleProjectViewModel> = emptyList()
+    private val runningToggleProjectTask = atomic(0)
+    private val executor = Executors.newSingleThreadExecutor()
 
     init {
         refresh()
@@ -63,15 +67,30 @@ class DailyTimerViewModel(private val timerService: TimerService, private val ne
                 projectViewModel.startCounting()
             }
 
-            withContext(Dispatchers.Default) {
+            val now = OffsetDateTime.now()
+            runningToggleProjectTask.incrementAndGet()
+            executor.submit {
+
+                logger.debug("pending toggle tasks in queue {}", runningToggleProjectTask.value)
+
                 if (currentWasRunning) {
-                    timerService.stopTimer()
+                    timerService.stopTimerAt(now)
                 } else {
-                    timerService.startTimerForProject(projectViewModel.project)
+                    timerService.startTimerForProjectAt(projectViewModel.project, now)
+                }
+
+                runningToggleProjectTask.decrementAndGet()
+
+                logger.debug("remaining toggle tasks in queue {}", runningToggleProjectTask.value)
+
+                if (runningToggleProjectTask.value == 0) {
+                    timerService.fetchTodayTimeEntries()
+
+                    GlobalScope.launch(Dispatchers.Main) {
+                        updateViewModels()
+                    }
                 }
             }
-
-            updateViewModels()
         }
     }
 
@@ -140,6 +159,8 @@ class DailyTimerViewModel(private val timerService: TimerService, private val ne
 
     private fun selectRunningTimeEntry(projectTimeEntries: MutableList<TimeEntry>): TimeEntry? {
 
-        return projectTimeEntries.find { it.endDateTime == null }
+        return projectTimeEntries.find {
+            it.endDateTime == null || (it.duration?.isNegative ?: false)
+        }
     }
 }
