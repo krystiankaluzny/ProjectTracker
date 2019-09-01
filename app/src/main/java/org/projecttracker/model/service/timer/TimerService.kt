@@ -58,9 +58,9 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         synchronizeCurrentRunningTimeEntry()
     }
 
-    fun startTimerForProjectAt(project: Project, currentTime: OffsetDateTime) {
+    fun startTimerForProjectAt(project: Project, startTime: OffsetDateTime) {
 
-        stopTimerAt(currentTime)
+        stopTimerAt(startTime)
 
         logger.debug("$project")
 
@@ -71,8 +71,8 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
             ))
 
         val updateTimeEntryData = UpdateTimeEntryData(
-            startTimestamp = currentTime.toEpochSecond(),
-            durationSeconds = -currentTime.toEpochSecond()
+            startTimestamp = startTime.toEpochSecond(),
+            durationSeconds = -startTime.toEpochSecond()
         )
 
         val startedTimeEntry = togglClient.updateTimeEntry(startTimeEntry.id, updateTimeEntryData)
@@ -81,7 +81,7 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         startedTimeEntry.save()
     }
 
-    fun stopTimerAt(currentTime: OffsetDateTime) {
+    fun stopTimerAt(stopTime: OffsetDateTime) {
 
         synchronizeCurrentRunningTimeEntry()
 
@@ -98,7 +98,7 @@ class TimerService(private val user: User, private val togglClient: TogglClient)
         currentRunningTimeEntry?.also {
 
             val start = it.startDateTime!!.toEpochSecond()
-            val stop = currentTime.toEpochSecond()
+            val stop = stopTime.toEpochSecond()
             if (stop == start) {
 
                 logger.debug("delete current task {}", it.id)

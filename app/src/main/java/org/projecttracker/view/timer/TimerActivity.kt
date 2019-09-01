@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import org.projecttracker.R
 import org.projecttracker.ProjectTrackerApp
@@ -80,7 +79,7 @@ class TimerActivity : BaseActivity() {
     }
 
     private fun setUpProjectList() {
-        projectAdapter = ProjectAdapter(dailyTimerViewModel)
+        projectAdapter = ProjectAdapter(dailyTimerViewModel, supportFragmentManager)
 
         val layoutManager = GridLayoutManager(this, 2)
 
