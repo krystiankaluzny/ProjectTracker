@@ -135,6 +135,6 @@ class SettingsActivity : BaseActivity() {
     private fun showAddUserDialog() {
         val addUserDialog = AddUserDialog()
 
-        addUserDialog.show(fragmentManager, "Add User")
+        addUserDialog.show(supportFragmentManager, "Add User")
     }
 }
